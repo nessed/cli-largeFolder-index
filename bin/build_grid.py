@@ -55,15 +55,38 @@ def not_run_reason(stack, tree):
     return "not run - no result on disk"
 
 
-def cell_for(stack, tree):
+def short_reason(stack, tree):
+    """Cells get a short reason plus a footnote marker; the full text is printed
+    once below the table. A three-line reason repeated across six columns makes
+    the table unreadable, which defeats the point of having one."""
+    full = not_run_reason(stack, tree)
+    if full.startswith("install failed"):
+        return "install failed[^" + stack + "]", full
+    head = full.split(".")[0].replace("not run - ", "")
+    if len(head) > 44:
+        head = head[:41] + "..."
+    return f"not run[^{stack}] — {head}", full
+
+
+def cell_for(stack, tree, notes):
     can = load(f"summary_canaries__{stack}__{tree}.json")
     q = load(f"summary__{stack}__rung15000.json") if tree == "h15000" else None
     if not can:
-        reason = not_run_reason(stack, tree)
-        return {"canary": reason, "question": reason if tree == "h15000" else "n/a",
-                "cost": reason, "tools": "-", "wall": "-", "excluded": "-",
+        short, full = short_reason(stack, tree)
+        notes[stack] = full
+        return {"canary": short, "retrieval": "-",
+                "question": short if tree == "h15000" else "n/a",
+                "cost": "-", "tools": "-", "wall": "-", "excluded": "-",
                 "stale": False}
+
+    # Provenance. A summary file from night 1 sits in the same directory with the
+    # same name shape as tonight's. Without this check the grid would silently
+    # present a night-1 number as a night-2 result, which is exactly the class of
+    # error this whole run exists to remove.
+    ph = str(can.get("phase", ""))
+    old = "" if ph.startswith("P7_") else " **[night 1]**"
     partial = " (PARTIAL)" if can.get("battery_is_stale") else ""
+    partial += old
     ex = can.get("excluded_by_design_row", {})
     return {
         "canary": can.get("answer_recall", "-") + partial,
@@ -93,9 +116,10 @@ def setup_time(stack):
 
 def main():
     rows = []
+    notes = {}
     for s in STACKS:
-        h = cell_for(s, "h15000")
-        r = cell_for(s, "raship")
+        h = cell_for(s, "h15000", notes)
+        r = cell_for(s, "raship", notes)
         rows.append((s, h, r))
 
     out = []
@@ -119,6 +143,18 @@ def main():
             f"{r.get('retrieval', '-')} | {r['cost']} | {r['tools']} | {r['wall']} | "
             f"{setup_time(s)} | h15k {h['excluded']} / ra-ship {r['excluded']} |")
     out.append("")
+    if notes:
+        out.append("**Why a cell was not run:**")
+        out.append("")
+        for k in sorted(notes):
+            out.append(f"[^{k}]: **{k}** — {notes[k]}")
+        out.append("")
+    if any("[night 1]" in str(c) for _, h, r in rows for c in (h, r)):
+        out.append("A cell marked **[night 1]** is a re-scored night-1 battery, not a "
+                   "measurement taken tonight. It is shown so the row is not empty, and "
+                   "it must not be compared against a night-2 cell as though the "
+                   "instrument were the same — it was not.")
+        out.append("")
     dest = L.FINDINGS / "GRID.md"
     dest.parent.mkdir(parents=True, exist_ok=True)
     existing = dest.read_text(encoding="utf-8") if dest.exists() else ""

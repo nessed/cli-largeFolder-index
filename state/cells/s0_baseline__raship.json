@@ -1,0 +1,19 @@
+{
+ "stack": "s0_baseline",
+ "tree": "raship",
+ "phase": "P7_s0_baseline_raship",
+ "steps": {
+  "checksums_pre": "ok",
+  "clean": "ok",
+  "memory_pre": "C--Users-Ali-desktop-projects-code-ra-ship: empty",
+  "install": "ok",
+  "canary_battery": {
+   "rc": 0,
+   "wall_s": 1373.8,
+   "status": "complete"
+  },
+  "question_battery": "n/a",
+  "checksums_post": "ok",
+  "memory_post": "C--Users-Ali-desktop-projects-code-ra-ship: empty"
+ }
+}
