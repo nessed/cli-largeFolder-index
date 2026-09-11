@@ -175,3 +175,70 @@ they occupy 20 file slots — dedup by hash cuts heavy-PDF ingest ~60% before pa
 Page counts are badly decorrelated from file size: the fattest PDF is **4,354 pages / 57 MiB**
 (ABS 2026-27), while the 56 MiB Economic Survey is only 376 pages. Nine KP `Demands for
 Grants` PDFs in one folder total ~13,000 pages in ~150 MiB.
+
+---
+
+# GRID RUN — night 2, 2026-09-12
+
+## Phase 0 — instruments (complete, 01:35–02:00)
+
+**The night-1 headline survives the scorer fix, but for a reason worth stating.**
+The old rule scored a hit when the answer contained the bare filename and that
+filename was longer than 8 characters. `02_Source_Documents_Read_Only/README.md`
+has basename `readme.md`, nine characters, so any answer mentioning any README in
+a 217k-file tree would have scored as a find. That loophole was real but **never
+fired**: re-scoring both night-1 batteries with a rule that requires the full
+relative path or its last two segments returns **6/13 and 12/13 unchanged**, and
+every single hit matched on `full_path`. Zero false hits. *Condition: holds for
+these 13 pass-1 canaries and these two batteries only — it says the bug was
+latent here, not that the bug was harmless in general. Pass-2 phrases are placed
+in files with far more generic basenames, where it would have fired.*
+
+**Two corrections that do change the numbers.** Neither is a scorer bug; both are
+accounting.
+
+1. **The site-packages canary must come out of the headline** (spec 7.4).
+   `sig-328120` lives under `ABS_PES_PBS_Extraction_Test/02_tool_runs/.envs/mineru/
+   Lib/site-packages/`, which `index_build.py` excludes by design. Stock Claude
+   Code **found it**; the index stack **structurally cannot**. Scored as its own
+   row, night 1 reads **S0 5/12, S2 12/12**, with S0 taking the excluded row 1/1
+   and S2 taking it 0/1. The honest sentence is not "6 versus 12" but "5 versus 12
+   on indexable material, and the one file the index is blind to is the one file
+   grep got and the index missed."
+   *Condition: depends on a tree containing dependency directories the indexer
+   excludes. The target — a plain PDF-heavy folder — has no venvs, so this row
+   is expected to be empty there. **Fixture-specific.***
+
+2. **The cost totals were never comparable.** A timed-out session reports
+   `cost_usd: null` and silently drops out of the sum. S0 timed out 4 times and
+   reported cost for **8 of 13** sessions ($1.80); S2 timed out once and reported
+   **12 of 13** ($0.98). Night 1's "half the cost" compared a sum over 8 sessions
+   to a sum over 12. Every cost cell from here carries an explicit n-of-m and
+   refuses to be compared across different n.
+   *Condition: applies wherever any session times out — i.e. everywhere. Transfers.*
+
+**Retrieval is now scored separately from answer text, and the two diverge hard.**
+Sessions that *named* the right path having never *opened* it: S0 answered 5 but
+opened 2; S2 answered 12 but opened 2. For S2 this is mostly real behaviour — the
+agent answers from `corpus_search` snippets without ever reading the page — but it
+is partly a measurement limit: `files_opened[]` is built from tool-call *inputs*,
+so a path that only ever appears in a tool *result* is invisible to it. Recorded
+as a caveat on the retrieval column, not as a finding about the stacks.
+
+**Instrument change that breaks strict comparability with night 1.** The
+front-door hook's redirect text asserted ra-ship's gitignore numbers verbatim
+("495 of 217,527 files"). That claim is a property of one fixture, and injecting
+it into a harness session tells the agent something false about the tree it is
+searching. The redirect and `CLAUDE.md` are now corpus-neutral. S2 tonight is
+therefore not the byte-identical instrument S2 was on night 1.
+
+Also done: `--disallowedTools Write,Edit,NotebookEdit` on every measurement
+session plus a sha256 manifest either side of each battery (all 13 pass-1 canaries
+verified unchanged, so night 1 did not corrupt the tree); timing moved to
+`time.monotonic()` with suspend detected by divergence between the wall clock and
+`perf_counter` — the spec's literal "wall minus summed inter-event time" rule
+cannot fire, because the gaps are measured live and sum to the wall by
+construction, so a sleep lands *inside* one gap rather than vanishing from the
+sum; `stack.py` state written before mutation and backups keyed per corpus;
+per-(stack, corpus) hook logs; and a skipped question now prints in red and marks
+its whole battery stale.

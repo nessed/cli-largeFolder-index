@@ -6,7 +6,10 @@ Values that look numeric are coerced to int/float.
 import json, os, sys, time
 from pathlib import Path
 
-ROOT = Path(os.environ.get("CORPUS_LAB_ROOT", r"C:\Users\Ali\Desktop\corpus-lab"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import labpaths as L  # noqa: E402
+
+ROOT = L.CORPUS_LAB
 
 def main(argv):
     if len(argv) < 5:

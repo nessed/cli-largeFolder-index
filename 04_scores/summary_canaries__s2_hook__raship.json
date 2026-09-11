@@ -1,0 +1,27 @@
+{
+ "stack": "s2_hook",
+ "phase": "P5_s2_canaries",
+ "corpus": "raship",
+ "n_canaries": 13,
+ "n_results": 13,
+ "answer_recall": "12/12",
+ "retrieval_recall": "2/12",
+ "excluded_by_design_row": {
+  "n": 1,
+  "answer_found": 0,
+  "note": "under site-packages; index_build.py excludes it by design, so index stacks have a hard ceiling here and grep-based S0 does not"
+ },
+ "false_not_found": 0,
+ "cost_usd_total": 0.9847,
+ "cost_n_of_m": "12/13",
+ "cost_warning": "1 session(s) reported no cost (timeout/crash); this total is NOT comparable to a total with a different n",
+ "mean_wall_s_excl_suspended": 20.6,
+ "n_suspended_excluded_from_timing": 0,
+ "total_tool_calls": 28,
+ "timeouts": 1,
+ "not_stream_json": 0,
+ "n_skipped_stale": 0,
+ "battery_is_stale": false,
+ "n_missing_results": 0,
+ "ts": "2026-09-12T01:45:54"
+}

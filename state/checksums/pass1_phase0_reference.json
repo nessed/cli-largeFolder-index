@@ -1,0 +1,74 @@
+{
+ "label": "pass1_phase0_reference",
+ "ts": "2026-09-12T01:44:10",
+ "manifest": "C:\\Users\\Ali\\Desktop\\canary_manifest_pass1.csv",
+ "n_files": 13,
+ "missing": [],
+ "files": {
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\LOCAL_ENVIRONMENT_SETUP.md": {
+   "sha256": "929a8323d173d0eab3baea9e0e1a8ff94ea9ba3b1f3d8a2f5e1b807de508b045",
+   "size": 217,
+   "mtime": 1786732500.0
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\00_Workspace_Guide\\WORKSPACE_STRUCTURE.md": {
+   "sha256": "51dba1c2f5588f0166ade093d16f562e361b6f44b70b36eacd9518cf742db7ec",
+   "size": 2244,
+   "mtime": 1786697321.77
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\02_Source_Documents_Read_Only\\README.md": {
+   "sha256": "b69464a6fdfc6a4603079a197b5174553fa3b3022b85f29603003bd3184d1fc3",
+   "size": 2000,
+   "mtime": 1786697838.32
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\04_Research_Outputs\\Deliverables\\PORTAL_AUDIT_FINDINGS.html": {
+   "sha256": "5a4072f5cff7d6c0862875382a3e7132d55bad05c1e92cc57c9cc9b244b528e3",
+   "size": 38147,
+   "mtime": 1786803787.683
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\04_Research_Outputs\\Deliverables\\RESEARCH_MEMORANDUM_STYLE_GUIDE.docx": {
+   "sha256": "715fe2f763fb69fe615ae8c0e1953b3b213d09c567a7684220a1ae1f6582ac42",
+   "size": 36730,
+   "mtime": 1786807703.537
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\04_Research_Outputs\\Deliverables\\PAKISTAN_ECONOMIC_SURVEY_COMPREHENSIVE_ANNEX.pdf": {
+   "sha256": "9221089a5add5fba4dc9ccb022451a64d26b4e8055e6e7de86012345f31604c9",
+   "size": 143291,
+   "mtime": 1786734530.0
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\Agent Files\\budget-eda-briefing\\component_registry.json": {
+   "sha256": "a08303e82fa742164b16561d05ae02d028458b1130d69ebc8778f0664c4061e4",
+   "size": 113,
+   "mtime": 1783649494.95
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\Agent Files\\budget-eda-briefing\\.openai\\project_config.json": {
+   "sha256": "ca7a4f13645c62539a774db274267c6685bc422b9135c684cf5c9b6ab904b2f0",
+   "size": 135,
+   "mtime": 1786560917.914
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\Source Documents Organized\\Federal\\Annual Budget Statements FY2010-11 to FY2026-27\\2024-25\\abs_fy_2024-25_notes.pdf": {
+   "sha256": "fcb905eabe2b088cb205aa2dd6caddcb55158a10b2c619472e03f79f491cdfaf",
+   "size": 1478,
+   "mtime": 1781205565.0
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\Agent Files\\RA_WORKSPACE\\02_sources\\pbs-corpus\\reports\\gap_report.md": {
+   "sha256": "670c015e86493c6e7a5b7a195975cff9eaefd7dd9440f0380044f86734f5e707",
+   "size": 14613,
+   "mtime": 1786696125.316
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\Arsalan Archive\\Archive\\datalab\\annual_budget_statements\\doclang\\outputs\\abs_fy_2025-26_docling_tables_csv\\abs_fy_2025-26-table-13.csv": {
+   "sha256": "9977489a58595c399d2ac17efa1f3171d0bdcc1988e7f7d49cf3a37897cc3e39",
+   "size": 124,
+   "mtime": 1781637067.0
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\ABS_PES_PBS_Extraction_Test\\02_tool_runs\\.envs\\mineru\\Lib\\site-packages\\aiofiles\\base.py": {
+   "sha256": "a571af4e26c0f6ada4703a1b2216d91d57fc6d92786d60a7e87febcb20ba2091",
+   "size": 1899,
+   "mtime": 1786698357.601
+  },
+  "C:\\users\\ali\\desktop\\projects\\code\\ra-ship\\ABS_PES_PBS_Extraction_Test\\03_outputs\\ABS\\mineru\\ABS_2025-26__mineru__full-document__run-01\\raw\\ABS_English_2025-26\\auto\\images\\layout_summary.md": {
+   "sha256": "734fb2a2a8b57208a649a58a26181e2da061b4c79ead2dd7533680337b5cbff3",
+   "size": 142,
+   "mtime": 1788905729.122
+  }
+ }
+}

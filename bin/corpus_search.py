@@ -13,7 +13,11 @@ silent. This is what the agent is redirected to when built-in Grep/Glob are deni
 import argparse, json, os, re, sqlite3, sys
 from pathlib import Path
 
-DEFAULT_DB = os.environ.get("CORPUS_DB", r"C:\Users\Ali\Desktop\corpus-lab\02_stacks\s2_fts5\raship.db")
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import labpaths as L  # noqa: E402
+
+# Phase 1.1: derived from the lab root, overridable per stack with CORPUS_DB.
+DEFAULT_DB = os.environ.get("CORPUS_DB", str(L.STACKS / "s2_fts5" / "raship.db"))
 
 
 def connect(db):

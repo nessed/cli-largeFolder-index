@@ -17,9 +17,14 @@ import argparse, json, os, random, re, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-LAB = Path(r"C:\Users\Ali\Desktop\corpus-lab")
-HARNESS = Path(r"C:\Users\Ali\Desktop\harness")
-SAMPLE = LAB / "04_scores" / "question_sample.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import labpaths as L  # noqa: E402
+
+# Phase 1.1: every path derived from one root. Phase 2.1: the answer key lives in
+# the private tree, not one `..` above a session's cwd.
+LAB = L.CORPUS_LAB
+HARNESS = L.HARNESS
+SAMPLE = L.QUESTION_SAMPLE
 
 STRATA = {"trajectory": 4, "point_lookup": 3, "absence": 3, "multi_branch": 3,
           "reconciliation": 2, "stale_doc": 2, "name_content_mismatch": 1,
@@ -27,7 +32,7 @@ STRATA = {"trajectory": 4, "point_lookup": 3, "absence": 3, "multi_branch": 3,
 
 
 def load_key():
-    return json.loads((HARNESS / "keys" / "answer_key.json").read_text(encoding="utf-8"))
+    return json.loads(L.ANSWER_KEY.read_text(encoding="utf-8"))
 
 
 def freeze_sample(seed=20260910):
@@ -50,9 +55,9 @@ def freeze_sample(seed=20260910):
 
 
 def one(q, args):
-    cmd = [sys.executable, str(LAB / "bin" / "ask.py"),
+    cmd = [sys.executable, str(L.ASK),
            "--phase", args.phase, "--stack", args.stack,
-           "--corpus", str(HARNESS / f"corpus_{args.rung}"),
+           "--corpus", str(L.rung(args.rung)),
            "--corpus-label", f"harness{args.rung}",
            "--qid", q["q_id"],
            "--question", q["question"] +
@@ -63,8 +68,10 @@ def one(q, args):
         cmd += ["--settings", args.settings]
     if args.force:
         cmd += ["--force"]
-    p = subprocess.run(cmd, capture_output=True, text=True, errors="replace")
-    return q["q_id"], (p.stdout or "").strip()[-200:]
+    env = dict(os.environ)
+    env.pop("CANARY_MANIFEST", None)   # never hand a session the manifest location
+    p = subprocess.run(cmd, capture_output=True, text=True, errors="replace", env=env)
+    return q["q_id"], p.returncode, (p.stdout or "").strip()[-200:]
 
 
 NUM = re.compile(r"-?\d[\d,]*\.?\d*")
@@ -79,7 +86,7 @@ def norm(p):
 
 
 def score(args, qs):
-    outdir = LAB / "03_runs" / args.phase
+    outdir = L.RUNS / args.phase
     rows = []
     for q in qs:
         f = outdir / f"{args.stack}__harness{args.rung}__{q['q_id']}.json"
@@ -106,6 +113,8 @@ def score(args, qs):
              "n_files_opened": len(opened), "forbidden_cited": len(forbidden),
              "forbidden_examples": forbidden[:3],
              "wall_s": d.get("wall_s"), "cost_usd": d.get("cost_usd"),
+             "suspended": d.get("suspended"),
+             "stream_json_ok": d.get("stream_json_ok"),
              "timed_out": d.get("timed_out"), "n_tool_calls": d.get("n_tool_calls"),
              "tools": d.get("tool_histogram"), "answer_head": ans[:200]}
 
@@ -117,11 +126,13 @@ def score(args, qs):
             r["absence_numbers_emitted"] = len(nums)
         rows.append(r)
 
-    out = LAB / "04_scores" / f"harness__{args.stack}__rung{args.rung}.json"
+    out = L.SCORES / f"harness__{args.stack}__rung{args.rung}.json"
     out.write_text(json.dumps(rows, indent=1, ensure_ascii=False), encoding="utf-8")
 
     with_ev = [r for r in rows if r.get("retrieval_recall") is not None]
     ab = [r for r in rows if r.get("type") == "absence"]
+    with_cost = [r for r in rows if r.get("cost_usd") is not None]
+    timed = [r for r in rows if not r.get("suspended") and not r.get("timed_out")]
     summary = {
         "stack": args.stack, "rung": args.rung, "n_questions": len(rows),
         "mean_retrieval_recall": round(sum(r["retrieval_recall"] for r in with_ev)
@@ -133,10 +144,23 @@ def score(args, qs):
         "total_forbidden_citations": sum(r.get("forbidden_cited", 0) for r in rows),
         "absence_correct": f"{sum(1 for r in ab if r.get('absence_ok'))}/{len(ab)}",
         "timeouts": sum(1 for r in rows if r.get("timed_out")),
-        "total_cost_usd": round(sum(r.get("cost_usd") or 0 for r in rows), 3),
-        "mean_wall_s": round(sum(r.get("wall_s") or 0 for r in rows) / max(len(rows), 1), 1),
+        # 0.7 - a bare total silently favours whichever stack flailed more, because
+        # a timed-out session reports no cost and drops out of the sum.
+        "total_cost_usd": round(sum(r["cost_usd"] for r in with_cost), 4),
+        "cost_n_of_m": f"{len(with_cost)}/{len(rows)}",
+        "cost_warning": (None if len(with_cost) == len(rows) else
+                         f"{len(rows) - len(with_cost)} session(s) reported no cost; "
+                         f"NOT comparable to a total with a different n"),
+        # 0.6 - suspended sessions measured laptop sleep, not the stack.
+        "mean_wall_s_excl_suspended": (
+            round(sum(r["wall_s"] or 0 for r in timed) / len(timed), 1) if timed else None),
+        "n_suspended_excluded_from_timing": sum(1 for r in rows if r.get("suspended")),
+        # 0.10 - a battery that reused results is stale and must say so itself.
+        "n_skipped_stale": args.n_skipped,
+        "battery_is_stale": args.n_skipped > 0,
+        "not_stream_json": sum(1 for r in rows if r.get("stream_json_ok") is False),
     }
-    (LAB / "04_scores" / f"summary__{args.stack}__rung{args.rung}.json").write_text(
+    (L.SCORES / f"summary__{args.stack}__rung{args.rung}.json").write_text(
         json.dumps(summary, indent=1), encoding="utf-8")
     print(json.dumps(summary, indent=1))
     return summary
@@ -155,6 +179,7 @@ if __name__ == "__main__":
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--score-only", action="store_true")
     a = ap.parse_args()
+    a.n_skipped = 0
 
     samp = freeze_sample()
     key = load_key()
@@ -162,9 +187,15 @@ if __name__ == "__main__":
     print(f"{len(qs)} questions (seed {samp['seed']}): "
           f"{sorted(set(q['type'] for q in qs))}")
     if not a.score_only:
-        t0 = time.time()
+        t0 = time.monotonic()
         with ThreadPoolExecutor(max_workers=a.parallel) as ex:
-            for qid, so in ex.map(lambda q: one(q, a), qs):
-                print(f"[{qid}] {so}")
-        print(f"battery wall {time.time()-t0:.0f}s")
+            for qid, rc, so in ex.map(lambda q: one(q, a), qs):
+                if rc == 3:
+                    a.n_skipped += 1
+                    print(f"\033[1;31m[{qid}] SKIPPED-STALE\033[0m", file=sys.stderr)
+                print(f"[{qid}] rc={rc} {so}")
+        print(f"battery wall {time.monotonic()-t0:.0f}s")
+        if a.n_skipped:
+            print(f"\033[1;31m### {a.n_skipped} question(s) reused an existing result. "
+                  f"THIS BATTERY IS STALE.\033[0m", file=sys.stderr)
     score(a, qs)
