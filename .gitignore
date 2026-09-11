@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 99_scratch/backups/
+99_scratch/installs/
+02_stacks/s2_fts5/*.db
+02_stacks/s2_fts5/*.db-shm
+02_stacks/s2_fts5/*.db-wal
+99_scratch/*.log
