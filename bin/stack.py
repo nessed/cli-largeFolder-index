@@ -43,13 +43,48 @@ POLICY_STACKS = ("s1_policy", "s2_hook", "s3_hybrid", "s4_pdfmcp", "s5_recoll")
 HOOK_STACKS = ("s2_hook", "s3_hybrid", "s4_pdfmcp", "s5_recoll")
 
 # Phase 2.5 backstop. Present in EVERY stack, s0 included, where it is the only
-# content of settings.json. Closes the last route from a test session to the
-# answer key even if something else in the layout regresses.
-BACKSTOP_DENY = [
-    "Read(**/_private/**)",
+# content of settings.json.
+#
+# MEASURED, phase 2.6 + bin/diag_denyform.py -- the spec's pattern
+# `Read(**/_private/**)` DOES NOT WORK. Under --permission-mode bypassPermissions
+# a Read() deny binds only when the pattern carries an ABSOLUTE path prefix.
+# Relative globs match nothing and fail open, silently:
+#
+#   Read(**/_private/**)                    LEAKS   <- the spec's pattern
+#   Read(*_private*)                        LEAKS
+#   Read(**/canary_manifest*)               LEAKS
+#   Read(//C:/.../_private/**)              LEAKS   (leading // breaks it)
+#   Read(C:\...\_private\**)                BINDS
+#   Read(C:/.../_private/**)                BINDS
+#   Read(C:/.../_private/**/*)              BINDS
+#
+# Bash() patterns are matched against the command STRING, so the relative forms
+# there do bind and are kept. The absolute Read denies necessarily name the
+# directory they protect; that is fine, because knowing a denied path does not
+# help you read it, and a path-based deny cannot work any other way.
+def _abs_read_denies():
+    out = []
+    for p in (L.PRIVATE, Path.home() / ".claude" / "projects"):
+        s = str(p).replace("\\", "/").rstrip("/")
+        out.append(f"Read({s}/**)")
+        out.append(f"Read({str(p).rstrip(chr(92))}\\**)")
+    return out
+
+
+BACKSTOP_DENY = _abs_read_denies() + [
+    # Bash is matched on the command string, so relative patterns DO bind here.
     "Bash(*_private*)",
     "Bash(*canary*)",
     "Bash(*answer_key*)",
+    "Bash(*harness_keys*)",
+    "Bash(*canary_manifest*)",
+    "Bash(*canary_companion*)",
+    "Bash(*plant_backups*)",
+    # The transcript route (see quarantine_transcripts.py): ra-ship deliberately
+    # does not move, so every ra-ship session runs under the same
+    # .claude/projects key whose transcripts quoted the canaries.
+    "Bash(*.claude/projects*)",
+    "Bash(*projects/C--*)",
 ]
 
 CLAUDE_MD = """# Corpus retrieval policy

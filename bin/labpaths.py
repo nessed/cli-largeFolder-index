@@ -77,7 +77,29 @@ ANSWER_KEY = HARNESS_KEYS / "answer_key.json"
 CANARY_SLOTS = HARNESS_KEYS / "canary_slots.json"
 QUESTION_SAMPLE = SCORES / "question_sample.json"
 
-CLAUDE = os.environ.get("CLAUDE_CMD", r"C:\nvm4w\nodejs\claude.cmd")
+# Night-1's undiagnosed stream-json break, root-caused in phase 2
+# (see bin/diag_quotes.py and state/diag_quotes.json).
+#
+# claude.cmd is a cmd.exe batch wrapper whose operative line is
+#     "%dp0%\node_modules\@anthropic-ai\claude-code\bin\claude.exe"   %*
+# and cmd.exe's %* expansion TRUNCATES AT THE FIRST NEWLINE inside an argument.
+# So any prompt containing "\n" silently loses every argument after it --
+# including --output-format stream-json. The session then runs in default text
+# mode: prose out, returncode 0, empty stderr. Exactly the reported symptom.
+#
+# It was never the corpus root. ra-ship ran single-line canary questions and
+# worked; run_harness.py appends "\n\nCite the exact file paths..." to every
+# harness question, so 100% of harness questions broke and 0% of ra-ship canary
+# questions did. The apparent correlation with the root was an artifact of which
+# question builder each root happened to use.
+#
+# Fix: call claude.exe directly, never through cmd.exe. Verified across 8 prompt
+# shapes (newlines, double/single quotes, backticks, ^ & %): all 8 STREAM_JSON
+# via the .exe, 2 of 8 PROSE via the .cmd.
+_CLAUDE_EXE = Path(r"C:\nvm4w\nodejs\node_modules\@anthropic-ai\claude-code\bin\claude.exe")
+CLAUDE = os.environ.get(
+    "CLAUDE_CMD",
+    str(_CLAUDE_EXE) if _CLAUDE_EXE.exists() else r"C:\nvm4w\nodejs\claude.cmd")
 
 
 def canary_manifest(required=True):

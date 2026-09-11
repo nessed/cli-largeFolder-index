@@ -1,0 +1,37 @@
+{
+ "spec_relglob": {
+  "pattern": "Read(**/_private/**)",
+  "binds": false,
+  "answer": "GOT:canary_phrase,absolute_path"
+ },
+ "abs_backslash": {
+  "pattern": "Read(C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\**)",
+  "binds": true,
+  "answer": "REFUSED: File is in a directory that is denied by your permission settings."
+ },
+ "abs_forward": {
+  "pattern": "Read(C:/Users/Ali/Desktop/retrieval-lab/_private/**)",
+  "binds": true,
+  "answer": "REFUSED:File is in a directory that is denied by your permission settings."
+ },
+ "abs_doubleslash": {
+  "pattern": "Read(//C:/Users/Ali/Desktop/retrieval-lab/_private/**)",
+  "binds": false,
+  "answer": "GOT: canary_phrase,absolute_pa"
+ },
+ "bare_star": {
+  "pattern": "Read(*_private*)",
+  "binds": false,
+  "answer": "GOT:1\tcanary_phrase,absolute_"
+ },
+ "dirglob_nostar": {
+  "pattern": "Read(C:/Users/Ali/Desktop/retrieval-lab/_private/**/*)",
+  "binds": true,
+  "answer": "REFUSED: File is in a directory that is denied by your permission settings."
+ },
+ "filename_glob": {
+  "pattern": "Read(**/canary_manifest*)",
+  "binds": false,
+  "answer": "GOT:canary_phrase,absolute_path,r"
+ }
+}

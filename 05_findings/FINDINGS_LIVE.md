@@ -242,3 +242,71 @@ construction, so a sleep lands *inside* one gap rather than vanishing from the
 sum; `stack.py` state written before mutation and backups keyed per corpus;
 per-(stack, corpus) hook logs; and a skipped question now prints in red and marks
 its whole battery stale.
+
+## Phases 1–2 — move, and close every route (complete, 02:00–02:40)
+
+**The harness has no git and no `.gitignore` anywhere in it — checked, 0 hits at
+any depth.** That is the condition night 1's headline finding depends on, absent
+in the tree built to resemble the target. It is now confirmed rather than assumed.
+
+### Night 1's undiagnosed stream-json break, root-caused
+
+Not the corpus root. `claude.cmd` is a cmd.exe batch wrapper whose operative line
+is `"...\bin\claude.exe" %*`, and **cmd.exe's `%*` expansion truncates at the
+first newline inside an argument**. Any prompt containing `\n` therefore loses
+every argument after it — including `--output-format stream-json`. The session
+falls back to text mode and returns prose with returncode 0 and empty stderr,
+which is precisely the reported symptom.
+
+The apparent correlation with the corpus root was an artifact of which question
+builder each root used: `run_canaries.py` asks a single-line question (worked on
+ra-ship), while `run_harness.py` appends `"\n\nCite the exact file paths..."` to
+every question (broke on corpus_500). Verified across 8 prompt shapes — via the
+`.cmd`, the 2 containing newlines return prose and the other 6 are fine; via
+`claude.exe` directly, all 8 return valid stream-json. Fix: never go through
+cmd.exe. *Condition: Windows, Claude Code invoked as a subprocess through the
+npm `.cmd` shim, prompt containing a newline. This is an **instrument** bug —
+sir drives Claude Code interactively in a terminal and is unaffected.
+**Fixture-specific; it does not transfer to the target**, but it invalidated
+every harness cell night 1 produced.*
+
+### The phase-2.5 deny pattern in the spec does not work
+
+Worth stating plainly because it failed silently and would have been believed.
+`Read(**/_private/**)` **provides no protection at all**. Measured across seven
+pattern forms under `--permission-mode bypassPermissions`:
+
+| pattern | result |
+|---|---|
+| `Read(**/_private/**)` — the spec's | **LEAKS** |
+| `Read(*_private*)` | **LEAKS** |
+| `Read(**/canary_manifest*)` | **LEAKS** |
+| `Read(//C:/.../_private/**)` | **LEAKS** |
+| `Read(C:\...\_private\**)` | BINDS |
+| `Read(C:/.../_private/**)` | BINDS |
+| `Read(C:/.../_private/**/*)` | BINDS |
+
+A `Read()` deny binds **only** with an absolute path prefix; every relative glob
+fails open and says nothing. `Bash()` patterns are matched against the command
+string, so relative forms there do bind — which is why the first closure proof
+showed Bash refusals alongside successful Reads and looked partially secure.
+The first run of 2.6 read the manifest and the companion in full **on both
+corpora**, and the transcript store on ra-ship. After switching to absolute-path
+denies: **7 of 7 routes blocked on both trees**, refusals captured verbatim.
+*Condition: Claude Code's settings.json permission layer, bypassPermissions,
+protecting a path outside the project root. Transfers to anyone using a deny
+rule this way.*
+
+### A route the spec did not enumerate
+
+Spec 1.4 assumes relocating the lab changes the `.claude/projects` key and so
+puts night-1 transcripts out of reach. True for the harness, whose cwd moved.
+**False for ra-ship, which deliberately does not move** — so every ra-ship
+measurement session runs under exactly the key whose transcript directory held
+**30 sessions quoting all 13 canary phrases**. Those are now moved into the
+private tree, and the store is denied by absolute path. The orchestrator's own
+still-open transcript cannot be moved while the run is live, which is why the
+deny matters rather than being belt-and-braces.
+
+**Instrument-integrity check:** all 13 pass-1 canary files verified byte-identical
+by sha256, so nothing in night 1 or in this phase altered the corpus under test.

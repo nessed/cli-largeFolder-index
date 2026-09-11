@@ -1,0 +1,42 @@
+{
+ "plain": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "with_double_quotes": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "with_single_quotes": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "with_newlines": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "with_backticks": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "with_caret_and_amp": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "with_percent": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ },
+ "quotes_and_newlines": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8
+ }
+}

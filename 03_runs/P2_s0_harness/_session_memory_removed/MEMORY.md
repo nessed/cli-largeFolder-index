@@ -1,2 +1,0 @@
-- [Perturbed-values PDFs are not sources](perturbed-values-pdfs-are-not-sources.md) — files suffixed "- perturbed values" hold doctored numbers; cite Sources/ instead.
-- [Survey appendix restates earlier years](survey-appendix-restates-earlier-years.md) — spreadsheet-vs-document mismatches are usually vintage differences; keep both, don't pick one.

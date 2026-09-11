@@ -1,0 +1,62 @@
+{
+ "h15000|stdout -> FILE": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"80a5aba2-94ec-443"
+ },
+ "h15000|stdout -> PIPE (text mode)": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"47edff6d-273b-46f"
+ },
+ "h15000|stdout -> PIPE (binary mode)": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"eaaf87d1-3231-4a0"
+ },
+ "h15000|stdout -> FILE + disallowTools": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"5683b9c7-07fc-43e"
+ },
+ "h15000|stdout -> PIPE + disallowTools": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"5cf03f13-14f6-4d0"
+ },
+ "raship|stdout -> FILE": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"24e6f696-fa0b-4b4"
+ },
+ "raship|stdout -> PIPE (text mode)": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"c9fede79-3e30-44f"
+ },
+ "raship|stdout -> PIPE (binary mode)": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"aa5b6b5a-4d83-44d"
+ },
+ "raship|stdout -> FILE + disallowTools": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"cabc07f0-946e-4fb"
+ },
+ "raship|stdout -> PIPE + disallowTools": {
+  "rc": 0,
+  "kind": "STREAM_JSON",
+  "json_lines": 8,
+  "head": "{\"type\":\"system\",\"subtype\":\"hook_started\",\"hook_id\":\"1dae0ea3-46b7-416"
+ }
+}
