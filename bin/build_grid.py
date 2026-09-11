@@ -71,13 +71,28 @@ def short_reason(stack, tree):
 def cell_for(stack, tree, notes):
     can = load(f"summary_canaries__{stack}__{tree}.json")
     q = load(f"summary__{stack}__rung15000.json") if tree == "h15000" else None
+    # The canary battery and the question battery are independent: a tree can have
+    # one without the other, and an early build dropped a real question result on
+    # the floor because no canary battery had run on that tree yet.
+    qcell = "n/a"
+    if tree == "h15000":
+        if q:
+            qcell = (f"{q.get('mean_retrieval_recall')} "
+                     f"({q.get('questions_with_zero_recall')}/{q.get('n_questions')} zero, "
+                     f"{q.get('total_forbidden_citations')} forbidden, "
+                     f"absence {q.get('absence_correct')})")
+        else:
+            qcell = short_reason(stack, tree)[0]
+
     if not can:
         short, full = short_reason(stack, tree)
         notes[stack] = full
-        return {"canary": short, "retrieval": "-",
-                "question": short if tree == "h15000" else "n/a",
-                "cost": "-", "tools": "-", "wall": "-", "excluded": "-",
-                "stale": False}
+        return {"canary": short, "retrieval": "-", "question": qcell,
+                "cost": (f"${q.get('total_cost_usd')} ({q.get('cost_n_of_m')}) [questions]"
+                         if q else "-"),
+                "tools": "-",
+                "wall": f"{q.get('mean_wall_s_excl_suspended')}s [questions]" if q else "-",
+                "excluded": "-", "stale": False}
 
     # Provenance. A summary file from night 1 sits in the same directory with the
     # same name shape as tonight's. Without this check the grid would silently
@@ -91,8 +106,7 @@ def cell_for(stack, tree, notes):
     return {
         "canary": can.get("answer_recall", "-") + partial,
         "retrieval": can.get("retrieval_recall", "-"),
-        "question": (f"{q.get('mean_retrieval_recall')}" if q else
-                     ("n/a" if tree == "raship" else "not run - no question battery")),
+        "question": qcell,
         "cost": f"${can.get('cost_usd_total')} ({can.get('cost_n_of_m')})",
         "tools": can.get("total_tool_calls", "-"),
         "wall": (f"{can.get('mean_wall_s_excl_suspended')}s"

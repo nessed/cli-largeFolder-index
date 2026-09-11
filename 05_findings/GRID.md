@@ -7,7 +7,7 @@ Every cell is a number, `not run — <reason>`, or `install failed — <error>`.
 
 | stack | harness-15k canary | harness-15k question | ra-ship canary | ra-ship retrieval | cost (n/m) | tool calls | wall (excl. suspended) | setup | excluded-by-design |
 |---|---|---|---|---|---|---|---|---|---|
-| **s0_baseline** | not run[^s0_baseline] — no result on disk | not run[^s0_baseline] — no result on disk | 4/12 | 0/12 | $1.4275 (9/13) | 119 | 153.1s | 0s (installs nothing but the backstop deny) | h15k - / ra-ship 0/1 |
+| **s0_baseline** | not run[^s0_baseline] — no result on disk | 0.167 (12/20 zero, 21 forbidden, absence 0/3) | 4/12 | 0/12 | $1.4275 (9/13) | 119 | 153.1s | 0s (installs nothing but the backstop deny) | h15k - / ra-ship 0/1 |
 | **s1_policy** | not run[^s1_policy] — no result on disk | not run[^s1_policy] — no result on disk | not run[^s1_policy] — no result on disk | - | - | - | - | 0s (writes CLAUDE.md only) | h15k - / ra-ship - |
 | **s2_hook** | not run[^s2_hook] — no result on disk | not run[^s2_hook] — no result on disk | 12/12 **[night 1]** | 2/12 | $0.9847 (12/13) | 28 | 20.6s | ra-ship index 481s / 614,150 pages / 3.41 GB; rung-15000 index TBD | h15k - / ra-ship 0/1 |
 | **s3_hybrid** | not run[^s3_hybrid] — embedding build exceeds the night's budget | not run[^s3_hybrid] — embedding build exceeds the night's budget | not run[^s3_hybrid] — embedding build exceeds the night's budget | - | - | - | - | not built - 8.2 pages/s measured, 20.8 h projected for ra-ship alone | h15k - / ra-ship - |
