@@ -1,0 +1,32 @@
+Found it. The current Punjab ADP series lives in `RA Work/provincial_fiscal_panel/clean/provincial_adp_long.csv` (`prov_punjab_adp::v3`, sourced from `economic_survey_2026`). Sixteen years, 2010-11 through 2025-26:
+
+| Fiscal year | ADP (Rs bn) | YoY | Status |
+|---|---|---|---|
+| 2010-11 | 133.4 | — | F |
+| 2011-12 | 144.0 | +7.9% | F |
+| 2012-13 | 169.4 | +17.6% | F |
+| 2013-14 | 181.4 | +7.1% | F |
+| 2014-15 | 198.3 | +9.3% | F |
+| 2015-16 | 220.4 | +11.1% | F |
+| 2016-17 | 247.4 | +12.3% | F |
+| 2017-18 | 267.1 | +8.0% | F |
+| 2018-19 | 290.3 | +8.7% | F |
+| 2019-20 | 326.6 | +12.5% | F |
+| 2020-21 | 365.3 | +11.8% | F |
+| 2021-22 | 488.2 | +33.6% | F |
+| 2022-23 | 582.9 | +19.4% | F |
+| 2023-24 | 764.2 | +31.1% | F |
+| 2024-25 | 859.2 | +12.4% | R |
+| 2025-26 | 921.1 | +7.2% | P |
+
+**Shape of it:** 6.9× in nominal terms over fifteen years, a 13.8% nominal CAGR. Growth is fairly steady in the 7–12% band through 2020-21, then two step-changes — +33.6% in 2021-22 and +31.1% in 2023-24 — with the tail flattening back to single digits in the 2025-26 budget estimate. These are nominal rupees straight from the source table; nothing is deflated, so a good chunk of the post-2021 jump is the inflation episode rather than real programme expansion.
+
+**Two caveats worth carrying:**
+
+1. The last two points aren't final. 2024-25 is a revised estimate, 2025-26 is a budget estimate. The `RA Work` README only claims Punjab complete through FY2024-25, so treat 2025-26 as an allocation figure, not an outturn.
+
+2. There's an earlier vintage in the corpus that disagrees. `prov_punjab_adp::v2` (from `economic_survey_2022`, filed at both `Downloads/papers/to read/` and `archive/2024 cleanup/provincial/`) runs 2010-11 to 2021-22 and matches v3 exactly except in its own two non-final years: 2020-21 is 364.4 vs 365.3, and 2021-22 is 489.4 vs 488.2. That's revision working exactly as `agent_workspace/CLAUDE.md` warns — the survey reprints earlier years with revisions, so a mismatch against an older document isn't an extraction error. If anything cites those two years, check which vintage it drew from.
+
+Separately: `MEMO_adp_execution_rates.md` rates Punjab as the one jurisdiction with both allocation and realised series complete, so if you want execution rates rather than allocations, Punjab is where that's cleanest — but the realised numbers come from the following year's white paper or the fiscal operations statements, not from this file.
+
+Want me to chart this, or pull the same trajectory for the other provinces to sit alongside it?

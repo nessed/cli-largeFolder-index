@@ -1,0 +1,31 @@
+Short answer: probably neither is "wrong" — they look like two different publication vintages, and I could not verify the document side because PDF text extraction is blocked in this session.
+
+## What the spreadsheet says
+
+`RA Work/auto_sector_protection/clean/auto_production_long.csv:8`
+
+```
+auto_production_units,Automobile production,2016-17,238.8,thousand units,auto_production_units::v2,F,economic_survey_2026
+```
+
+## Why it won't match the published document
+
+The two sides are not extractions of the same document:
+
+- The memo (`RA Work/auto_sector_protection/notes/MEMO_auto_sector_protection.md:22`) says production comes from **Economic Survey 2022-23**, Table 2.8, printed page 2-11.
+- The CSV is stamped `economic_survey_2026`. By this corpus's naming convention (publication year, not fiscal year — cf. `economic_survey_2022` on the 2021-22 survey in `RA Work/tax_effort/clean/psdp_federal_series.csv`), that is **Economic Survey 2025-26**. Four years later.
+
+And `agent_workspace/CLAUDE.md:21` states the rule directly: *"The survey statistical appendix reprints earlier years with revisions. If a number does not match an earlier document, check the publication year before assuming an extraction error."*
+
+So 238.8 is a **latest-vintage restatement** of 2016-17; the printed survey figure is the **contemporaneous** one. The project's stated method (HEC NRPU 2019 proposal; `RA Work/tax_effort/PLAN.md`) is to record the vintage on every observation "rather than by choosing a single figure" — which makes "which is right" the wrong question by design. For a level series you want the vintage that matches your other regressors; for a single citation you want whatever the paper's text claims to cite.
+
+## Two things to rule out first
+
+1. **Units.** The memo flags this explicitly: thousands of vehicles, not vehicles — an earlier chart was out by three orders of magnitude and survived two readings. If the gap is ~1000×, it's this, not a revision.
+2. **Which physical file the document number came from.** The corpus has many PDFs suffixed `- perturbed values` (including `Pakistan Economic Survey 2016-17 - perturbed values.pdf` in `archive/` and `Downloads/reports/world bank/`). Those contain altered figures. The citable copies are the unsuffixed ones under `Sources/Federal/Economic Survey/<year>/`. This isn't documented in any README — I've saved it to memory.
+
+## What I couldn't do
+
+I could not open Table 2.8 to give you the published figure. `pdftotext` exists at `/mingw64/bin/pdftotext` but every invocation was denied, and the Read tool needs `pdftoppm`, which isn't installed. If you approve `pdftotext` (or install poppler), the check is one command against `Sources/Federal/Economic Survey/2022-23/`, p. 38.
+
+One more gap worth knowing: `vintage_label` is `::v2`, but no v1 is retained anywhere — `clean/superseded/` is empty and the series appears in only one file in the whole corpus. The earlier vintage that would reconcile against the 2022-23 survey isn't stored, so it has to be re-extracted rather than looked up.

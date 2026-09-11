@@ -1,0 +1,22 @@
+{
+ "stack": "s0_baseline",
+ "corpus": "harness500",
+ "corpus_root": "C:\\Users\\Ali\\Desktop\\harness\\corpus_500",
+ "qid": "cd_04",
+ "question": "there are a few copies of the sindh -- annual development programme series lying around - which one is current, and what does it say for 2025-26\n\nCite the exact file paths (and page numbers for PDFs) you used.",
+ "model": "claude-sonnet-5",
+ "answer_text": null,
+ "files_opened": [],
+ "n_files_opened": 0,
+ "tool_calls": [],
+ "n_tool_calls": 0,
+ "tool_histogram": {},
+ "wall_s": 93.79,
+ "cost_usd": null,
+ "turns": null,
+ "timed_out": false,
+ "returncode": 0,
+ "rate_limit_events": 0,
+ "stderr_tail": "",
+ "ts": "2026-09-10T01:42:43"
+}

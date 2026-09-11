@@ -1,0 +1,27 @@
+walking C:\Users\Ali\Desktop\Projects\Code\ra-ship ...
+discovered=217681  candidates=4649  excluded_dependency=0  walk=5.7s
+already indexed=750  todo=3899
+  250/3899 files, 2230 pages, 8s, 30.2 files/s
+  500/3899 files, 2383 pages, 10s, 52.3 files/s
+  750/3899 files, 2385 pages, 10s, 78.3 files/s
+  1000/3899 files, 6329 pages, 18s, 56.2 files/s
+  1250/3899 files, 6665 pages, 24s, 52.5 files/s
+  1500/3899 files, 87155 pages, 108s, 13.9 files/s
+  1750/3899 files, 205143 pages, 219s, 8.0 files/s
+  2000/3899 files, 225489 pages, 233s, 8.6 files/s
+ Traceback (most recent call last):
+  File "C:\Users\Ali\Desktop\corpus-lab\bin\index_build.py", line 267, in <module>
+    main()
+  File "C:\Users\Ali\Desktop\corpus-lab\bin\index_build.py", line 240, in main
+    db.execute(
+sqlite3.OperationalError: database is locked
+s, 340784 pages, 389s, 9.0 files/s
+  3750/3899 files, 438959 pages, 504s, 7.4 files/s
+DONE files=3899 pages=555549 wall=589s
+{
+ "failed_parser": 4,
+ "image_only_no_text": 22,
+ "indexed": 3872,
+ "unsupported_type": 730,
+ "zero_byte": 21
+}

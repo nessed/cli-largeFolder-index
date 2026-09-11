@@ -1,0 +1,41 @@
+I could not get you the number. Here's exactly where it stands.
+
+## The figure isn't in the corpus
+
+`non-tax` appears **zero times** across every CSV, JSON, and note in `corpus_500`. The series was never extracted. What exists federally is only two series:
+
+| Series | 2012-13 | Vintage | Status |
+|---|---|---|---|
+| `total_revenue` | 2874.0 Rs bn | `economic_survey_2014` | R |
+| `total_revenue` | 2933.0 Rs bn | `economic_survey_2017` | F |
+| `tax_revenue` | 2265.0 Rs bn | `fiscal_operations_2020` / `annual_budget_statement_2024` | F |
+
+## I couldn't open the source PDF
+
+Per `New folder (3)/New folder/SOURCE SELECTION.md`, Federal → Annual Budget Statement, so the reference document is `Sources/Federal/Annual Budget Statement/2012-13/Annual Budget Statement 2012-13.pdf`. Three blockers, all environmental:
+
+- `Read` on PDFs fails — poppler/`pdftoppm` isn't installed on this machine.
+- The PDFs are ReportLab-generated with Flate-compressed streams, so `Grep` can't see the text.
+- Writing a extraction helper and running `python -c` were both denied by permissions in this non-interactive session.
+
+`RA Work/provincial_fiscal_panel/clean/README.md` points at `../scripts/build_federal_receipts.py` as the rebuild path — that file does not exist. There's no script in the corpus that would regenerate this.
+
+## "Whatever the official figure is" doesn't resolve to one number here
+
+This is the part worth your attention. ABS 2012-13 was published June 2012, so its 2012-13 column is a **budget estimate** — a forecast, not outturn. The outturn appears only in later documents and gets revised across vintages. The corpus demonstrates the size of that spread on the line directly above the one you want: total revenue for 2012-13 is 2874 as revised in ES 2014 and 2933 as final in ES 2017. Non-tax revenue inherits the same spread, and as the residual of a large aggregate it will be proportionally *more* sensitive, not less. So I need to know which you want: the 2012-13 budget estimate, or the outturn at a stated vintage.
+
+**Do not let anyone derive it as total − tax from the table above.** `total_revenue` is federal-basis "Total revenue receipts" from ES 2017; the tax series is labelled "Tax Revenue (FBR + Provincial)" from `fiscal_operations_2020` — consolidated. That subtraction mixes both vintage and coverage, and would be wrong in a direction you can't sign.
+
+## Also flagging
+
+There are three non-official copies of the 2012-13 documents in the tree, and they are not obviously distinguishable if someone is grepping filenames:
+
+- `Conferences/PSDE 2016/Pakistan Economic Survey 2012-13 - perturbed values.pdf`
+- `Downloads/reports/local think tanks/Pakistan Economic Survey 2012-13 DRAFT.pdf`
+- `Downloads/reports/world bank/Annual Budget Statement 2012-13 - perturbed values.pdf`
+
+Only the two files under `Sources/Federal/.../2012-13/` are canonical.
+
+## To unblock
+
+Install poppler (`choco install poppler`, or any `pdftotext` on PATH) and I'll pull the receipts table and give you the cell with its PDF page index and printed page number. Alternatively, approve a scratch script and I'll extract it via zlib directly. Either way, tell me budget-estimate or outturn-at-vintage and I'll pull the matching one rather than guessing.

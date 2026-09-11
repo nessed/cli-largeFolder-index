@@ -1,0 +1,157 @@
+{
+ "stack": "s0_baseline",
+ "corpus": "raship",
+ "corpus_root": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship",
+ "qid": "tbl_644646",
+ "question": "Somewhere in this repository there is exactly one file containing the literal string `tbl-a6b21810-644646`. Find it. Reply with ONLY the path of that file relative to the repository root, or the exact text NOT_FOUND if you are confident it is not here.",
+ "model": "claude-sonnet-5",
+ "answer_text": "Agent Files/RA_WORKSPACE/02_sources/pbs-corpus/reports/gap_report.md",
+ "files_opened": [
+  {
+   "tool": "Grep",
+   "path": "."
+  },
+  {
+   "tool": "Grep",
+   "path": "."
+  },
+  {
+   "tool": "Read",
+   "path": "../../../../appdata/local/temp/claude/c--users-ali-desktop-projects-code-ra-ship/ed14ad16-8e7a-4d9a-9c80-b8ad3f693e01/tasks/bqij2ieap.output"
+  },
+  {
+   "tool": "Bash",
+   "path": "files/ra_workspace/02_sources/pbs-corpus/reports/gap_report.md"
+  }
+ ],
+ "n_files_opened": 4,
+ "tool_calls": [
+  {
+   "name": "Grep",
+   "input": {
+    "pattern": "tbl-a6b21810-644646",
+    "output_mode": "files_with_matches",
+    "path": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship"
+   }
+  },
+  {
+   "name": "Grep",
+   "input": {
+    "pattern": "tbl-a6b21810",
+    "output_mode": "files_with_matches",
+    "path": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "cd \"C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\" && grep -rl \"tbl-a6b21810-644646\" . 2>/dev/null; echo \"---binary---\"; grep -rla \"tbl-a6b21810-644646\" . 2>/dev/null",
+    "description": "Search all files including binaries for the target string"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "true",
+    "description": "no-op wait placeholder"
+   }
+  },
+  {
+   "name": "Monitor",
+   "input": {
+    "target": "bqij2ieap",
+    "action": "wait"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "echo waiting",
+    "description": "placeholder while background search runs",
+    "run_in_background": false
+   }
+  },
+  {
+   "name": "ToolSearch",
+   "input": {
+    "query": "select:TaskOutput",
+    "max_results": 3
+   }
+  },
+  {
+   "name": "TaskOutput",
+   "input": {
+    "task_id": "bqij2ieap",
+    "block": true,
+    "timeout": 180000
+   }
+  },
+  {
+   "name": "TaskOutput",
+   "input": {
+    "task_id": "bqij2ieap",
+    "block": true,
+    "timeout": 300000
+   }
+  },
+  {
+   "name": "Read",
+   "input": {
+    "file_path": "C:\\Users\\Ali\\AppData\\Local\\Temp\\claude\\C--Users-Ali-Desktop-Projects-Code-ra-ship\\ed14ad16-8e7a-4d9a-9c80-b8ad3f693e01\\tasks\\bqij2ieap.output"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "cd \"C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\" && find . -maxdepth 3 -iname node_modules -type d 2>/dev/null",
+    "description": "Check for node_modules directories that could slow the search"
+   }
+  },
+  {
+   "name": "ToolSearch",
+   "input": {
+    "query": "select:TaskStop",
+    "max_results": 3
+   }
+  },
+  {
+   "name": "TaskStop",
+   "input": {
+    "task_id": "bqij2ieap"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "cd \"C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\" && grep -rlaI --exclude-dir=node_modules --exclude-dir=.git \"tbl-a6b21810-644646\" . 2>/dev/null",
+    "description": "Search all non-git, non-node_modules files including binaries for the target string",
+    "timeout": 180000
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "cd \"C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\" && grep -c \"tbl-a6b21810-644646\" \"./Agent Files/RA_WORKSPACE/02_sources/pbs-corpus/reports/gap_report.md\"",
+    "description": "Confirm match count in found file"
+   }
+  }
+ ],
+ "n_tool_calls": 15,
+ "tool_histogram": {
+  "Grep": 2,
+  "Bash": 6,
+  "Monitor": 1,
+  "ToolSearch": 2,
+  "TaskOutput": 2,
+  "Read": 1,
+  "TaskStop": 1
+ },
+ "wall_s": 815.02,
+ "cost_usd": 0.251025,
+ "turns": 16,
+ "timed_out": true,
+ "returncode": -1,
+ "rate_limit_events": 7,
+ "stderr_tail": "TIMEOUT",
+ "ts": "2026-09-10T01:19:23"
+}

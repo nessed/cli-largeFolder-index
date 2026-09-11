@@ -1,0 +1,56 @@
+{
+ "stack": "s2_hook",
+ "corpus": "raship",
+ "corpus_root": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship",
+ "qid": "ref_587770",
+ "question": "Somewhere in this repository there is exactly one file containing the literal string `ref-0f1a6531-587770`. Find it. Reply with ONLY the path of that file relative to the repository root, or the exact text NOT_FOUND if you are confident it is not here.",
+ "model": "claude-sonnet-5",
+ "answer_text": "Corpus root matches the repo root, confirming the path is repo-relative and this is the sole exact match.\n\n`Source Documents Organized/Federal/Annual Budget Statements FY2010-11 to FY2026-27/2024-25/abs_fy_2024-25_notes.pdf`",
+ "files_opened": [
+  {
+   "tool": "Bash",
+   "path": "../../../corpus-lab/bin/corpus_search.py"
+  },
+  {
+   "tool": "Bash",
+   "path": "abs_fy_2024-25_notes.pdf"
+  },
+  {
+   "tool": "Bash",
+   "path": "../../../corpus-lab/bin/corpus_search.py"
+  }
+ ],
+ "n_files_opened": 3,
+ "tool_calls": [
+  {
+   "name": "Bash",
+   "input": {
+    "command": "python \"C:\\Users\\Ali\\Desktop\\corpus-lab\\bin\\corpus_search.py\" --exact \"ref-0f1a6531-587770\""
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "find \"/c/Users/Ali/Desktop/Projects/Code/ra-ship\" -iname \"abs_fy_2024-25_notes.pdf\" 2>/dev/null"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "python \"C:\\Users\\Ali\\Desktop\\corpus-lab\\bin\\corpus_search.py\" --coverage"
+   }
+  }
+ ],
+ "n_tool_calls": 3,
+ "tool_histogram": {
+  "Bash": 3
+ },
+ "wall_s": 34.58,
+ "cost_usd": 0.104969,
+ "turns": 4,
+ "timed_out": false,
+ "returncode": 0,
+ "rate_limit_events": 2,
+ "stderr_tail": "",
+ "ts": "2026-09-10T01:44:04"
+}

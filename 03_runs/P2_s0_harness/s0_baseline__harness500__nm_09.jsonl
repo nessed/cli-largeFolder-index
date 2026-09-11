@@ -1,0 +1,22 @@
+I found the series, but **no 2025-26 value exists in readable form in this corpus.** Here's exactly what's there:
+
+## The one 2025-26 document — has no number in it
+
+`.old_backup\provincial_fiscal_panel\clean\Literacy Rate (10 years and above) DRAFT.pdf`
+
+Title matches your query exactly ("Literacy Rate (10 years and above)", "Fiscal Year 2025-26", Government of Pakistan) — but it's a 1.8 KB single page: a cover sheet watermarked **PRELIMINARY – DO NOT CITE**, with no table and no figure. It's also in `.old_backup`, not `Sources/`.
+
+## The two data vintages — neither reaches 2025-26
+
+| File | Vintage | Label | Coverage | Last obs |
+|---|---|---|---|---|
+| `archive\old drives\thesis backup\Data\literacy_rate_earlier_vintage.csv` | `literacy_rate::v0`, `economic_survey_2014` | Literacy Rate (10 years and above) | 2010-11 → 2013-14 | **63.8%** (P) |
+| `Conferences\NEUDC 2019\literacy_rate_earlier_vintage.csv` | `literacy_rate::v2`, `annual_budget_statement_2024` | Literacy ratio | 2010-11 → 2023-24 | **65.5%** (P, 2023-24) |
+
+The two disagree on overlapping years — 2013-14 is 63.8 in v0 vs 60.3 in v2 — so you can't chain them, and nothing in either extends past 2023-24.
+
+## What I couldn't check
+
+The likely real home for a 2025-26 figure is `Sources\Federal\Economic Survey\2025-26\Pakistan Economic Survey 2025-26.pdf` (851 KB, born-digital, compressed text streams). I'm blocked from opening it in this session: `Read` needs `pdftoppm` (not installed), and `pdftotext` (which *is* installed, at `/mingw64/bin`) plus `python -c` both came back needing approval. Grep can't see inside it — 934 FlateDecode streams.
+
+If you approve `pdftotext` for this session, I'll pull the literacy table out of the 2025-26 survey and give you the figure with its page reference. I checked the rest of the corpus in the meantime — all 75 CSVs, 55 markdown notes, 15 JSONs, and the `agent_workspace` extraction outputs — and no other file mentions literacy at all, so the survey PDF is the only remaining candidate.

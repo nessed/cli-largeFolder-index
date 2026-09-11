@@ -1,0 +1,13 @@
+Nothing in the corpus contains SRO 1500(I)/2024. I searched filenames and the text of every `.md`/`.txt`/`.csv`/`.json` under `corpus_500` for "1500", "SRO", and "S.R.O" — no hit, and no file named for it.
+
+What's actually there on the notification side:
+
+**The one SRO-named file isn't an SRO.** `Sources/Notifications/2022/SRO_1247.pdf` is filed under 2022, but the document inside is titled *"Customs Duty on Completely Built-Up Units, Fiscal Year 2025-26"* — a narrative summary table sourced to FBR, not statutory text. It carries the CBU duty series 2010-11 through 2025-26 (Table 1.1: 65 / 65 / 60 / 60 / 60 / 55 / 55R / 49P for 2018-19→2025-26). No SRO number, no HS codes, no operative clauses.
+
+**The notifications folder the memo points to is empty.** `RA Work/auto_sector_protection/notes/MEMO_auto_sector_protection.md:14-18` says "The statutory changes themselves are in the notifications rather than the survey. The relevant ones for the window are indexed in the notifications folder." That folder — `Papers/Auto sector protection/replication/data/raw/notifications/scans/` — has zero files in it. There's no index either.
+
+So the memo's whole argument about mid-year rate changes rests on documents the corpus doesn't hold. That's the load-bearing gap: the memo warns that a rate changing in March will show post-change in the survey and pre-change in the budget documents, but nothing here lets you date those changes. Same for the LC restriction it says "has to be dated from the circulars" — no circulars in the corpus.
+
+Two related gaps while I was in there: `clean/auto_tariffs_long.csv` has only `auto_duty_cbu`, no CKD series at all, so the CBU–CKD gap the memo calls "the crude measure of effective protection" isn't computable from the clean data as it stands.
+
+I tried to check the FBR record for SRO 1500(I)/2024 directly, but WebSearch isn't permitted in this session. I'm not going to guess at its contents from memory — SRO numbers are too easy to confuse, and a wrong citation in a tariff table is worse than a blank. If you grant web access I'll pull the actual text, or if you have the PDF, drop it in `Sources/Notifications/2024/` and I'll extract it.

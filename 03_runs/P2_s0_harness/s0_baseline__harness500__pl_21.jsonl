@@ -1,0 +1,30 @@
+Three different values for FY2012-13 direct taxes exist in the corpus, all tagged `series_id = fbr_direct`, all in Rs billion:
+
+| Value | Vintage | Source doc | Obs status | Location |
+|---|---|---|---|---|
+| **715** | `::v2` | Annual Budget Statement 2024 | F (final) | `RA Work/tax_effort/clean/fbr_by_head_long.csv:4` |
+| 776 | `::v1` | White Paper Budget 2017-18 Balochistan | — | `agent_workspace/runs/2025/wp_balochistan_2017_18_extracted.json:249` |
+| 789 | `::v0` | Economic Survey 2014 | R (revised) | `Papers/Fiscal decentralisation/replication/data/raw/fbr_direct_earlier_vintage.csv:4` |
+
+**Use 715 Rs bn** if you want the latest vintage — it's the most recent publication and the only one marked Final rather than Revised/Preliminary, and `agent_workspace/CLAUDE.md` says explicitly that when a number doesn't match an earlier document you should check publication year before assuming an extraction error.
+
+But there's a problem with treating these as the same series, and it matters more than the headline number:
+
+**v0 and v1 are genuinely the same concept.** They agree exactly on 2010-11 (517) and 2011-12 (692) and diverge only in the two years that were still Revised/Preliminary — 2012-13 (789R vs 776) and 2013-14 (881P vs 883). That's normal revision behaviour at the margin.
+
+**v2 is not.** It runs below v1 by a near-constant factor in every overlapping year:
+
+| FY | v1 | v2 | ratio |
+|---|---|---|---|
+| 2010-11 | 517 | 476 | 0.921 |
+| 2011-12 | 692 | 638 | 0.922 |
+| 2012-13 | 776 | 715 | 0.921 |
+| 2013-14 | 883 | 814 | 0.922 |
+| 2014-15 | 955 | 880 | 0.921 |
+| 2015-16 | 1028 | 948 | 0.922 |
+
+A uniform ~0.9216 scaling across six years is not a revision pattern — revisions don't land on the same multiplier six times. It points to a definitional difference (net of refunds, or one component excluded). The row labels support that reading: v2 is "Direct tax collection", v0 is "Direct Taxes", v1 is "Income and Corporation Tax". The ratio only breaks at 2016-17 (0.948), where the v1 figure was still Preliminary.
+
+So 715 and 789 are probably not the same object, and splicing v0/v1 history onto v2 would put a spurious ~8% level break in the series. Worth resolving before the number goes into a table — your own `Papers/Fiscal decentralisation/tables/notes.md` has a referee comment making exactly this point ("the revised estimate and the consolidated statement are not the same object; say which one this is").
+
+I could not open the source PDFs to adjudicate which definition each uses: PDF rendering isn't available here (poppler missing) and the `python` call to read them was denied. If you approve either, I can pull the actual tables from `Sources/Federal/Annual Budget Statement/2024-25/` and `Sources/Federal/Economic Survey/2013-14/` and confirm the definitions.

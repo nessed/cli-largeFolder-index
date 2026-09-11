@@ -1,0 +1,118 @@
+{
+ "stack": "s0_baseline",
+ "corpus": "raship",
+ "corpus_root": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship",
+ "qid": "sig_328120",
+ "question": "Somewhere in this repository there is exactly one file containing the literal string `sig-de8a5936-328120`. Find it. Reply with ONLY the path of that file relative to the repository root, or the exact text NOT_FOUND if you are confident it is not here.",
+ "model": "claude-sonnet-5",
+ "answer_text": "ABS_PES_PBS_Extraction_Test/02_tool_runs/.envs/mineru/Lib/site-packages/aiofiles/base.py",
+ "files_opened": [
+  {
+   "tool": "Grep",
+   "path": "."
+  },
+  {
+   "tool": "Read",
+   "path": "../../../../appdata/local/temp/claude/c--users-ali-desktop-projects-code-ra-ship/af5f2104-9181-4a3d-85a0-5ff84a344488/tasks/bsitd9609.output"
+  },
+  {
+   "tool": "Read",
+   "path": "../../../../appdata/local/temp/claude/c--users-ali-desktop-projects-code-ra-ship/af5f2104-9181-4a3d-85a0-5ff84a344488/tasks/bsitd9609.output"
+  },
+  {
+   "tool": "Grep",
+   "path": "abs_pes_pbs_extraction_test/02_tool_runs/.envs/mineru/lib/site-packages/aiofiles/base.py"
+  }
+ ],
+ "n_files_opened": 4,
+ "tool_calls": [
+  {
+   "name": "Grep",
+   "input": {
+    "pattern": "sig-de8a5936-328120",
+    "output_mode": "files_with_matches",
+    "path": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "cd \"C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\" && grep -rlaI --exclude-dir=.git \"sig-de8a5936-328120\" . 2>/dev/null",
+    "description": "Search all files including binaries for the literal string, ignoring .gitignore"
+   }
+  },
+  {
+   "name": "ToolSearch",
+   "input": {
+    "query": "Monitor task output notification",
+    "max_results": 3
+   }
+  },
+  {
+   "name": "TaskOutput",
+   "input": {
+    "task_id": "bsitd9609",
+    "block": true,
+    "timeout": 180000
+   }
+  },
+  {
+   "name": "TaskOutput",
+   "input": {
+    "task_id": "bsitd9609",
+    "block": true,
+    "timeout": 300000
+   }
+  },
+  {
+   "name": "Read",
+   "input": {
+    "file_path": "C:\\Users\\Ali\\AppData\\Local\\Temp\\claude\\C--Users-Ali-Desktop-Projects-Code-ra-ship\\af5f2104-9181-4a3d-85a0-5ff84a344488\\tasks\\bsitd9609.output"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "cd \"C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\" && du -sh --exclude=.git * 2>/dev/null | sort -rh | head -20",
+    "description": "List largest top-level items in repo"
+   }
+  },
+  {
+   "name": "Read",
+   "input": {
+    "file_path": "C:\\Users\\Ali\\AppData\\Local\\Temp\\claude\\C--Users-Ali-Desktop-Projects-Code-ra-ship\\af5f2104-9181-4a3d-85a0-5ff84a344488\\tasks\\bsitd9609.output"
+   }
+  },
+  {
+   "name": "Grep",
+   "input": {
+    "pattern": "sig-de8a5936-328120",
+    "path": "C:\\Users\\Ali\\Desktop\\Projects\\Code\\ra-ship\\ABS_PES_PBS_Extraction_Test\\02_tool_runs\\.envs\\mineru\\Lib\\site-packages\\aiofiles\\base.py",
+    "output_mode": "content"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "echo done",
+    "description": "noop, background du task can be left to finish or ignored"
+   }
+  }
+ ],
+ "n_tool_calls": 10,
+ "tool_histogram": {
+  "Grep": 2,
+  "Bash": 3,
+  "ToolSearch": 1,
+  "TaskOutput": 2,
+  "Read": 2
+ },
+ "wall_s": 782.36,
+ "cost_usd": 0.20784779999999997,
+ "turns": 11,
+ "timed_out": true,
+ "returncode": -1,
+ "rate_limit_events": 5,
+ "stderr_tail": "TIMEOUT",
+ "ts": "2026-09-10T01:18:51"
+}

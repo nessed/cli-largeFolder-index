@@ -1,0 +1,46 @@
+{
+ "stack": "s2_deny_probe",
+ "corpus": "fixture",
+ "corpus_root": "C:\\Users\\Ali\\Desktop\\corpus-lab\\99_scratch\\m0_fixture",
+ "qid": "deny1",
+ "question": "Find which file contains the string zz-m0probe-9931. Reply with the relative path.",
+ "model": "claude-sonnet-5",
+ "answer_text": "deep/a/b/c/notes_2019.md",
+ "files_opened": [
+  {
+   "tool": "Grep",
+   "path": "."
+  }
+ ],
+ "n_files_opened": 1,
+ "tool_calls": [
+  {
+   "name": "Grep",
+   "input": {
+    "pattern": "zz-m0probe-9931",
+    "path": "C:\\Users\\Ali\\Desktop\\corpus-lab\\99_scratch\\m0_fixture",
+    "output_mode": "files_with_matches"
+   }
+  },
+  {
+   "name": "Bash",
+   "input": {
+    "command": "grep -rl \"zz-m0probe-9931\" \"/c/Users/Ali/Desktop/corpus-lab/99_scratch/m0_fixture\" 2>/dev/null",
+    "description": "Search for string in fixture directory using grep"
+   }
+  }
+ ],
+ "n_tool_calls": 2,
+ "tool_histogram": {
+  "Grep": 1,
+  "Bash": 1
+ },
+ "wall_s": 17.34,
+ "cost_usd": 0.0826428,
+ "turns": 3,
+ "timed_out": false,
+ "returncode": 0,
+ "rate_limit_events": 1,
+ "stderr_tail": "",
+ "ts": "2026-09-10T01:02:50"
+}

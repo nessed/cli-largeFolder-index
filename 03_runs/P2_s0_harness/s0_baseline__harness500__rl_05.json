@@ -1,0 +1,22 @@
+{
+ "stack": "s0_baseline",
+ "corpus": "harness500",
+ "corpus_root": "C:\\Users\\Ali\\Desktop\\harness\\corpus_500",
+ "qid": "rl_05",
+ "question": "the memo mentions development expenditure and points at a table - what is the number it is pointing at\n\nCite the exact file paths (and page numbers for PDFs) you used.",
+ "model": "claude-sonnet-5",
+ "answer_text": null,
+ "files_opened": [],
+ "n_files_opened": 0,
+ "tool_calls": [],
+ "n_tool_calls": 0,
+ "tool_histogram": {},
+ "wall_s": 23492.52,
+ "cost_usd": null,
+ "turns": null,
+ "timed_out": true,
+ "returncode": -1,
+ "rate_limit_events": 0,
+ "stderr_tail": "TIMEOUT\n",
+ "ts": "2026-09-10T08:18:05"
+}

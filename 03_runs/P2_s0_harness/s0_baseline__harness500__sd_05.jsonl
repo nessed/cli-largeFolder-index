@@ -1,0 +1,66 @@
+Here's the actual state, reconstructed from the files (no memory entries existed on this, and I couldn't check ClickUp — the search tool needs permission this non-interactive session can't grant).
+
+## Short answer
+
+Collection is done; extraction is roughly 2 of 36 documents. The written record says otherwise in several places.
+
+## Sources: complete
+
+All 36 white papers are on disk under `Sources/Provincial/` — 6 jurisdictions (Punjab, Sindh, KP, Balochistan, AJK, Gilgit-Baltistan) × 6 fiscal years (2013-14, 2015-16, 2017-18, 2019-20, 2022-23, 2025-26). Nothing to fetch.
+
+Minor cleanup: four literature PDFs are misfiled into source folders, against the rule in `Sources/Provincial/Punjab/White Papers/2017-18/README.md` ("official publications only"):
+- `Balochistan/.../2013-14/Remittances and Household Consumption Smoothing…pdf`
+- `Gilgit-Baltistan/.../2013-14/Trade Liberalisation and Wage Inequality…pdf`
+- `Azad Jammu & Kashmir/.../2025-26/Household Integrated Economic Survey 2014-15.pdf`
+- `Sindh/White Papers/Labour Force Survey 2024-25 - Annual Report.pdf`
+
+## The blocker
+
+`Sources/Provincial/SOURCE_SELECTION.md` is titled **BLOCKED**. Reference documents are settled for Federal, Punjab, Sindh and KP. Balochistan, AJK and Gilgit-Baltistan are open because their white papers aren't published every year and don't carry the budget-at-a-glance table in comparable form; budget speech, ABS and citizen budget disagree. The note says the decision needed is **comparability across jurisdictions vs. coverage across years**, that it was asked twice with no answer, and that nothing downstream can finish until it's made. That's your call, and it gates half the panel.
+
+## Extraction: 2 of 36
+
+Only two provincial white papers have extraction JSON anywhere in the corpus:
+- `agent_workspace/data/wp_balochistan_2019_20_extracted.json`
+- `agent_workspace/runs/2025/wp_balochistan_2017_18_extracted.json`
+
+`agent_workspace/extraction_outputs/by_document/white_papers/` is empty. Note the irony: the only two done are Balochistan, one of the three jurisdictions the source decision is blocked on.
+
+## The panel doesn't contain what the summary claims
+
+`session_summaries/session_summary_2025-03-14.md` states the panel is "complete and internally consistent," all totals reconcile, "ready for analysis," and lists three files written. Checking those:
+
+| Claimed | Reality |
+|---|---|
+| `data/clean/provincial_panel_long.csv` | only exists at `data/clean/v3/` |
+| `data/clean/provincial_panel_wide.csv` | does not exist |
+| `runs/provincial_consolidation_2025-03-14.json` | does not exist |
+
+And `data/clean/v3/provincial_panel_long.csv` holds **one series** — KP total budget outlay, 16 rows, 2010-11 to 2025-26 — every row sourced from `economic_survey_2026`, not from any white paper. So it's the published survey aggregate, not the extraction. Five of six jurisdictions are absent. The summary's three "recommended next steps" (extend backwards, add district detail, build execution ratios) all presume a panel that isn't there yet.
+
+## Unresolved reconciliations
+
+Every reconcile file on disk is `status: disagreements_unresolved`:
+- `runs/2025/wpaper_19_reconcile.json` — AJK ADP 2019-20, 12.3 vs 12.1
+- `data/clean/v3/wpaper_29_reconcile.json` — Total Tax Revenue 2013-14, delta −220, flagged as probable vintage mismatch
+- `psdp_2023_24_reconcile.json` — Federal PSDP 2016-17, delta 7058 (federal, not provincial)
+- `run_20260606_0437.json` — DFG 2019-20 Vol 1 failed at the reconcile stage with 0 tables extracted (federal)
+
+## Tooling that doesn't exist
+
+There are **zero `.py` files in the corpus**. Every script the documentation routes you through is missing: `run_ingest.py` (the whole pipeline, per `AGENT.md`), and `build_provincial_outlay.py` / `build_federal_receipts.py` / `build_federal_expenditure.py` (the rebuild paths in `RA Work/provincial_fiscal_panel/clean/README.md`). Only Stata `.do` files are present. Before 34 documents can be run, the pipeline has to be located or rebuilt.
+
+`scripts/NOTES.md` is the honest account here — it says the provincial collection function is a stub returning an empty list, so runs report success while producing nothing, and the manifest writer records the URL it intended to fetch rather than the redirect target, so some provenance rows point at landing pages.
+
+## Documentation to fix
+
+- Two copies of the same README disagree on coverage: `RA Work/provincial_fiscal_panel/README.md` says Punjab/Sindh through FY2024-25 and KP through FY2022-23; the stray copy at `Sources/Provincial/Gilgit-Baltistan/White Papers/2022-23/readme.md` says FY2023-24 and FY2021-22. Both point to `notes/coverage_gaps.md` — **which does not exist anywhere in the corpus**.
+- `agent_workspace/CLAUDE.md` documents `02_sources/`, `03_extraction/output/`, `03_extraction/clean/`, `05_outputs/` — none exist. The Feb 2026 reorg moved things to `_NEW_STRUCTURE/`, and `extraction_outputs/CLAUDE.md` says `03_extraction/clean/` was retired in favour of `data/clean/`. The `AGENT.md` invocation `--input 02_sources/<document>.pdf` won't resolve as written.
+
+## What I'd do first
+
+1. Make the source-selection call for Balochistan/AJK/GB — it gates everything else.
+2. Find or rebuild `run_ingest.py`; until then no extraction can run.
+3. Then batch the 34 documents, starting with the four unblocked jurisdictions.
+
+Want me to write the missing `notes/coverage_gaps.md` from the actual on-disk inventory, and correct the stale path references in `CLAUDE.md`/`AGENT.md`? Both are self-contained and don't depend on your source-selection decision.
