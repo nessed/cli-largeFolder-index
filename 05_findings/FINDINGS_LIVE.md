@@ -310,3 +310,76 @@ deny matters rather than being belt-and-braces.
 
 **Instrument-integrity check:** all 13 pass-1 canary files verified byte-identical
 by sha256, so nothing in night 1 or in this phase altered the corpus under test.
+
+## Phases 3–6 — planting, indexes, feasibility (02:15–03:00)
+
+### The backstop deny bit the experiment, not just the test sessions
+
+The phase-3 planting agent **planted nothing**, and the cause was mine. A subagent
+inherits the parent session's working directory, and this orchestration session's
+cwd is ra-ship — so while the phase-2.5 backstop was installed there, the planting
+agent inherited that corpus's deny list. Those patterns block the quarantine tree
+by absolute path *and* block any Bash command whose text contains the marker word,
+which also blocks naming the planting script itself. Every backup write was
+refused. Because the brief requires backing up each file **before** modifying it,
+the agent refused to plant rather than plant without backups — the right call, and
+rung 15000 is byte-for-byte untouched.
+
+The general lesson is worth keeping: **a deny list scoped to a corpus root applies
+to every Claude Code process whose cwd is that root, including the orchestrator and
+anything it spawns.** Planting cannot run while any stack is installed in ra-ship.
+*Condition: Claude Code, project-level settings.json, subagents inheriting cwd.
+Transfers to anyone using deny rules to sandbox a corpus they also work in.*
+
+What survives from the attempt: all three specified bugs in `plant_canaries.py` are
+fixed and verified against throwaway files — the inverted newline condition, the
+whole-file JSON re-serialisation (replaced with in-place single-line key insertion
+plus an `assert_one_hunk` check), and the missing `.html` in `TEXTY`. The agent
+also found a fourth the brief did not name: reading JSON in universal-newline mode
+silently converted CRLF to LF, which would have rewritten every line of a CRLF file
+and defeated the single-hunk fix.
+
+Two facts from its survey change the plan. **No directory in rung 15000 has 300+
+direct children** — the largest flat directory holds 163 — so mandatory coverage
+case 10 cannot be met as written and will be satisfied on a subtree count with the
+shortfall stated rather than papered over. And a 760-page document exists whose
+physical page index and printed page label genuinely differ, so case 1 is viable.
+
+### S3 is not buildable tonight, measured rather than assumed
+
+`fastembed` with `BAAI/bge-small-en-v1.5` (ONNX, CPU, no torch) runs at **8.2
+pages/s** on real pages from the ra-ship index, after a 20.8 s model load. The
+ra-ship index holds **614,150 pages**, which projects to a **20.8-hour** embedding
+build; the rung-15000 index will be larger still, since corpus_500 alone held
+39,647 pages across 489 files. There is no GPU on this machine, so this is not a
+tuning problem. S3 as specified — *embed every page* — therefore gets a `not run`
+cell carrying that measured rate, not a guess and not a quietly reduced scope.
+*Condition: CPU-only embedding of a page-level index of this size. Transfers to
+the target only if the target's page count is comparable; at ~10k PDF-heavy files
+it plausibly is, which makes this a real finding about local embedding on this
+class of machine rather than a lab artifact.*
+
+### Index (4.2–4.4)
+
+ra-ship rebuilt: 217,681 discovered, 4,649 candidates, **3,872 indexed**, 4 failed,
+773 unsupported/empty, 213,032 excluded as dependency material, **614,150 pages**,
+481 s, 3.41 GB. The accounting identity closes exactly. Smoke query: **12 of 13
+pass-1 canaries resolve to the correct file**, 0 wrong-file, 1 absent — and the
+absent one is the `site-packages` canary the indexer excludes by design, so the
+7.4 ceiling is now confirmed structurally rather than inferred. The fat-PDF canary
+returns physical `page_index` 221 against a printed label of 222, confirming the
+two genuinely differ.
+
+### A cross-session channel that `--disallowedTools` does not close
+
+Checking memory dirs found `memory/sandbox-probe.md` under ra-ship's project key,
+written by the phase-2.6 probe session at 01:58 — **despite `ask.py` passing
+`--disallowedTools Write,Edit,NotebookEdit`**. Memory persistence does not go
+through those tools, so disallowing them does not close it. One measurement session
+can leave notes the next session on the same corpus reads, which would quietly
+inflate recall for whichever stack ran second. The grid driver now *moves* anything
+it finds into quarantine before and after every battery rather than merely checking.
+This was nearly missed: the first implementation derived the project-key name from
+the corpus path, got the drive-letter separator wrong, matched nothing, and returned
+a confident all-clear. *Condition: any two Claude Code sessions sharing a cwd.
+Transfers directly.*

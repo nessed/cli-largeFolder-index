@@ -174,6 +174,11 @@ def main():
            "--timeout", str(a.canary_timeout), "--parallel", str(a.parallel)]
     if tree["rung"]:
         cmd += ["--rung", tree["rung"]]
+    # S4's front door is an MCP server rather than a script, so the sessions need
+    # its config. --strict-mcp-config (added by ask.py) keeps every other server
+    # this machine has configured out of the measurement.
+    if a.stack == "s4_pdfmcp":
+        cmd += ["--mcp-config", str(L.STACKS / "s4_pdfmcp" / "mcp_config.json")]
     rc, secs, killed = run(cmd, env=env, cap=a.battery_cap_s)
     cell["steps"]["canary_battery"] = {
         "rc": rc, "wall_s": secs,

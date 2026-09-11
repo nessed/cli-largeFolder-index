@@ -1,0 +1,4 @@
+{
+  "s3_hybrid": "embedding build exceeds the night's budget. Measured 8.2 pages/s with fastembed BAAI/bge-small-en-v1.5 (ONNX, CPU, no torch) on real pages from the ra-ship index; that index holds 614,150 pages, projecting a 20.8-hour build. No GPU on this machine, so this is not a tuning problem. See state/bench_embed__raship.json.",
+  "s5_recoll": "stretch stack, gated by the spec on S0-S4 all being complete before 05:00."
+}

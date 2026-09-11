@@ -1,0 +1,11 @@
+{
+ "db": "C:/Users/Ali/Desktop/retrieval-lab/corpus-lab/02_stacks/s2_fts5/raship.db",
+ "model": "BAAI/bge-small-en-v1.5",
+ "total_pages_in_index": 614150,
+ "benchmarked_pages": 512,
+ "model_load_s": 20.8,
+ "embed_s": 62.48,
+ "pages_per_s": 8.2,
+ "projected_full_build_hours": 20.82,
+ "max_chars_per_page": 2000
+}

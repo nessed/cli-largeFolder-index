@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pdf-mcp": {
+      "command": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\pdf-mcp.exe",
+      "args": []
+    }
+  }
+}

@@ -105,6 +105,30 @@ Cite file path + page_index for every claim. Before saying something is absent,
 run --coverage and say what was not searched.
 """
 
+# S4 points at an off-the-shelf MCP server instead of our own front door. Same
+# shape of instruction, so the comparison is about the retrieval layer and not
+# about how differently the two were described.
+CLAUDE_MD_S4 = """# Corpus retrieval policy
+
+The built-in Grep and Glob cannot be relied on to find research material in this
+tree. They miss files silently -- a "No files found" from them is not evidence
+that the material is absent.
+
+A PDF corpus server is available over MCP. Use it first:
+
+    pdf_corpus_warm        index the tree before searching it
+    pdf_corpus_search      search the warmed corpus, returns file + page hits
+    pdf_read_pages         read specific pages of a specific PDF
+    pdf_corpus_overview    what the server knows about this tree
+
+Cite file path + page number for every claim. Before saying something is absent,
+say what the server did and did not cover.
+
+NOTE: this server handles PDFs only. Material in DOCX, XLSX, CSV, JSON, HTML or
+markdown is outside what it can see, and a miss there is a limit of this tool
+rather than evidence the material is absent.
+"""
+
 
 def corpus_key(root):
     """Short stable id for a corpus root. Phase 0.8: backups keyed by corpus so
@@ -190,7 +214,9 @@ def setup(corpus, stack, db):
 
     # --- 0.4: baseline installs NO policy file --------------------------------
     if want_md:
-        md.write_text(CLAUDE_MD.format(search=L.SEARCH), encoding="utf-8")
+        body = (CLAUDE_MD_S4 if stack == "s4_pdfmcp"
+                else CLAUDE_MD.format(search=L.SEARCH))
+        md.write_text(body, encoding="utf-8")
     sj.write_text(json.dumps(settings_for(stack), indent=2), encoding="utf-8")
 
     state["status"] = "installed"

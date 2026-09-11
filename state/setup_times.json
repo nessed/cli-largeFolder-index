@@ -1,0 +1,8 @@
+{
+  "s0_baseline": "0s (installs nothing but the backstop deny)",
+  "s1_policy": "0s (writes CLAUDE.md only)",
+  "s2_hook": "ra-ship index 481s / 614,150 pages / 3.41 GB; rung-15000 index TBD",
+  "s3_hybrid": "not built - 8.2 pages/s measured, 20.8 h projected for ra-ship alone",
+  "s4_pdfmcp": "pip install 1 run, clean; warm time TBD",
+  "s5_recoll": "not attempted"
+}
