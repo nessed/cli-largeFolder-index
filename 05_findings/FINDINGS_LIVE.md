@@ -383,3 +383,75 @@ This was nearly missed: the first implementation derived the project-key name fr
 the corpus path, got the drive-letter separator wrong, matched nothing, and returned
 a confident all-clear. *Condition: any two Claude Code sessions sharing a cwd.
 Transfers directly.*
+
+## Phase 4 + first real comparison (resumed 06:50)
+
+### The result that overturns night 1's framing
+
+Stock Claude Code — no index, no policy, no hook — hunting exact planted strings:
+
+| tree | canary recall | mean wall | cost |
+|---|---|---|---|
+| **harness rung 15000** (no git anywhere) | **15 / 17** | 29.6 s | $1.82 over 17 of 18 |
+| **ra-ship** (git repo, documents gitignored) | **4 / 12** | 153.1 s | $1.43 over 9 of 13 |
+
+Same stack, same scorer, same night. The gap is the fixture, not retrieval.
+ra-ship's `.gitignore` hides every document directory from gitignore-aware search;
+the harness has no `.git` at any depth, so `grep` simply works. Night 1 read the
+ra-ship gap as evidence that stock search is broken and an index is required. On a
+plain folder — **which is what the target actually is** — stock search finds 15 of
+17 exact strings in under half a minute each. The index's apparent 3× advantage on
+ra-ship is mostly the gitignore artifact.
+
+**But the same tree tells the opposite story for real questions.** On these same
+15,010 files, the S0 question battery scored **0.167** mean retrieval recall, with
+**12 of 20** questions reaching zero evidence, **21** forbidden citations, and
+**0 of 3** absence questions answered honestly.
+
+So the honest two-line summary, which night 1 could not have reached because it
+measured only the first capability:
+
+> Stock tooling is **good at finding a string you can already quote**, and **bad at
+> answering a question you cannot**.
+
+Those are different capabilities. A canary battery measures the first. Sir's
+problem is the second.
+
+### A ceiling larger than every canary effect measured tonight
+
+The rung-15000 index: 15,010 discovered, **13,634 indexed**, 32 failed (18
+encrypted, 14 parser), 1,344 unsupported or empty — **of which 1,211 are
+image-only PDFs with no text layer** — 0 excluded as dependency material,
+**1,206,260 pages**, 782 s, 6.97 GB. Identity closes exactly.
+
+1,211 scanned PDFs is **8% of the tree that no text index and no grep can reach
+without OCR**. That is a larger hole than any difference between stacks measured
+so far. *Condition: the tree contains scanned documents. The target is described as
+PDF-heavy, so this very likely transfers and should be checked against sir's actual
+folder before any stack is chosen.*
+
+### An instrument bug the pass-2 design caught
+
+`run_canaries` derived a question id as `phrase.split("-")[0] + "_" + phrase[-6:]`.
+Safe for pass 1 *only* because all 13 phrases shared the shape
+`prefix-8hex-6digits`. Pass 2 deliberately mixes shapes — that is spec rule 3.3,
+so no single regex sweeps the set — and four of the 18 produced an id containing
+`/`. The id becomes part of the result filename, `Path` read the slash as a
+subdirectory that did not exist, and those four results were never written.
+
+The battery reported **12/14**. The denominator had silently fallen from 18 to 14
+and nothing said so. That is the exact silent-partial-completion failure this run
+exists to measure, occurring inside the measuring instrument, and it surfaced only
+because the phrase design was adversarial enough to trigger it. Fixed by
+sanitising the id with a digest suffix so ids stay injective; pass-1 ids are
+byte-identical, so earlier results still resolve.
+
+### Second excluded-by-design row
+
+The pass-2 ZIP canary is `unsupported_type` — `index_build.py` does not descend
+into archives, and a grep cannot read a compressed member either. Unlike the
+site-packages case this is **not** an index-only ceiling: no stack in this grid can
+reach it. Scored as its own row so it neither flatters a grep-based stack nor
+penalises an index-based one. Both PDF canaries returned page indices matching the
+manifest exactly (734 and 200), confirming physical index and printed label are
+tracked separately and correctly.

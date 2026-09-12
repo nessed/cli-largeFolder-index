@@ -25,8 +25,10 @@ Grid-run phase changes:
 """
 import argparse
 import csv
+import hashlib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -51,9 +53,41 @@ QUESTION = (
 # S0 does not. It is scored as its own row, never folded into the headline.
 EXCLUDED_BY_DESIGN_MARKERS = ("site-packages", "02_tool_runs")
 
+# Measured in phase 4.4 against the rung-15000 index: the pass-2 canary planted
+# inside a ZIP comes back `unsupported_type`, because index_build.py does not
+# descend into archives. Unlike the site-packages case this is not an index-only
+# ceiling -- a grep cannot see into a compressed member either -- so NO stack in
+# this grid can reach it. Scored as its own row so it neither flatters a
+# grep-based stack nor penalises an index-based one.
+EXCLUDED_BY_DESIGN_EXTS = (".zip",)
+
+
+# Characters Windows will not accept in a filename. The qid becomes part of the
+# result filename, so any of these silently loses the result.
+_ILLEGAL = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
+
 
 def qid_for(phrase):
-    return phrase.split("-")[0] + "_" + phrase[-6:]
+    """Stable, filesystem-safe id for a canary.
+
+    MEASURED FAILURE, pass 2: the original derivation was
+    `phrase.split("-")[0] + "_" + phrase[-6:]`, which was safe for pass 1 only
+    because all 13 of those phrases matched `<prefix>-<8hex>-<6digits>`. Pass 2
+    deliberately mixes structural shapes -- an SRO number, a slashed office code,
+    an email handle -- precisely so no single regex sweeps the set. Four of the 18
+    then produced a qid containing "/", Path read it as a subdirectory that did
+    not exist, and those four results were never written. The battery reported
+    12/14 and nothing said that four canaries had vanished.
+
+    So: sanitise, and keep it injective by appending a digest whenever sanitising
+    actually changed something. A pass-1 qid is untouched, so night-1 result files
+    and the already-scored ra-ship cell still resolve.
+    """
+    raw = phrase.split("-")[0] + "_" + phrase[-6:]
+    safe = _ILLEGAL.sub("-", raw).strip(". ")
+    if safe != raw:
+        safe = safe + "_" + hashlib.sha1(phrase.encode("utf-8")).hexdigest()[:6]
+    return safe[:80]
 
 
 def load_canaries(corpus_root):
@@ -84,8 +118,9 @@ def load_canaries(corpus_root):
                 "created": r.get("injected_or_created", ""),
                 "page_index": r.get("page_index", ""),
                 "printed_page_label": r.get("printed_page_label", ""),
-                "excluded_by_design": any(
-                    m in scoring.norm_path(rel) for m in EXCLUDED_BY_DESIGN_MARKERS),
+                "excluded_by_design": (
+                    any(m in scoring.norm_path(rel) for m in EXCLUDED_BY_DESIGN_MARKERS)
+                    or Path(rel).suffix.lower() in EXCLUDED_BY_DESIGN_EXTS),
             })
     return rows
 

@@ -1,0 +1,135 @@
+{
+ "db": "C:/Users/Ali/Desktop/retrieval-lab/corpus-lab/02_stacks/s2_fts5/harness_15000.db",
+ "ok": 17,
+ "wrong_file": 0,
+ "missing": 1,
+ "n": 18,
+ "detail": [
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 734,
+   "page_expected": "734"
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "NOT-IN-INDEX",
+   "n_hits": 0,
+   "page_returned": null,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 200,
+   "page_expected": "200"
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  },
+  {
+   "format": "",
+   "status": "ok",
+   "n_hits": 1,
+   "page_returned": 0,
+   "page_expected": ""
+  }
+ ]
+}

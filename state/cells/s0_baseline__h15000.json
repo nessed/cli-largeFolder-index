@@ -1,0 +1,19 @@
+{
+ "stack": "s0_baseline",
+ "tree": "h15000",
+ "phase": "P7b_s0_baseline_h15000",
+ "steps": {
+  "checksums_pre": "ok",
+  "clean": "ok",
+  "memory_pre": "no project key yet",
+  "install": "ok",
+  "canary_battery": {
+   "rc": 0,
+   "wall_s": 443.9,
+   "status": "complete"
+  },
+  "question_battery": "n/a",
+  "checksums_post": "ok",
+  "memory_post": "no project key yet"
+ }
+}
