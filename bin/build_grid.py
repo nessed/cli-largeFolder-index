@@ -99,7 +99,7 @@ def cell_for(stack, tree, notes):
     # present a night-1 number as a night-2 result, which is exactly the class of
     # error this whole run exists to remove.
     ph = str(can.get("phase", ""))
-    old = "" if ph.startswith("P7_") else " **[night 1]**"
+    old = "" if ph.startswith("P7") else " **[night 1]**"
     partial = " (PARTIAL)" if can.get("battery_is_stale") else ""
     partial += old
     ex = can.get("excluded_by_design_row", {})

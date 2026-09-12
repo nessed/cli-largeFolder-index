@@ -1,0 +1,23 @@
+{
+ "stack": "s1_policy",
+ "tree": "h15000",
+ "phase": "P7_s1_policy_h15000",
+ "steps": {
+  "checksums_pre": "ok",
+  "clean": "ok",
+  "memory_pre": "no project key yet",
+  "install": "ok",
+  "canary_battery": {
+   "rc": 0,
+   "wall_s": 176.4,
+   "status": "complete"
+  },
+  "question_battery": {
+   "rc": 0,
+   "wall_s": 1228.4,
+   "status": "complete"
+  },
+  "checksums_post": "ok",
+  "memory_post": "no project key yet"
+ }
+}

@@ -132,7 +132,11 @@ def score(args, qs):
     with_ev = [r for r in rows if r.get("retrieval_recall") is not None]
     ab = [r for r in rows if r.get("type") == "absence"]
     with_cost = [r for r in rows if r.get("cost_usd") is not None]
-    timed = [r for r in rows if not r.get("suspended") and not r.get("timed_out")]
+    # A row with status "no_result" carries no timing keys at all, so it must be
+    # excluded here rather than defaulted to zero -- averaging a missing session in
+    # as 0 s would quietly flatter whichever battery lost sessions.
+    timed = [r for r in rows if r.get("wall_s") is not None
+             and not r.get("suspended") and not r.get("timed_out")]
     summary = {
         "stack": args.stack, "rung": args.rung, "n_questions": len(rows),
         "mean_retrieval_recall": round(sum(r["retrieval_recall"] for r in with_ev)
@@ -178,6 +182,10 @@ if __name__ == "__main__":
     ap.add_argument("--settings", default=None)
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--score-only", action="store_true")
+    ap.add_argument("--only", default=None,
+                    help="comma-separated q_ids to RUN. Scoring still covers the whole "
+                         "frozen sample. Used to fill in questions lost when a battery "
+                         "was interrupted, without re-paying for those already on disk.")
     a = ap.parse_args()
     a.n_skipped = 0
 
@@ -186,10 +194,19 @@ if __name__ == "__main__":
     qs = [q for q in key["questions"] if q["q_id"] in set(samp["q_ids"])]
     print(f"{len(qs)} questions (seed {samp['seed']}): "
           f"{sorted(set(q['type'] for q in qs))}")
+    to_run = qs
+    if a.only:
+        want = {x.strip() for x in a.only.split(",") if x.strip()}
+        to_run = [q for q in qs if q["q_id"] in want]
+        missing = want - {q["q_id"] for q in to_run}
+        print(f"--only: running {len(to_run)} of {len(qs)} "
+              f"({sorted(q['q_id'] for q in to_run)})")
+        if missing:
+            sys.exit(f"--only named q_ids not in the frozen sample: {sorted(missing)}")
     if not a.score_only:
         t0 = time.monotonic()
         with ThreadPoolExecutor(max_workers=a.parallel) as ex:
-            for qid, rc, so in ex.map(lambda q: one(q, a), qs):
+            for qid, rc, so in ex.map(lambda q: one(q, a), to_run):
                 if rc == 3:
                     a.n_skipped += 1
                     print(f"\033[1;31m[{qid}] SKIPPED-STALE\033[0m", file=sys.stderr)

@@ -7,21 +7,19 @@ Every cell is a number, `not run — <reason>`, or `install failed — <error>`.
 
 | stack | harness-15k canary | harness-15k question | ra-ship canary | ra-ship retrieval | cost (n/m) | tool calls | wall (excl. suspended) | setup | excluded-by-design |
 |---|---|---|---|---|---|---|---|---|---|
-| **s0_baseline** | not run[^s0_baseline] — no result on disk | 0.167 (12/20 zero, 21 forbidden, absence 0/3) | 4/12 | 0/12 | $1.4275 (9/13) | 119 | 153.1s | 0s (installs nothing but the backstop deny) | h15k - / ra-ship 0/1 |
-| **s1_policy** | not run[^s1_policy] — no result on disk | not run[^s1_policy] — no result on disk | not run[^s1_policy] — no result on disk | - | - | - | - | 0s (writes CLAUDE.md only) | h15k - / ra-ship - |
-| **s2_hook** | not run[^s2_hook] — no result on disk | not run[^s2_hook] — no result on disk | 12/12 **[night 1]** | 2/12 | $0.9847 (12/13) | 28 | 20.6s | ra-ship index 481s / 614,150 pages / 3.41 GB; rung-15000 index TBD | h15k - / ra-ship 0/1 |
+| **s0_baseline** | 15/17 | 0.167 (12/20 zero, 21 forbidden, absence 0/3) | 4/12 | 0/12 | $1.4275 (9/13) | 119 | 153.1s | 0s (installs nothing but the backstop deny) | h15k 0/1 / ra-ship 0/1 |
+| **s1_policy** | 17/17 | 0.176 (13/20 zero, 19 forbidden, absence 0/3) | not run[^s1_policy] — no result on disk | - | - | - | - | 0s beyond the shared index | h15k 0/1 / ra-ship - |
+| **s2_hook** | 17/17 | 0.118 (14/20 zero, 16 forbidden, absence 0/3) | 12/12 **[night 1]** | 2/12 | $0.9847 (12/13) | 28 | 20.6s | rung-15000 index 782s / 1,206,260 pages / 6.97 GB (built once, shared with s1_policy) | h15k 0/1 / ra-ship 0/1 |
 | **s3_hybrid** | not run[^s3_hybrid] — embedding build exceeds the night's budget | not run[^s3_hybrid] — embedding build exceeds the night's budget | not run[^s3_hybrid] — embedding build exceeds the night's budget | - | - | - | - | not built - 8.2 pages/s measured, 20.8 h projected for ra-ship alone | h15k - / ra-ship - |
-| **s4_pdfmcp** | not run[^s4_pdfmcp] — no result on disk | not run[^s4_pdfmcp] — no result on disk | not run[^s4_pdfmcp] — no result on disk | - | - | - | - | pip install 1 run, clean; warm time TBD | h15k - / ra-ship - |
-| **s5_recoll** | not run[^s5_recoll] — stretch stack, gated by the spec on S0-S4... | not run[^s5_recoll] — stretch stack, gated by the spec on S0-S4... | not run[^s5_recoll] — stretch stack, gated by the spec on S0-S4... | - | - | - | - | not attempted | h15k - / ra-ship - |
+| **s4_pdfmcp** | not run[^s4_pdfmcp] — install gate FAILED on this corpus | not run[^s4_pdfmcp] — install gate FAILED on this corpus | not run[^s4_pdfmcp] — install gate FAILED on this corpus | - | - | - | - | pip install clean; warm UNUSABLE - 415s for 5 small PDFs | h15k - / ra-ship - |
+| **s5_recoll** | not run[^s5_recoll] — no headless install path | not run[^s5_recoll] — no headless install path | not run[^s5_recoll] — no headless install path | - | - | - | - | not attempted | h15k - / ra-ship - |
 
 **Why a cell was not run:**
 
-[^s0_baseline]: **s0_baseline** — not run - no result on disk
 [^s1_policy]: **s1_policy** — not run - no result on disk
-[^s2_hook]: **s2_hook** — not run - no result on disk
 [^s3_hybrid]: **s3_hybrid** — not run - embedding build exceeds the night's budget. Measured 8.2 pages/s with fastembed BAAI/bge-small-en-v1.5 (ONNX, CPU, no torch) on real pages from the ra-ship index; that index holds 614,150 pages, projecting a 20.8-hour build. No GPU on this machine, so this is not a tuning problem. See state/bench_embed__raship.json.
-[^s4_pdfmcp]: **s4_pdfmcp** — not run - no result on disk
-[^s5_recoll]: **s5_recoll** — not run - stretch stack, gated by the spec on S0-S4 all being complete before 05:00.
+[^s4_pdfmcp]: **s4_pdfmcp** — not run - install gate FAILED on this corpus. pdf-mcp 3.1.0 installs and its server exposes 13 tools, but pdf_corpus_warm/pdf_corpus_search accept neither a directory nor a glob (root -> "not a .pdf file: no extension"; root/**/*.pdf -> "file not found"), so a caller must enumerate all 9,942 PDFs explicitly - which the S4 hook also forbids the agent from doing. And warming FIVE small PDFs took 415s and returned docs:[] with 3 of 5 unprocessed, ~200s per small PDF, projecting ~23 days for the rung. pytesseract is a dependency and the rung holds 1,211 image-only PDFs, so OCR is the likely cause.
+[^s5_recoll]: **s5_recoll** — not run - no headless install path. Not on PATH or in Program Files; winget has nothing under the winget or msstore sources, nor for xapian; the vendor Windows page carries no .exe/.msi/.msix link; the only linked downloads dir is GPL source-compliance tarballs. Distribution is an interactive install, which the spec rules dead.
 
 A cell marked **[night 1]** is a re-scored night-1 battery, not a measurement taken tonight. It is shown so the row is not empty, and it must not be compared against a night-2 cell as though the instrument were the same — it was not.
 
