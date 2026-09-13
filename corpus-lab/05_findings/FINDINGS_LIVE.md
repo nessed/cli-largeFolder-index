@@ -626,3 +626,45 @@ identity holds exactly, but the sanity probe still fails — the family with the
 "editions" is a near-duplicate clustering defect (a repeatedly-copied paper reading as 16
 editions), not the intended kind of copy-heavy family. This result is measured on that
 shelf, unrepaired past the one authorized title-line fix.*
+
+## F41. The document bottleneck is ranking, not candidate generation
+
+**Measured**, `state/c_gate_v2.json` and `state/c_recall_curve.json`, on the 17 answerable
+frozen questions with the corrected denominator (0 excluded, was 2), and confirmed on the
+30-question frozen holdout (aggregate counts only, never per-question).
+
+| depth | C1 (verbatim), 17 | C2 (+5 rewrites), 17 | C1, holdout 30 | C2, holdout 30 |
+|---|---|---|---|---|
+| top 10 | 6 | 9 | 10 | 14 |
+| top 20 | 8 | 10 | 13 | 16 |
+| top 50 | 12 | 11 | 19 | 24 |
+| top 100 | 14 | **16** | 27 | **28** |
+| top 200 | 14 | 16 | 27 | 28 |
+
+**The pool almost always holds the answer.** The pre-registered A0 gate was C2 gold-family
+recall@100 ≥ 12 of 17. It is 16 of 17, and 28 of 30 on the holdout. So the fused FTS5 +
+BGE candidate pool is not what is losing these questions: something that is already in the
+top 100 is failing to reach the top 10. That authorises the reranker experiment (A1) and
+rules out the competing explanation the review wanted separated out.
+
+Depth 200 adds nothing over depth 100 in either set, so the reranker pool is fixed at 100.
+
+**Two diagnostics recorded with it** (`--per-rewrite`, ranks only):
+
+- *Best-single-rewrite oracle.* On 12 of 17 questions **some** single rewrite alone puts the
+  gold family in its own top 10, against 9 of 17 for the six fused together. RRF over six
+  query variants is losing three questions that one of its own inputs already had. Per-query
+  max fusion is therefore a live future candidate — **not built here**, and not a licence to
+  tune fusion weights against these 17.
+- *Rewrite 4 (the "which publication would carry this" guess) never uniquely contributes.*
+  Across the 17, the number of questions where exactly one rewrite index found the gold
+  family at all is 0, so there is no question that rewrite 4 rescues on its own. A1 drops it
+  from candidate generation, per the pre-registered rule.
+
+Recall per rewrite index at top 10 is flat — 6, 6, 6, 6, 6, 5 for indices 0–5 — so no single
+rewrite style is carrying the others, and the fused result (9) does beat any one of them.
+The oracle number above is the union across questions, not one better rewrite.
+
+*Condition: this corpus, this shelf, this fused candidate generator, top-200 pool. "Gold
+family" is the family holding the key's evidence, resolved through the shelf's duplicate map.
+A0 is a statement about where the loss is, not a claim that a reranker will recover it.*
