@@ -1,0 +1,7 @@
+{
+ "n_captions": 89380,
+ "dim": 384,
+ "batch": 256,
+ "wall_s": 819.4,
+ "rate_per_s": 109.08
+}

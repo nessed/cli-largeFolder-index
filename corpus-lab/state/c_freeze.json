@@ -1,0 +1,53 @@
+{
+ "generated_utc": "2026-09-13T22:04:47Z",
+ "rule": "highest gold-family recall@10 on the 17; ties by holdout, then by simplicity",
+ "candidates": {
+  "C2-rrf": {
+   "fusion": "rrf",
+   "caption_channel": "off",
+   "dev_le10": 9,
+   "holdout_le10": 14
+  },
+  "C-best": {
+   "fusion": "best",
+   "caption_channel": "off",
+   "dev_le10": 5,
+   "holdout_le10": null
+  },
+  "E1": {
+   "fusion": "rrf",
+   "caption_channel": "lex",
+   "dev_le10": 10,
+   "holdout_le10": 14
+  },
+  "E2": {
+   "fusion": "rrf",
+   "caption_channel": "lex+vec",
+   "dev_le10": 9,
+   "holdout_le10": 13
+  }
+ },
+ "frozen_document_configuration": {
+  "name": "E1",
+  "fusion": "rrf",
+  "caption_channel": "lex",
+  "dev_le10": 10,
+  "holdout_le10": 14
+ },
+ "frozen_page_method": {
+  "name": "B2",
+  "caption": "first",
+  "reason": "better of B2 and B2b by macro; they tie at 39.7% and ties go to B2 (F48)"
+ },
+ "frozen_holdout_curve": {
+  "recall_at_10": 14,
+  "recall_at_20": 20,
+  "recall_at_50": 28,
+  "recall_at_100": 29,
+  "recall_at_200": 29
+ },
+ "holdout_curve_source": "measured in Phase 2 for this exact configuration; no additional look spent",
+ "holdout_looks_used": 3,
+ "holdout_looks_budget": 5,
+ "note": "E1 did not clear its own ADOPTION gate (WEAK required holdout >=16, it is 14). The FREEZE rule is a separate selection rule, stated over the development count across all four candidates, and E1 is the highest at 10. It is frozen as the configuration the live battery runs on, not as an adopted improvement."
+}

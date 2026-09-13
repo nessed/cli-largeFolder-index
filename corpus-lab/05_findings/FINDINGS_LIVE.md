@@ -1010,3 +1010,72 @@ cut. It does not show that captions are useless — it shows that on this captio
 subject words of year-asking questions are not in any caption of the document that answers
 them, which is an argument about caption coverage and would be answered by harvesting more
 caption text, not by another match rule.*
+
+---
+
+## F49. Experiment E2 — dense captions add nothing the lexical ones did not. STOP. And the FREEZE
+
+**Measured**, `state/c_caption_family_gate.json` key `lex+vec` and `state/c_freeze.json`.
+All 89,380 captions embedded with bge-small in 819 s at 109/s (`state/c_caption_embed.json`);
+vector rows, id rows and caption rows all equal 89,380. One holdout evaluation.
+
+E2 gives every rewrite a fourth ranked list: the same label-word string, cosine over the
+caption embeddings, top 200.
+
+| depth | C2 + rrf | E1 (+ caption lexical) | E2 (+ caption dense) |
+|---|---|---|---|
+| dev top 10 | 9 | **10** | 9 |
+| dev top 20 | 10 | 12 | 10 |
+| dev top 50 | 11 | 14 | 14 |
+| holdout top 10 | 14 | 14 | **13** |
+| holdout top 20 | 16 | 20 | 21 |
+| holdout top 50 | 24 | 28 | 27 |
+| holdout top 100 | 28 | 29 | 29 |
+
+**Pre-registered gate: PASS ≥12/17 and holdout ≥17/30; WEAK 10–11 and ≥16. It is 9 and 13.
+STOP** — and note it is the first configuration tonight to go *below* the baseline on the
+holdout top ten. The dense channel does what dense retrieval usually does to a short label:
+it dilutes a precise lexical match with semantic near-neighbours. Captions are short
+institutional titles; that is the case where embeddings help least and cost most.
+
+The one thing it fixes is coverage: **0** questions have empty caption lists under
+`lex+vec`, against 1 under `lex` — a dense channel always returns something. It buys nothing
+with it. The joint diagnostic is unchanged at **1 of 13**, exactly as in F47: adding a second
+caption channel does not make captions point at gold *pages*.
+
+### FREEZE
+
+Four document configurations were measured tonight. The pre-registered rule is the highest
+gold-family recall@10 on the 17, ties by holdout, then by simplicity.
+
+| configuration | fusion | caption channel | dev ≤10 | holdout ≤10 | gate |
+|---|---|---|---|---|---|
+| C2-rrf (the 2026-09-14 baseline) | rrf | off | 9 | 14 | — |
+| C-best (F46) | best | off | 5 | not measured | STOP |
+| **E1 (F47)** | **rrf** | **lex** | **10** | **14** | STOP |
+| E2 (this finding) | rrf | lex+vec | 9 | 13 | STOP |
+
+**Frozen for the rest of the run: `fusion=rrf caption_channel=lex page=first`.**
+
+This needs saying plainly, because it looks like a contradiction and is not. **Every
+adoption gate tonight STOPped, and the configuration frozen for the live battery is one of
+the configurations that STOPped.** Those are two different decisions. An adoption gate asks
+"is this a real improvement worth carrying forward as a claim?" — E1's answer is no, because
+its holdout top ten did not move. The FREEZE rule asks "which of the four measured
+configurations should the live battery run on?" — and it is stated over the development
+count, where E1's 10 is the highest of the four. Running the battery on a configuration
+known to be worse on the measure would make the live numbers answer a question nobody asked.
+So E1 is frozen as *the configuration under test*, not as an adopted improvement, and the
+architecture document records it as WEAK-and-not-adopted.
+
+The page method is **B2 (`--caption first`)**, per F48's tie-to-B2 rule.
+
+**Holdout looks: 3 of 5 used** (E1 inert, E1 corrected, E2). The frozen configuration's
+holdout curve is E1's, already measured in Phase 2 — 14 / 20 / 28 / 29 / 29 — so the fifth
+look the phase reserved for it was **not** spent re-measuring a deterministic number that
+was already on disk. C-best's holdout was never measured because its development number was
+four questions below its own stop line.
+
+*Condition: this corpus, this caption harvest, bge-small, cosine, top 200, k=60. It shows
+dense caption retrieval does not add to lexical caption retrieval here; on a corpus whose
+captions were free prose rather than institutional table titles the balance could differ.*
