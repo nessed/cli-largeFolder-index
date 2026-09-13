@@ -730,3 +730,47 @@ trajectory result was failing on — which is the sub-problem F43 measures.
 A caption "hits" when it contains every content word of the short row phrase; no synonym
 list, no title list, nothing derived from the key. The trajectory result rests on 4
 questions and should not be reported as a general finding without more of them.*
+
+## F43. The year in the question is not the year on the edition
+
+**Measured**, `bin/c_edition_gate.py`, `state/c_edition_set.json`. Gold family handed in, so
+this is a statement about edition selection only. The structural rule was pre-registered: a
+question carrying a fiscal-year token selects the family's primaries whose `fy_all` holds
+that year; a trajectory or series question selects all primaries; anything else selects all
+primaries.
+
+**Set recall: 3 of 17.** The bar for adopting RETRIEVE FAMILY → SELECT EDITION(S) as a
+structural rule was 15 of 17 with a mean set size ≤ 3. Mean set size is 7.06, max 21.
+
+| branch | questions | failures |
+|---|---|---|
+| fiscal-year token | 10 | 10 |
+| series / trajectory | 4 | 3 |
+| all primaries (no narrowing possible) | 3 | 1 |
+
+**The year branch fails on all ten, and the reason is not a bug in the rule.** Counted
+directly over those ten questions' 18 evidence documents:
+
+- only **7 of 18** have the asked year anywhere in their `fy_all`;
+- only **1 of 18** has it as `fy_primary`;
+- only **8 of 18** are a primary at all;
+- on 4 of the 10 questions, not one evidence document carries the asked year.
+
+So the year in a question is mostly not a label on the document that answers it. A question
+about a fiscal year is answered by whichever edition happens to print that year's row — very
+often a later edition carrying a historical series. The fiscal year narrows the *row*, not
+the *edition*. `fy_all` is doing its job; it is being asked the wrong question.
+
+**The second half of the failure is the copy problem F42 found.** Ten of the 18 evidence
+documents are not primaries, so a set built out of primaries cannot contain them, and a page
+index does not carry from one copy of an edition to another.
+
+**Verdict, per the pre-registered interpretation: do not adopt the split.** Set recall is
+below 15/17, so the rule is not adopted in the 2026-09-14 architecture and RETRIEVE DOCUMENT
+stays one box. No rules were added to chase the failures — that was pre-registered too. What
+this does establish is that "which edition, and which copy of it" is a real, separate,
+currently-unsolved sub-problem, and that it is sitting underneath both the trajectory result
+and the page result.
+
+*Condition: this corpus, this shelf's family and edition_key grouping, 17 questions, gold
+family handed in. A different family/edition grouping could change every number here.*

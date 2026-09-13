@@ -1,0 +1,169 @@
+{
+ "n_answerable": 17,
+ "set_recall_questions": 3,
+ "mean_set_size": 7.06,
+ "max_set_size": 21,
+ "n_questions_rule_was_all_primaries": 3,
+ "failures_by_branch": {
+  "fy_token": 10,
+  "all_primaries": 1,
+  "series": 3
+ },
+ "n_evidence_editions_checked": 64,
+ "n_selected_primary_is_the_cited_file": 27,
+ "per_question": {
+  "cd_04": {
+   "type": "canonical_duplicate",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 1,
+   "family_size": 12,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 0
+  },
+  "mb_04": {
+   "type": "multi_branch",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 1,
+   "family_size": 6,
+   "n_evidence_editions": 3,
+   "n_evidence_editions_in_set": 0
+  },
+  "mb_05": {
+   "type": "multi_branch",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 1,
+   "family_size": 6,
+   "n_evidence_editions": 3,
+   "n_evidence_editions_in_set": 0
+  },
+  "mb_07": {
+   "type": "multi_branch",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 1,
+   "family_size": 6,
+   "n_evidence_editions": 3,
+   "n_evidence_editions_in_set": 0
+  },
+  "nm_09": {
+   "type": "name_content_mismatch",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 0,
+   "family_size": 1,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 0
+  },
+  "pl_01": {
+   "type": "point_lookup",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 0,
+   "family_size": 5,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 0
+  },
+  "pl_14": {
+   "type": "point_lookup",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 0,
+   "family_size": 5,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 0
+  },
+  "pl_21": {
+   "type": "point_lookup",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 1,
+   "family_size": 6,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 0
+  },
+  "rc_05": {
+   "type": "reconciliation",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 11,
+   "family_size": 12,
+   "n_evidence_editions": 2,
+   "n_evidence_editions_in_set": 1
+  },
+  "rc_07": {
+   "type": "reconciliation",
+   "branch": "fy_token",
+   "all_evidence_editions_in_set": false,
+   "set_size": 8,
+   "family_size": 12,
+   "n_evidence_editions": 2,
+   "n_evidence_editions_in_set": 1
+  },
+  "rl_05": {
+   "type": "relationship",
+   "branch": "all_primaries",
+   "all_evidence_editions_in_set": false,
+   "set_size": 10,
+   "family_size": 10,
+   "n_evidence_editions": 2,
+   "n_evidence_editions_in_set": 1
+  },
+  "sd_03": {
+   "type": "stale_doc",
+   "branch": "all_primaries",
+   "all_evidence_editions_in_set": true,
+   "set_size": 21,
+   "family_size": 21,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 1
+  },
+  "sd_05": {
+   "type": "stale_doc",
+   "branch": "all_primaries",
+   "all_evidence_editions_in_set": true,
+   "set_size": 14,
+   "family_size": 14,
+   "n_evidence_editions": 1,
+   "n_evidence_editions_in_set": 1
+  },
+  "tr_04": {
+   "type": "trajectory",
+   "branch": "series",
+   "all_evidence_editions_in_set": false,
+   "set_size": 15,
+   "family_size": 15,
+   "n_evidence_editions": 10,
+   "n_evidence_editions_in_set": 8
+  },
+  "tr_07": {
+   "type": "trajectory",
+   "branch": "series",
+   "all_evidence_editions_in_set": true,
+   "set_size": 15,
+   "family_size": 15,
+   "n_evidence_editions": 8,
+   "n_evidence_editions_in_set": 8
+  },
+  "tr_10": {
+   "type": "trajectory",
+   "branch": "series",
+   "all_evidence_editions_in_set": false,
+   "set_size": 15,
+   "family_size": 15,
+   "n_evidence_editions": 12,
+   "n_evidence_editions_in_set": 10
+  },
+  "tr_16": {
+   "type": "trajectory",
+   "branch": "series",
+   "all_evidence_editions_in_set": false,
+   "set_size": 6,
+   "family_size": 6,
+   "n_evidence_editions": 12,
+   "n_evidence_editions_in_set": 6
+  }
+ }
+}
