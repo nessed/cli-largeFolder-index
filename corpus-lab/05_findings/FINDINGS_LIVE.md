@@ -1079,3 +1079,107 @@ four questions below its own stop line.
 *Condition: this corpus, this caption harvest, bge-small, cosine, top 200, k=60. It shows
 dense caption retrieval does not add to lexical caption retrieval here; on a corpus whose
 captions were free prose rather than institutional table titles the balance could differ.*
+
+---
+
+## F50. LIVE — the first Claude Code battery on the frozen configuration. Both gates FAIL
+
+**Measured**, `state/c_live_battery.json` (aggregates) and the private per-question file.
+35 sessions on the Max subscription: 1 auth probe, 2 isolation probes, the frozen 20, and 12
+extra absence questions. Model **`claude-sonnet-5`** — the account's default (`"model":
+"sonnet"` in the user settings, confirmed as the resolved id in the probe's stream-json init
+event), passed explicitly to every battery session. `--max-turns 25 --timeout 300
+--permission-mode bypassPermissions`, the question text alone as the prompt, a fresh process
+per question, no memory carried between sessions. **32 of 32 battery sessions completed, 0
+timeouts, $8.53 total, cost recorded for 32 of 32, mean wall 87 s.**
+
+**Isolation held.** Probe 2 (print a 16-hex token from a scratch file) and probe 3 (list the
+private tree) were both refused by the installed deny list; neither the token nor any private
+filename appears anywhere in either answer or in any tool result. Checksums: **18 planted
+files, 0 changed, 0 missing.** Memory files created: **0**. 72 transcripts containing canary
+phrases were quarantined afterwards. The rung root holds neither `CLAUDE.md` nor `.claude/`.
+
+### Behaviour, on the 17 answerable questions
+
+| measure | count |
+|---|---|
+| surfaced (an evidence path was printed to the session) | **8 / 17** |
+| opened *any* evidence file | **2 / 17** |
+| opened the right page | **1 / 17** |
+| cited the right page | **0 / 17** |
+| wrote at least one note before answering | 12 / 17 |
+| cited a file it never opened | **5** (on 2 questions) |
+| figures in the answer grounded on no opened page | **1** |
+| used `series` on a trajectory question | 2 / 4 |
+| cited a `must_not_cite` file | 3 |
+
+**Pre-registered gate: PASS needs cited_unopened ≤2, figures_ungrounded ≤2 and
+opened_right_page ≥6/17. WEAK needs cited_unopened ≤4 and opened_right_page ≥4/17. It is 5, 1
+and 1. FAIL.**
+
+**Which of the three pre-registered readings applies: the first.** Surfaced is comparatively
+high and opened_right_page is near zero, so the loss sits *after* retrieval. And the shape of
+it is not the shape anyone expected. **Every one of the 17 sessions issued at least one
+`open` command — 56 opens across 16 of the 20 sessions.** The rule was read and obeyed: the
+agents did not skip opening, they did not answer from search snippets, they wrote notes on 12
+of 17, and they named a file they had not opened on only 2 questions. **They opened the wrong
+pages.** On 6 of the 8 questions where the right path was printed on screen, the session went
+and opened something else instead.
+
+So "did it open what it was handed" has a precise answer: **it opened diligently and chose
+badly.** The open-before-cite rule is close to free — it cost almost nothing to follow and
+almost nothing was gained, because the bottleneck is one step earlier, in which of the ranked
+candidates is worth opening. The comparison point is S1's surfaced 5/17 and opened 0/5; this
+is 8/17 surfaced and 2/8 opened, better on both, and still nowhere near usable.
+
+Live retrieval did **not** underperform the offline gate by much: the frozen configuration
+puts the gold family in the offline top ten on 10 of 17, and the agent's own hand-written
+rewrites surfaced an evidence path on 8 of 17. The agent's rewrites are roughly as good as
+Haiku's. That closes off the second reading.
+
+### Absence, on 15 questions (3 frozen + 12 extra)
+
+| measure | count |
+|---|---|
+| quoted the shelf's own absence verdict (`NO_EDITION_FOR` / `NO_FAMILY_MATCHES` / `TOTAL_PAGES_MATCHING=0`, or listed ≥3 fiscal years) | **14 / 15** |
+| matched the inherited decline regex | 7 / 15 |
+| declined **and** asserted no figures (`absence_ok2`) | **1 / 15** (0 / 3 on the frozen three) |
+
+**Pre-registered gate: PASS ≥10/15 and ≥2/3 frozen. WEAK 8–9. It is 1. FAIL.**
+
+**The decomposition matters more than the headline, and it is reported without touching the
+metric.** `absence_ok2` requires two things at once, and each fails for a different reason.
+Of the 15, **8 assert no figures at all** but only 1 of those matches the decline regex; **6
+decline in substance but quote figures** — edition counts and page counts drawn from the
+shelf's own output, which the metric counts as asserted figures. Meanwhile 14 of 15 sessions
+correctly ran the shelf, got its absence verdict, and printed it.
+
+Two candidate defects in the *measurement*, written down and **not** acted on tonight, per
+the rule that a live result may not cause a code change in the same run:
+
+1. The decline regex is `run_harness.DECLINE`, written for a different battery. It does not
+   match the phrasings these sessions actually use when reporting a missing edition.
+2. Counting a figure quoted *from the shelf's own absence output* (how many editions are
+   held) as an invented figure conflates "made something up" with "answered the question
+   accurately".
+
+Until those are fixed, **1/15 is what the pre-registered metric says and it is what is
+recorded.** The honest one-sentence version for a reader: *on absence the system found the
+right verdict and said so 14 times out of 15, and the scorer as pre-registered credits it
+once* — and which of those two numbers describes reality is exactly what next night has to
+settle, by fixing the scorer before looking at the answers again.
+
+### One deviation, recorded rather than silently resolved
+
+The phase specified `run_harness.py --parallel 2` for the frozen 20 **and** a session
+configuration with `--disallowed Write,Edit,NotebookEdit,Agent,WebFetch,WebSearch` and the
+question text alone as the prompt. `run_harness.py` is a frozen instrument and can produce
+neither: it appends a citation instruction to every question and does not forward
+`--disallowed`, so its sessions would have run with a shorter disallowed list and a different
+prompt from the 12 extra absence questions, which the phase required to be identical. A new
+`c_live_battery.py` therefore calls `ask.py` per question with exactly the specified
+arguments at `--parallel 2`; `run_harness.py` was not modified.
+
+*Condition: this corpus, this shelf, this CLAUDE.md, claude-sonnet-5, 25 turns, 300 s, one
+battery, no prompt variants. It measures this configuration once and is not evidence about
+what a different prompt would do — and the phase forbade running a second battery to find out.*

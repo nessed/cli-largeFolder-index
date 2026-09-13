@@ -1,14 +1,512 @@
 {
- "cutoff": "2026-09-12T01:33",
- "n_phrases": 13,
- "moved": [],
- "left_open": [
+ "cutoff": "2026-09-14T03:34:00",
+ "n_phrases": 18,
+ "moved": [
   {
-   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-desktop-projects-code-ra-ship\\6489b11f-a22e-4d67-9eae-50256cdcdafc.jsonl",
-   "project_key": "C--Users-Ali-desktop-projects-code-ra-ship",
-   "phrases": 13,
-   "mtime": "2026-09-12T01:33:57"
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-desktop-projects-code-ra-ship\\50167957-a679-43b8-bc52-ef5003a49e69\\subagents\\agent-a9f41484c1785e87b.jsonl",
+   "project_key": "subagents",
+   "phrases": 18,
+   "mtime": "2026-09-12T03:57:18",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\subagents\\agent-a9f41484c1785e87b.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--users-ali-desktop-retrieval-lab\\9240840a-72c8-479e-97df-4a3195fd8f75.jsonl",
+   "project_key": "C--users-ali-desktop-retrieval-lab",
+   "phrases": 3,
+   "mtime": "2026-09-13T02:39:54",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--users-ali-desktop-retrieval-lab\\9240840a-72c8-479e-97df-4a3195fd8f75.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\05c9b37d-0a07-41f4-8228-9df25901d3e6.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:59:44",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\05c9b37d-0a07-41f4-8228-9df25901d3e6.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\08a58b45-54c0-4621-94b4-23482c517106.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:32:22",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\08a58b45-54c0-4621-94b4-23482c517106.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\0bafcb45-7b17-41d0-80f9-c897c51f24ab.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:04:15",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\0bafcb45-7b17-41d0-80f9-c897c51f24ab.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\0bf4937b-e70b-45fb-9f9a-d009e2811f90.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:01:16",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\0bf4937b-e70b-45fb-9f9a-d009e2811f90.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\116f6f2d-35a9-40b0-8e1b-6aba23548b1f.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:45",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\116f6f2d-35a9-40b0-8e1b-6aba23548b1f.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1896ced0-7a69-4f03-94bc-31b2ac5ce7ee.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:13",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1896ced0-7a69-4f03-94bc-31b2ac5ce7ee.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\19e37bb8-ce64-45ed-ac75-bd836d6d28a5.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:02:41",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\19e37bb8-ce64-45ed-ac75-bd836d6d28a5.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1a1fa03b-caab-4189-a115-dd2c6ef9804c.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:00:30",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1a1fa03b-caab-4189-a115-dd2c6ef9804c.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1b0de94d-3b06-4ddc-91f1-d3401080e989.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:02:25",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1b0de94d-3b06-4ddc-91f1-d3401080e989.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1b7baeca-8368-4e8e-90c3-5477a8837eec.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:03:06",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\1b7baeca-8368-4e8e-90c3-5477a8837eec.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\295d993d-5b10-454d-a022-b0cb42698e77.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:03:32",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\295d993d-5b10-454d-a022-b0cb42698e77.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\2c177d2e-5989-470c-afad-43bdd1ee2c7d.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:01:26",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\2c177d2e-5989-470c-afad-43bdd1ee2c7d.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\3ca9d198-4349-4b08-abc6-4c3a5b2f5b00.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:38",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\3ca9d198-4349-4b08-abc6-4c3a5b2f5b00.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\42971c6e-e29c-413f-acdf-c198d206499c.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:04:04",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\42971c6e-e29c-413f-acdf-c198d206499c.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\4325937b-ab5b-4319-9a6f-83739c68bba8.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:06",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\4325937b-ab5b-4319-9a6f-83739c68bba8.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\43831464-5f34-4925-836e-6bda6435e05c.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:30:25",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\43831464-5f34-4925-836e-6bda6435e05c.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\46c270e9-2156-43b5-a674-4c29990bbb27.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:53",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\46c270e9-2156-43b5-a674-4c29990bbb27.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\478c77c5-460b-4d5b-88f8-c139e45309e4.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:02:54",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\478c77c5-460b-4d5b-88f8-c139e45309e4.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\497d7fc2-8b3f-4692-a184-690e0924c796.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:55",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\497d7fc2-8b3f-4692-a184-690e0924c796.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\49d1d441-8c0e-4906-abf7-cd56495a2874.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:03:43",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\49d1d441-8c0e-4906-abf7-cd56495a2874.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\4e95db61-dc81-46ca-8d5b-840492c8726e.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:01:49",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\4e95db61-dc81-46ca-8d5b-840492c8726e.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\50c0ea08-41ce-4710-b270-7dd11a628298.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:29:59",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\50c0ea08-41ce-4710-b270-7dd11a628298.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\50dbc684-c63f-4e10-9624-af279058df84.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:07:39",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\50dbc684-c63f-4e10-9624-af279058df84.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\51d377fb-ce52-4065-a282-0efe98a6375f.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:32:02",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\51d377fb-ce52-4065-a282-0efe98a6375f.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\66be54fc-c10c-4213-a9a0-b5ce3b843afb.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:40",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\66be54fc-c10c-4213-a9a0-b5ce3b843afb.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\68fd2799-4dec-4d7b-b0e2-3eae8af39e36.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:53:45",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\68fd2799-4dec-4d7b-b0e2-3eae8af39e36.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\6cb04edd-3906-49d8-8811-888fc0c5af49.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:07:42",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\6cb04edd-3906-49d8-8811-888fc0c5af49.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\70257534-c8b0-451c-9f84-4df7f08d69c8.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:51:59",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\70257534-c8b0-451c-9f84-4df7f08d69c8.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\717fa7ba-350f-467e-8453-a824812be2a7.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:08:20",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\717fa7ba-350f-467e-8453-a824812be2a7.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\7c2d640d-9673-42ed-bd9a-f84b7457f5a3.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:31",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\7c2d640d-9673-42ed-bd9a-f84b7457f5a3.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\7f87fab2-ccc8-473c-b5c3-e330412981d2.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:51:45",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\7f87fab2-ccc8-473c-b5c3-e330412981d2.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\84145139-f4f8-49ee-b9d4-a3c964bbee9d.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:04:14",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\84145139-f4f8-49ee-b9d4-a3c964bbee9d.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\84775eab-3d8c-4bac-906a-e450574a98d5.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:30:01",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\84775eab-3d8c-4bac-906a-e450574a98d5.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\85493ae4-c99d-4a5d-b677-4d67c9c4b921.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:08:32",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\85493ae4-c99d-4a5d-b677-4d67c9c4b921.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\8dd366bf-0319-42fc-a9b7-0127912a4ca1.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:54:19",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\8dd366bf-0319-42fc-a9b7-0127912a4ca1.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\8df2f737-99c8-4996-872a-beb912a87294.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:53:05",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\8df2f737-99c8-4996-872a-beb912a87294.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\9356c625-4e11-41b9-b73a-f904bdc5a922.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:55",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\9356c625-4e11-41b9-b73a-f904bdc5a922.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\93b04a9d-54f1-4ee7-9740-29abdabeaf61.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:24:34",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\93b04a9d-54f1-4ee7-9740-29abdabeaf61.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\946d37f7-488f-41ae-8807-6cbea9f308ad.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:08:06",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\946d37f7-488f-41ae-8807-6cbea9f308ad.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\9581c062-f21a-4ad4-a314-79504344c726.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:32:29",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\9581c062-f21a-4ad4-a314-79504344c726.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\96f83c90-8338-4080-97cd-d2a2f469c1b8.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:08:40",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\96f83c90-8338-4080-97cd-d2a2f469c1b8.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\9a36103f-a7d6-4b7d-9faf-f8f5ab23797f.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:07:17",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\9a36103f-a7d6-4b7d-9faf-f8f5ab23797f.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a037f10e-c524-421d-bcbb-aa4e64a3cd67.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:34",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a037f10e-c524-421d-bcbb-aa4e64a3cd67.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a7822fdd-7a4e-42d1-acd1-22d640b0063f.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:30:51",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a7822fdd-7a4e-42d1-acd1-22d640b0063f.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a7c332c1-71dd-407f-80b2-ff98cdaa3e11.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:03:20",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a7c332c1-71dd-407f-80b2-ff98cdaa3e11.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a9528595-4d8c-4d55-84da-4bef8690e5f3.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:07:59",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\a9528595-4d8c-4d55-84da-4bef8690e5f3.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\b56f63e7-0b25-451f-8c0d-ca1259c949b3.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:29:58",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\b56f63e7-0b25-451f-8c0d-ca1259c949b3.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\b5aff516-f320-4f9b-b283-0495b5ab9981.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:30",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\b5aff516-f320-4f9b-b283-0495b5ab9981.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\b6b8bc36-0eb8-419d-aea4-0c49fb6ac451.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:59",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\b6b8bc36-0eb8-419d-aea4-0c49fb6ac451.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\ba63429a-8d95-455c-bd52-1e3fa49cdac2.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:30:23",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\ba63429a-8d95-455c-bd52-1e3fa49cdac2.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c077c6fb-6c15-48da-839c-dbfd2b262c75.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:07",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c077c6fb-6c15-48da-839c-dbfd2b262c75.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c4155ac6-a322-471f-ae77-0c23fd02e39a.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-14T03:23:12",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c4155ac6-a322-471f-ae77-0c23fd02e39a.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c50b7f86-7124-4a1e-9124-ee0739647a3d.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:06",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c50b7f86-7124-4a1e-9124-ee0739647a3d.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cb58a15e-eb89-435f-9378-4e72272f7ba4.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:30:47",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cb58a15e-eb89-435f-9378-4e72272f7ba4.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cc23f0d8-3f43-432f-89b7-5b3471c3394e.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:06:30",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cc23f0d8-3f43-432f-89b7-5b3471c3394e.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cd75e3ea-046c-458e-b17f-ad482e931bef.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:24",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cd75e3ea-046c-458e-b17f-ad482e931bef.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\ce45a4af-4150-414e-acf7-1be6ba8ab89c.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:07:17",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\ce45a4af-4150-414e-acf7-1be6ba8ab89c.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cf2fd1e4-6307-40a4-bb5e-c7ebecd1dc79.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:33",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\cf2fd1e4-6307-40a4-bb5e-c7ebecd1dc79.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d37961e5-8729-4429-a1a4-e7aefb56f7a2.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:10",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d37961e5-8729-4429-a1a4-e7aefb56f7a2.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d3cd532e-8799-4ca5-9f2b-18605a39e6ca.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:51:57",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d3cd532e-8799-4ca5-9f2b-18605a39e6ca.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d44d8246-8e64-455d-bb07-eacc7355c9f9.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:15",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d44d8246-8e64-455d-bb07-eacc7355c9f9.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d73007b7-1dbb-4a90-ae97-630cbca6c211.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:32",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\d73007b7-1dbb-4a90-ae97-630cbca6c211.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\db1dfc40-ef57-454d-8a96-3c886228168d.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:04:03",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\db1dfc40-ef57-454d-8a96-3c886228168d.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\e3399048-851c-4dc0-8cb7-12554672e7b2.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:07",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\e3399048-851c-4dc0-8cb7-12554672e7b2.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\eeef41bb-fe1c-4e34-b8fe-c30963e0df56.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:30:22",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\eeef41bb-fe1c-4e34-b8fe-c30963e0df56.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\f4da5eab-a280-4c1a-b374-19a124e2ea37.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T06:52:19",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\f4da5eab-a280-4c1a-b374-19a124e2ea37.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\f861cf3d-b0c9-4f43-9e50-5d823564789b.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:03:53",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\f861cf3d-b0c9-4f43-9e50-5d823564789b.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\f9cfd299-1cf5-4103-8e76-917b99175424.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:01:38",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\f9cfd299-1cf5-4103-8e76-917b99175424.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\fd143d87-4add-495c-91d3-543a83918a64.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:31:55",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\fd143d87-4add-495c-91d3-543a83918a64.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\fee6a7c7-928a-4e55-94cb-5e5ccd8164f6.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-12T07:08:22",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\fee6a7c7-928a-4e55-94cb-5e5ccd8164f6.jsonl"
   }
  ],
- "scanned": 290
+ "left_open": [],
+ "scanned": 580
 }
