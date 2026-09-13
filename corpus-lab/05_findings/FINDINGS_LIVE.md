@@ -774,3 +774,46 @@ and the page result.
 
 *Condition: this corpus, this shelf's family and edition_key grouping, 17 questions, gold
 family handed in. A different family/edition grouping could change every number here.*
+
+## F44. The reranker recovers exactly what dropping a rewrite cost, and nothing more
+
+**Measured**, `bin/c_rerank_gate.py`, `state/c_rerank_gate.json`. Model
+`Xenova/ms-marco-MiniLM-L-6-v2` through fastembed's cross-encoder; preflight passed on the
+first model at 5/5 generic everyday pairs ordered correctly and 16.2 pairs/s on 350-word
+passages, so no second model was tried. Candidate generation frozen, pool depth 100
+(authorised by F41), passage = the family's best document's title, fiscal year and up to 8
+catalog lines by content-word overlap, capped at 350 words. Query = the verbatim question.
+
+Gold family in the top 10:
+
+| configuration | dev 17 | holdout 30 |
+|---|---|---|
+| C2 fused, all six queries (F41 baseline) | 9 | 14 |
+| fused pool as A1 sees it (rewrite 4 dropped, cut to 100) | 7 | 13 |
+| **A1** — cross-encoder score alone | **4** | 12 |
+| **A1b** — RRF(60) of the A1 rank and the fused rank | **9** | 16 |
+
+**Pre-registered gate: STOP.** The bar was ≥12/17 for PASS, 10–11/17 for WEAK, ≤9/17 for
+STOP, applied to the better configuration on the dev set. A1b is 9 of 17. The holdout moved
+the right way (+2 over C2) but the configuration may not be chosen on the holdout and the
+dev gate is not met, so this is a STOP and the bar was not moved to rescue it.
+
+**The cross-encoder on its own is actively harmful**: 4 of 17, down from a 7 of 17 pool it
+was handed. Ranking a publication by how well a question matches its *catalog card* is not
+the same task the model was trained for — the card is a label, not a passage that answers
+anything — and on this evidence the model cannot tell a directly relevant government
+publication from a plausibly-titled neighbour. A1b's 9 of 17 is not the reranker working;
+it is RRF pulling the fused rank back in after the cross-encoder pushed it out.
+
+**A pre-registered rule that turned out to cost something.** F41 recorded that no question is
+found by exactly one rewrite index, so A1 dropped rewrite 4 (the "which publication would
+carry this" guess) from candidate generation, as pre-registered. Doing so cost one question
+out of the top-100 pool (recall@100 16 → 15) and two out of the fused top 10 (9 → 7). So
+A1b's 9 exactly restores C2's 9, and the honest reading of the whole experiment is: **the
+reranker bought nothing.** "Never uniquely contributes a find" was the wrong test for whether
+a query variant earns its place in an RRF fusion; contributing rank mass to a family other
+variants also find is worth something, and the rule could not see that.
+
+*Condition: this corpus, this shelf, one cross-encoder, two configurations, no weight sweeps.
+It does not show that no reranker can help — it shows that this compact cross-encoder over
+shelf catalog cards does not, and that the document bottleneck survives A0's diagnosis intact.*
