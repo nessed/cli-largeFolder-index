@@ -1,0 +1,679 @@
+{
+ "generated_utc": "2026-09-13T19:51:58Z",
+ "n_answerable": 17,
+ "dupe_mapping": {
+  "n_evidence_mapped_via_dupes": 3,
+  "n_questions_rescued": 2,
+  "n_excluded_legacy": 2,
+  "n_excluded_corrected": 0
+ },
+ "CORRECTED": {
+  "C1": {
+   "per_question": {
+    "cd_04": {
+     "type": "canonical_duplicate",
+     "family_rank": 28,
+     "n_families_ranked": 85
+    },
+    "mb_04": {
+     "type": "multi_branch",
+     "family_rank": 30,
+     "n_families_ranked": 90
+    },
+    "mb_05": {
+     "type": "multi_branch",
+     "family_rank": 9,
+     "n_families_ranked": 90
+    },
+    "mb_07": {
+     "type": "multi_branch",
+     "family_rank": null,
+     "n_families_ranked": 104
+    },
+    "nm_09": {
+     "type": "name_content_mismatch",
+     "family_rank": 63,
+     "n_families_ranked": 104
+    },
+    "pl_01": {
+     "type": "point_lookup",
+     "family_rank": 18,
+     "n_families_ranked": 97
+    },
+    "pl_14": {
+     "type": "point_lookup",
+     "family_rank": 3,
+     "n_families_ranked": 105
+    },
+    "pl_21": {
+     "type": "point_lookup",
+     "family_rank": 68,
+     "n_families_ranked": 88
+    },
+    "rc_05": {
+     "type": "reconciliation",
+     "family_rank": 20,
+     "n_families_ranked": 113
+    },
+    "rc_07": {
+     "type": "reconciliation",
+     "family_rank": 2,
+     "n_families_ranked": 109
+    },
+    "rl_05": {
+     "type": "relationship",
+     "family_rank": 8,
+     "n_families_ranked": 83
+    },
+    "sd_03": {
+     "type": "stale_doc",
+     "family_rank": 49,
+     "n_families_ranked": 255
+    },
+    "sd_05": {
+     "type": "stale_doc",
+     "family_rank": null,
+     "n_families_ranked": 100
+    },
+    "tr_04": {
+     "type": "trajectory",
+     "family_rank": 21,
+     "n_families_ranked": 95
+    },
+    "tr_07": {
+     "type": "trajectory",
+     "family_rank": 8,
+     "n_families_ranked": 114
+    },
+    "tr_10": {
+     "type": "trajectory",
+     "family_rank": 4,
+     "n_families_ranked": 80
+    },
+    "tr_16": {
+     "type": "trajectory",
+     "family_rank": null,
+     "n_families_ranked": 67
+    }
+   },
+   "curve": {
+    "recall_at_10": 6,
+    "recall_at_20": 8,
+    "recall_at_50": 12,
+    "recall_at_100": 14,
+    "recall_at_200": 14
+   },
+   "family_le_10": 6
+  },
+  "C2": {
+   "per_question": {
+    "cd_04": {
+     "type": "canonical_duplicate",
+     "family_rank": 7,
+     "n_families_ranked": 221
+    },
+    "mb_04": {
+     "type": "multi_branch",
+     "family_rank": 69,
+     "n_families_ranked": 217
+    },
+    "mb_05": {
+     "type": "multi_branch",
+     "family_rank": 28,
+     "n_families_ranked": 284
+    },
+    "mb_07": {
+     "type": "multi_branch",
+     "family_rank": 100,
+     "n_families_ranked": 285
+    },
+    "nm_09": {
+     "type": "name_content_mismatch",
+     "family_rank": 60,
+     "n_families_ranked": 138
+    },
+    "pl_01": {
+     "type": "point_lookup",
+     "family_rank": 15,
+     "n_families_ranked": 145
+    },
+    "pl_14": {
+     "type": "point_lookup",
+     "family_rank": 3,
+     "n_families_ranked": 164
+    },
+    "pl_21": {
+     "type": "point_lookup",
+     "family_rank": 74,
+     "n_families_ranked": 153
+    },
+    "rc_05": {
+     "type": "reconciliation",
+     "family_rank": 5,
+     "n_families_ranked": 220
+    },
+    "rc_07": {
+     "type": "reconciliation",
+     "family_rank": 1,
+     "n_families_ranked": 160
+    },
+    "rl_05": {
+     "type": "relationship",
+     "family_rank": 2,
+     "n_families_ranked": 242
+    },
+    "sd_03": {
+     "type": "stale_doc",
+     "family_rank": 5,
+     "n_families_ranked": 339
+    },
+    "sd_05": {
+     "type": "stale_doc",
+     "family_rank": null,
+     "n_families_ranked": 236
+    },
+    "tr_04": {
+     "type": "trajectory",
+     "family_rank": 9,
+     "n_families_ranked": 173
+    },
+    "tr_07": {
+     "type": "trajectory",
+     "family_rank": 3,
+     "n_families_ranked": 251
+    },
+    "tr_10": {
+     "type": "trajectory",
+     "family_rank": 3,
+     "n_families_ranked": 128
+    },
+    "tr_16": {
+     "type": "trajectory",
+     "family_rank": 57,
+     "n_families_ranked": 194
+    }
+   },
+   "curve": {
+    "recall_at_10": 9,
+    "recall_at_20": 10,
+    "recall_at_50": 11,
+    "recall_at_100": 16,
+    "recall_at_200": 16
+   },
+   "family_le_10": 9
+  }
+ },
+ "HISTORICAL_reproduction": {
+  "C1_family_le_10": 6,
+  "C2_family_le_10": 8,
+  "n": 17
+ },
+ "wall_s": 1.1,
+ "page": {
+  "full": {
+   "query_mode": "full",
+   "caption_channel": "off",
+   "micro_hits": 25,
+   "micro_n": 57,
+   "micro_pct": 43.9,
+   "macro_pct": 30.5,
+   "n_questions_with_pdf_addresses": 13,
+   "by_type": {
+    "multi_branch": {
+     "hits": 2,
+     "n": 9,
+     "questions": 3
+    },
+    "point_lookup": {
+     "hits": 0,
+     "n": 3,
+     "questions": 3
+    },
+    "reconciliation": {
+     "hits": 0,
+     "n": 2,
+     "questions": 2
+    },
+    "relationship": {
+     "hits": 1,
+     "n": 1,
+     "questions": 1
+    },
+    "trajectory": {
+     "hits": 22,
+     "n": 42,
+     "questions": 4
+    }
+   },
+   "n_questions_no_caption_covers_all_query_words": 0,
+   "per_question": {
+    "mb_04": {
+     "type": "multi_branch",
+     "page_ranks": [
+      11,
+      15,
+      null
+     ],
+     "n_addresses": 3,
+     "hits_le_5": 0
+    },
+    "mb_05": {
+     "type": "multi_branch",
+     "page_ranks": [
+      null,
+      11,
+      5
+     ],
+     "n_addresses": 3,
+     "hits_le_5": 1
+    },
+    "mb_07": {
+     "type": "multi_branch",
+     "page_ranks": [
+      null,
+      3,
+      null
+     ],
+     "n_addresses": 3,
+     "hits_le_5": 1
+    },
+    "pl_01": {
+     "type": "point_lookup",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "pl_14": {
+     "type": "point_lookup",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "pl_21": {
+     "type": "point_lookup",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "rc_05": {
+     "type": "reconciliation",
+     "page_ranks": [
+      16
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "rc_07": {
+     "type": "reconciliation",
+     "page_ranks": [
+      15
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "rl_05": {
+     "type": "relationship",
+     "page_ranks": [
+      1
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 1
+    },
+    "tr_04": {
+     "type": "trajectory",
+     "page_ranks": [
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1,
+      19,
+      19
+     ],
+     "n_addresses": 10,
+     "hits_le_5": 8
+    },
+    "tr_07": {
+     "type": "trajectory",
+     "page_ranks": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2
+     ],
+     "n_addresses": 8,
+     "hits_le_5": 8
+    },
+    "tr_10": {
+     "type": "trajectory",
+     "page_ranks": [
+      null,
+      null,
+      9,
+      9,
+      19,
+      19,
+      null,
+      null,
+      null,
+      null,
+      11,
+      11
+     ],
+     "n_addresses": 12,
+     "hits_le_5": 0
+    },
+    "tr_16": {
+     "type": "trajectory",
+     "page_ranks": [
+      1,
+      1,
+      1,
+      1,
+      null,
+      null,
+      null,
+      null,
+      1,
+      1,
+      18,
+      18
+     ],
+     "n_addresses": 12,
+     "hits_le_5": 6
+    }
+   }
+  },
+  "row": {
+   "query_mode": "row",
+   "caption_channel": "off",
+   "micro_hits": 24,
+   "micro_n": 57,
+   "micro_pct": 42.1,
+   "macro_pct": 27.9,
+   "n_questions_with_pdf_addresses": 13,
+   "by_type": {
+    "multi_branch": {
+     "hits": 1,
+     "n": 9,
+     "questions": 3
+    },
+    "point_lookup": {
+     "hits": 0,
+     "n": 3,
+     "questions": 3
+    },
+    "reconciliation": {
+     "hits": 0,
+     "n": 2,
+     "questions": 2
+    },
+    "relationship": {
+     "hits": 1,
+     "n": 1,
+     "questions": 1
+    },
+    "trajectory": {
+     "hits": 22,
+     "n": 42,
+     "questions": 4
+    }
+   },
+   "n_questions_no_caption_covers_all_query_words": 0,
+   "per_question": {
+    "mb_04": {
+     "type": "multi_branch",
+     "page_ranks": [
+      null,
+      10,
+      null
+     ],
+     "n_addresses": 3,
+     "hits_le_5": 0
+    },
+    "mb_05": {
+     "type": "multi_branch",
+     "page_ranks": [
+      null,
+      null,
+      null
+     ],
+     "n_addresses": 3,
+     "hits_le_5": 0
+    },
+    "mb_07": {
+     "type": "multi_branch",
+     "page_ranks": [
+      13,
+      2,
+      null
+     ],
+     "n_addresses": 3,
+     "hits_le_5": 1
+    },
+    "pl_01": {
+     "type": "point_lookup",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "pl_14": {
+     "type": "point_lookup",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "pl_21": {
+     "type": "point_lookup",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "rc_05": {
+     "type": "reconciliation",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "rc_07": {
+     "type": "reconciliation",
+     "page_ranks": [
+      null
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 0
+    },
+    "rl_05": {
+     "type": "relationship",
+     "page_ranks": [
+      2
+     ],
+     "n_addresses": 1,
+     "hits_le_5": 1
+    },
+    "tr_04": {
+     "type": "trajectory",
+     "page_ranks": [
+      1,
+      1,
+      3,
+      3,
+      2,
+      2,
+      5,
+      5,
+      19,
+      19
+     ],
+     "n_addresses": 10,
+     "hits_le_5": 8
+    },
+    "tr_07": {
+     "type": "trajectory",
+     "page_ranks": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+     ],
+     "n_addresses": 8,
+     "hits_le_5": 8
+    },
+    "tr_10": {
+     "type": "trajectory",
+     "page_ranks": [
+      3,
+      3,
+      6,
+      6,
+      6,
+      6,
+      null,
+      null,
+      null,
+      null,
+      6,
+      6
+     ],
+     "n_addresses": 12,
+     "hits_le_5": 2
+    },
+    "tr_16": {
+     "type": "trajectory",
+     "page_ranks": [
+      1,
+      1,
+      3,
+      3,
+      null,
+      null,
+      null,
+      null,
+      15,
+      15,
+      15,
+      15
+     ],
+     "n_addresses": 12,
+     "hits_le_5": 4
+    }
+   }
+  }
+ },
+ "absence": {
+  "document_level_n": 11,
+  "identifier_level_n": 4,
+  "doc_absence_hits": 11,
+  "n_no_edition": 11,
+  "n_no_family": 0,
+  "n_symmetric_present": 8,
+  "n_unresolvable": 3,
+  "symmetric_band": "WEAK",
+  "identifier_absence_hits": 4,
+  "per_question": {
+   "ab_00": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_01": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_02": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_03": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": null
+   },
+   "ab_04": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": null
+   },
+   "ab_05": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": null
+   },
+   "ab_06": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_07": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_08": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_09": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   },
+   "ab_10": {
+    "absence_status": "NO_EDITION_FOR",
+    "symmetric_status": "EDITION_PRESENT"
+   }
+  }
+ },
+ "series_ok_rerun": {
+  "hits": 1,
+  "n": 4,
+  "per_question": {
+   "tr_04": {
+    "hit_editions": 2,
+    "n_editions": 15,
+    "ok": true,
+    "skipped": false,
+    "row_words_word_count": 3
+   },
+   "tr_07": {
+    "hit_editions": 0,
+    "n_editions": 15,
+    "ok": false,
+    "skipped": false,
+    "row_words_word_count": 3
+   },
+   "tr_10": {
+    "hit_editions": 0,
+    "n_editions": 15,
+    "ok": false,
+    "skipped": false,
+    "row_words_word_count": 2
+   },
+   "tr_16": {
+    "hit_editions": 0,
+    "n_editions": 6,
+    "ok": false,
+    "skipped": false,
+    "row_words_word_count": 3
+   }
+  }
+ }
+}

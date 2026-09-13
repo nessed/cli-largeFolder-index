@@ -1,0 +1,17 @@
+{
+ "n": 17,
+ "C1": {
+  "recall_at_10": 6,
+  "recall_at_20": 8,
+  "recall_at_50": 12,
+  "recall_at_100": 14,
+  "recall_at_200": 14
+ },
+ "C2": {
+  "recall_at_10": 9,
+  "recall_at_20": 10,
+  "recall_at_50": 11,
+  "recall_at_100": 16,
+  "recall_at_200": 16
+ }
+}

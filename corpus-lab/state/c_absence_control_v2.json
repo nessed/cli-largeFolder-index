@@ -1,0 +1,57 @@
+{
+ "document_level_n": 11,
+ "identifier_level_n": 4,
+ "doc_absence_hits": 11,
+ "n_no_edition": 11,
+ "n_no_family": 0,
+ "n_symmetric_present": 8,
+ "n_unresolvable": 3,
+ "symmetric_band": "WEAK",
+ "identifier_absence_hits": 4,
+ "per_question": {
+  "ab_00": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_01": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_02": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_03": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": null
+  },
+  "ab_04": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": null
+  },
+  "ab_05": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": null
+  },
+  "ab_06": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_07": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_08": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_09": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  },
+  "ab_10": {
+   "absence_status": "NO_EDITION_FOR",
+   "symmetric_status": "EDITION_PRESENT"
+  }
+ }
+}
