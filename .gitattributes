@@ -1,0 +1,18 @@
+# Normalize line endings in the repository to LF so diffs stay readable on
+# GitHub regardless of which machine or tool wrote a file. Working copies on
+# Windows are unaffected by this (core.autocrlf governs checkout).
+* text=auto eol=lf
+
+# Machine-readable run state and data: still text, still normalized, but mark
+# them so they are not treated as prose in diffs.
+*.jsonl text eol=lf
+*.json  text eol=lf
+*.csv   text eol=lf
+
+# Never normalize binaries.
+*.db    binary
+*.npy   binary
+*.parquet binary
+*.pdf   binary
+*.xlsx  binary
+*.docx  binary
