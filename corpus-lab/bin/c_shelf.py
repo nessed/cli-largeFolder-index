@@ -270,16 +270,10 @@ def _editions_for_family(ctx, family):
     return singletons, n_copies, "singleton"
 
 
-def do_find(ctx, queries, pool=200):
-    """Returns ALL fused families, ranked best-first (not sliced to any k) --
-    the CLI printer shows the top --k, the offline gate checks rank within
-    whatever depth it needs (measurement uses 50)."""
-    all_lists = []
-    for q in queries:
-        all_lists.append(_lex_search(ctx, q, pool))
-        all_lists.append(_vec_search(ctx, q, pool))
-    doc_scores = _rrf_fuse(all_lists, k=60)
-
+def _fam_rank_from_doc_scores(ctx, doc_scores):
+    """Collapse a doc-level score map to a family-level one: a family scores
+    what its single best-scoring document scores (unchanged from the original
+    fusion), and carries that document as its representative."""
     fam_scores, fam_best_doc = {}, {}
     for rel, score in doc_scores.items():
         fam = ctx.rel_to_family.get(rel)
@@ -288,8 +282,70 @@ def do_find(ctx, queries, pool=200):
         if fam not in fam_scores or score > fam_scores[fam]:
             fam_scores[fam] = score
             fam_best_doc[fam] = rel
+    return fam_scores, fam_best_doc
 
-    ranked = sorted(fam_scores.items(), key=lambda x: -x[1])
+
+def do_find(ctx, queries, pool=200, fusion="rrf", caption_channel=None):
+    """Returns ALL fused families, ranked best-first (not sliced to any k) --
+    the CLI printer shows the top --k, the offline gate checks rank within
+    whatever depth it needs (measurement uses 50).
+
+    fusion="rrf" (default, unchanged): one reciprocal-rank fusion over every
+    query's lexical and vector lists at once, so a family's score is the sum of
+    its reciprocal ranks everywhere it appeared.
+
+    fusion="best" (2026-09-15, experiment C): each query is fused on its own
+    into its own family ranking; a family is then scored by its BEST rank
+    across the queries, ties broken by how many queries returned it at all and
+    then by summed per-query RRF score. The point is that summation lets five
+    queries that half-found a family outvote one query that found it first,
+    which F41 measured as costing three questions their own inputs already had.
+    No tunable constant is introduced: k=60 is the same one the rrf rule uses.
+
+    caption_channel (2026-09-15, experiment E) adds the caption line as its own
+    retrieval channel: "lex" gives every query a third ranked list from the
+    caption FTS index, "lex+vec" a fourth from caption embeddings. It is added
+    per query, so both fusion rules see it the same way.
+    """
+    if fusion not in ("rrf", "best"):
+        raise ValueError("unknown fusion: %r" % (fusion,))
+    if caption_channel not in (None, "lex", "lex+vec"):
+        raise ValueError("unknown caption_channel: %r" % (caption_channel,))
+
+    per_query_lists = []
+    for q in queries:
+        lists = [_lex_search(ctx, q, pool), _vec_search(ctx, q, pool)]
+        if caption_channel in ("lex", "lex+vec"):
+            lists.append(_cap_search(ctx, q, pool)[0])
+        if caption_channel == "lex+vec":
+            lists.append(_cap_vec_search(ctx, q, pool)[0])
+        per_query_lists.append(lists)
+
+    if fusion == "rrf":
+        all_lists = [lst for lists in per_query_lists for lst in lists]
+        doc_scores = _rrf_fuse(all_lists, k=60)
+        fam_scores, fam_best_doc = _fam_rank_from_doc_scores(ctx, doc_scores)
+        ranked = sorted(fam_scores.items(), key=lambda x: -x[1])
+        n_docs_considered = len(doc_scores)
+    else:
+        best_rank, n_found, sum_rrf = {}, {}, {}
+        fam_best_doc, docs_seen = {}, set()
+        for lists in per_query_lists:
+            doc_scores = _rrf_fuse(lists, k=60)
+            docs_seen.update(doc_scores)
+            q_fam_scores, q_fam_doc = _fam_rank_from_doc_scores(ctx, doc_scores)
+            q_ranked = sorted(q_fam_scores.items(), key=lambda x: -x[1])
+            for rank, (fam, score) in enumerate(q_ranked, start=1):
+                n_found[fam] = n_found.get(fam, 0) + 1
+                sum_rrf[fam] = sum_rrf.get(fam, 0.0) + score
+                if fam not in best_rank or rank < best_rank[fam]:
+                    best_rank[fam] = rank
+                    fam_best_doc[fam] = q_fam_doc[fam]
+        order = sorted(best_rank.items(),
+                       key=lambda x: (x[1], -n_found[x[0]], -sum_rrf[x[0]]))
+        ranked = [(fam, sum_rrf[fam]) for fam, _ in order]
+        n_docs_considered = len(docs_seen)
+
     qwords = []
     for q in queries:
         qwords.extend(content_words(q))
@@ -315,7 +371,8 @@ def do_find(ctx, queries, pool=200):
     return {
         "families": families_out,
         "receipt": {"queries": len(queries), "lex": pool, "vec": pool,
-                    "families": len(fam_scores), "docs_considered": len(doc_scores)},
+                    "fusion": fusion, "caption": caption_channel or "off",
+                    "families": len(ranked), "docs_considered": n_docs_considered},
         "coverage": ctx.coverage(),
         "qwords": qwords,
     }
@@ -804,16 +861,21 @@ def main():
 
     p = sub.add_parser("find"); p.add_argument("question"); p.add_argument("--q", action="append", default=[])
     p.add_argument("--k", type=int, default=12); p.add_argument("--slug")
+    p.add_argument("--fusion", choices=["rrf", "best"], default="rrf")
+    p.add_argument("--caption-channel", dest="caption_channel",
+                   choices=["off", "lex", "lex+vec"], default="off")
 
     p = sub.add_parser("have"); p.add_argument("words"); p.add_argument("--fy")
 
     p = sub.add_parser("inside"); p.add_argument("rel"); p.add_argument("terms")
     p.add_argument("--k", type=int, default=8)
+    p.add_argument("--caption", choices=["off", "first", "first_label"], default="off")
 
     p = sub.add_parser("tables"); p.add_argument("rel"); p.add_argument("--grep")
 
     p = sub.add_parser("series"); p.add_argument("row_words"); p.add_argument("--family", required=True)
     p.add_argument("--from", dest="fy_from"); p.add_argument("--to", dest="fy_to"); p.add_argument("--slug")
+    p.add_argument("--caption", choices=["off", "first", "first_label"], default="off")
 
     p = sub.add_parser("copies"); p.add_argument("rel")
 
@@ -846,19 +908,22 @@ def main():
 
     if a.cmd == "find":
         queries = [a.question] + list(a.q)
-        res = do_find(ctx, queries)
+        cc = None if a.caption_channel == "off" else a.caption_channel
+        res = do_find(ctx, queries, fusion=a.fusion, caption_channel=cc)
         _print_find(res, a.k)
     elif a.cmd == "have":
         res = do_have(ctx, a.words, fy=a.fy)
         _print_have(res)
     elif a.cmd == "inside":
-        res = do_inside(ctx, a.rel, a.terms, k=a.k)
+        res = do_inside(ctx, a.rel, a.terms, k=a.k,
+                        caption_channel=None if a.caption == "off" else a.caption)
         _print_inside(res)
     elif a.cmd == "tables":
         res = do_tables(ctx, a.rel, grep=a.grep)
         _print_tables(res)
     elif a.cmd == "series":
-        res = do_series(ctx, a.row_words, a.family, fy_from=a.fy_from, fy_to=a.fy_to)
+        res = do_series(ctx, a.row_words, a.family, fy_from=a.fy_from, fy_to=a.fy_to,
+                        caption_channel=None if a.caption == "off" else a.caption)
         _print_series(res)
     elif a.cmd == "copies":
         res = do_copies(ctx, a.rel)

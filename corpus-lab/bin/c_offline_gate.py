@@ -451,10 +451,13 @@ def resolve_rel(ctx, rel, rel_to_survivor):
     return rel_to_survivor.get(rel)
 
 
-def family_rank_full(ctx, queries, ev_families, pool=200):
+def family_rank_full(ctx, queries, ev_families, pool=200,
+                     fusion="rrf", caption_channel=None):
     """F2. Rank of the gold family in the full fused ranking (do_find
-    returns every fused family, not a slice)."""
-    res = CSH.do_find(ctx, queries, pool=pool)
+    returns every fused family, not a slice). The two keyword arguments
+    default to the 2026-09-14 behaviour exactly."""
+    res = CSH.do_find(ctx, queries, pool=pool, fusion=fusion,
+                      caption_channel=caption_channel)
     fams = res["families"]
     for i, f in enumerate(fams, start=1):
         if f["family"] in ev_families:
@@ -515,7 +518,8 @@ def load_frozen(ctx):
     return qs_by_id, answerable_ids, per_q, counts
 
 
-def doc_ranks_for_config(ctx, answerable_ids, per_q, queries_by_qid, legacy_exclusion):
+def doc_ranks_for_config(ctx, answerable_ids, per_q, queries_by_qid, legacy_exclusion,
+                         fusion="rrf", caption_channel=None):
     """F2/D2. Per-question gold-family rank at full depth, under either the
     legacy exclusion rule (a hash-collapsed evidence path is a miss) or the
     corrected one (resolve it to its surviving twin)."""
@@ -528,7 +532,8 @@ def doc_ranks_for_config(ctx, answerable_ids, per_q, queries_by_qid, legacy_excl
                         "skipped": "evidence_not_on_shelf"}
             continue
         fams = _ev_families(ctx, rels)
-        rank, n_ranked = family_rank_full(ctx, queries_by_qid[qid], fams)
+        rank, n_ranked = family_rank_full(ctx, queries_by_qid[qid], fams,
+                                         fusion=fusion, caption_channel=caption_channel)
         out[qid] = {"type": pq["type"], "family_rank": rank, "n_families_ranked": n_ranked}
     return out
 
@@ -775,6 +780,23 @@ def holdout_recall(ctx, budget=40):
     return out
 
 
+def holdout_curve_for_config(ctx, fusion="rrf", caption_channel=None, budget=0):
+    """ONE holdout evaluation of ONE retrieval configuration, using the C2
+    rewrites. Returns aggregate counts only -- no ids, no per-question rank
+    ever leaves this function. budget=0 forbids any new Haiku call: the
+    holdout rewrite cache must already be complete."""
+    items, counts = holdout_rank_inputs(ctx, budget)
+    ranks = [family_rank_full(ctx, q2, f, fusion=fusion,
+                              caption_channel=caption_channel)[0]
+             for _, q2, f in items]
+    out = {k: counts[k] for k in ("n_holdout", "n_answerable", "n_measurable",
+                                  "n_excluded", "n_haiku_calls")}
+    out["fusion"] = fusion
+    out["caption_channel"] = caption_channel or "off"
+    out["curve"] = {"recall_at_%d" % d: recall_at(ranks, d) for d in RECALL_DEPTHS}
+    return out
+
+
 # --------------------------------------------------------------------- #
 # legacy reproduction: the historical gate rows, recomputed
 # --------------------------------------------------------------------- #
@@ -808,11 +830,18 @@ def run_gate_v2(argv):
         return (flag in argv) or ("--all" in argv)
 
     if want("--doc"):
+        fusion = argv[argv.index("--fusion") + 1] if "--fusion" in argv else "rrf"
+        dchan = None
+        if "--caption-channel" in argv:
+            c = argv[argv.index("--caption-channel") + 1]
+            dchan = None if c == "off" else c
         c1q = {q: [per_q[q]["question"]] for q in answerable_ids}
         c2q = {q: rewrites.get(q, {}).get("queries") or [per_q[q]["question"]]
                for q in answerable_ids}
-        c1 = doc_ranks_for_config(ctx, answerable_ids, per_q, c1q, legacy_exclusion=False)
-        c2 = doc_ranks_for_config(ctx, answerable_ids, per_q, c2q, legacy_exclusion=False)
+        c1 = doc_ranks_for_config(ctx, answerable_ids, per_q, c1q, legacy_exclusion=False,
+                                  fusion=fusion, caption_channel=dchan)
+        c2 = doc_ranks_for_config(ctx, answerable_ids, per_q, c2q, legacy_exclusion=False,
+                                  fusion=fusion, caption_channel=dchan)
         report["CORRECTED"] = {
             "C1": {"per_question": c1, "curve": recall_curve(c1),
                    "family_le_10": recall_at([v.get("family_rank") for v in c1.values()], 10)},
