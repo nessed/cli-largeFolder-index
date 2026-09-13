@@ -120,7 +120,7 @@ Three things came out of this night, and all three still stand:
    Absence was answered honestly **0 out of 3 times on every stack** — every one of them
    invented an answer rather than admitting the material wasn't there.
 3. **The three unbuilt stacks were ruled out on measurements, not opinion.** Embeddings
-   over full pages ran at 8.2 pages/s on this CPU-only machine, projecting a 20.8-hour
+   over full pages ran at 8.2 pages/s on this CPU-only machine, projecting a 40.9–46-hour
    build. The PDF MCP server took 415 seconds to process five small PDFs and accepted
    neither a directory nor a glob. Recoll has no unattended install path on Windows.
 
@@ -262,19 +262,26 @@ of publications and their editions, pick the right book, then search inside that
 The shelf built: 12,760 distinct documents (plus 874 exact duplicates collapsed by hash,
 accounting exactly to the 13,634 indexed), 1,618 publication families, 393 of them with
 two or more editions, 89,380 explicit table captions harvested. Embedding those cards took
-28 minutes at 7.6 per second — feasible, unlike the 20.8 hours full-page embedding would
+28 minutes at 7.6 per second — feasible, unlike the 40.9–46 hours full-page embedding would
 have needed. All 13 self-tests pass.
 
 **The gate result is mixed, and it is the most interesting result in the whole project:**
 
 | measure | result | gate |
 |---|---|---|
-| right document ranked in top 10 | 6/17 (8/17 with query rewrites) | **FAIL** — needed ≥12 |
-| right page in top 5, once in the right document | 43.9% of 57 | weak pass |
+| right document ranked in top 10 | 6/17 (**9/17** with query rewrites — CORRECTED 2026-09-14) | **FAIL** — needed ≥12 |
+| right page in top 5, once in the right document | **42.1% of 57** — CORRECTED 2026-09-14; the 43.9% was measured with a defective query | **FAIL** against the 60% bar |
 | trajectory questions resolved across editions | 1/4 (was 0/4 — see below) | **FAIL** — needed 3/4 |
 | **absence: correctly said "no edition for that"** | **11/11** | **PASS** |
 | **absence: exact-identifier searches correctly returned nothing** | **4/4** | **PASS** |
-| control: correctly confirmed editions it *does* hold | 14/17 | weak pass |
+| control: correctly confirmed editions it *does* hold | 14/17 was circular; the honest symmetric control is **8/11** — CORRECTED 2026-09-14 | weak pass |
+
+> **Corrected 2026-09-14.** Four defects in the harness behind this table were found by an
+> adversarial review and fixed; every historical number above still reproduces exactly from
+> the same code path. What changed is what they were measurements *of*. See
+> [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md)
+> and the dated correction block at the top of
+> [`06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md`](06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md).
 
 **Finding the right document is still the failure. But absence is not.** Every earlier
 stack scored 0 out of 3 on honest refusal. Approach C scored 11/11 and 4/4 — because it
@@ -300,7 +307,7 @@ the approach rather than of the harness.
 
 *Semantic retrieval is inside these numbers, not missing from them.* The shelf ranks
 documents by fusing FTS5 and BGE-small semantic top-200 lists with reciprocal-rank fusion,
-plus query rewrites. So 6/17 and 8/17 are what lexical **and** dense retrieval achieve
+plus query rewrites. So 6/17 and 9/17 (corrected 2026-09-14; 8/17 as first measured) are what lexical **and** dense retrieval achieve
 together over the small card pool — which retires the idea, stated elsewhere in this repo,
 that card-scale embedding was the big untried lever.
 
@@ -397,11 +404,19 @@ failed this, and the numbers have barely moved across four nights:
 | approach | best result | bar |
 |---|---|---|
 | stock tools / index / enforced index | 0.167 / 0.235 / 0.176 recall | — |
-| eight lexical query strategies | right file in top-50: **0/17** | — |
+| eight lexical query strategies | right file in top-50: **1/17** (term-coverage rerank; 0 for the other seven) | — |
 | evidence_v1 table catalogue | 3/17, then 2/17 after tuning | 10/17 |
-| approach C shelf (lexical + semantic, fused) | right document in top-10: 6/17, 8/17 with rewrites | 12/17 |
+| approach C shelf (lexical + semantic, fused) | right document in top-10: 6/17, **9/17** with rewrites (CORRECTED) | 12/17 |
+| approach C, the same pool at depth 100 | right document in the pool on **16/17** (NEW) | — |
+| approach C + compact cross-encoder reranker | **9/17** (NEW, gate STOP) | 12/17 |
 | approach C, multi-year trajectory walk | 1/4 | 3/4 |
-| approach C, right page once document is right | 25/57 (43.9%) | 60% |
+| approach C, right page once document is right | **24/57 (42.1%)** (CORRECTED) | 60% |
+| approach C + caption-aware page retrieval | **42/57 (73.7%)**, all of it on trajectory questions (NEW) | 60% |
+| approach C, structural edition selection | **3/17** (NEW) | 15/17 |
+
+See [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md),
+[`08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md`](08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md)
+and [`08_what_next/HANDOFF_2026-09-14.md`](08_what_next/HANDOFF_2026-09-14.md).
 
 **The diagnosis is now specific, and it is the same one from two independent directions.**
 The corpus is full of near-identical yearly editions of the same publications. A vague
@@ -417,11 +432,11 @@ approach C does successfully — does not by itself solve the second one.
 
 **Matching on meaning rather than words HAS now been tested, and it did not rescue this.**
 An earlier draft of this summary called it the one big untried lever, on the reasoning that
-dense embedding had only ever been costed over full pages (20.8 hours) and not over the much
+dense embedding had only ever been costed over full pages (40.9–46 hours for this harness) and not over the much
 smaller card pool. Approach C then built it — BGE-small vectors over 12,760 document cards
 in 28 minutes, fused with FTS5 top-200 by reciprocal-rank fusion, with query rewrites and
 family grouping on top — and that combined lexical-plus-semantic route is what produced the
-6/17 and 8/17 above. Card-scale semantic retrieval is measured, not missing.
+6/17 and 9/17 above. Card-scale semantic retrieval is measured, not missing.
 
 **The clearest genuinely untried lever is narrower and more specific:** use the harvested
 `Table N.N:` captions to tell a canonical table apart from prose that merely repeats its

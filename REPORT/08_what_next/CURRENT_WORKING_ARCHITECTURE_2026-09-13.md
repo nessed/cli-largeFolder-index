@@ -1,5 +1,10 @@
 # Current working architecture — 2026-09-13
 
+> **Superseded by [`CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](CURRENT_WORKING_ARCHITECTURE_2026-09-14.md).**
+> Its §5 experiments A and B were both run. The body below is unchanged and is the
+> document those experiments were designed against; several of its §3 numbers were
+> measured by a harness since found defective.
+
 > **This is not a proven design. It is a synthesis, for review, not a conclusion.**
 > It is the best picture we can currently draw by putting a proposed pipeline shape
 > next to the numbers this repository has actually measured. Two of its boxes are

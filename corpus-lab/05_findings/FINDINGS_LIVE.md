@@ -627,6 +627,14 @@ identity holds exactly, but the sanity probe still fails — the family with the
 editions), not the intended kind of copy-heavy family. This result is measured on that
 shelf, unrepaired past the one authorized title-line fix.*
 
+**Addendum 2026-09-14.** Four of the numbers above were measured by a defective harness and
+have been re-measured: see F41 (where the document loss actually is), F42 (the corrected page
+baseline and the caption channel), F43 (edition selection), F44 (the reranker, which failed
+its gate). The corrected counts are C1 6/17 and C2 9/17 with 0 of 17 excluded, page 24/57 with
+the corrected short query, and a symmetric present-edition control of 8/11. The absence result
+and the identifier result are unchanged and survived the correction. F45 was reserved for the
+offline chain test, which was not run — its pre-registered condition was not met.
+
 ## F41. The document bottleneck is ranking, not candidate generation
 
 **Measured**, `state/c_gate_v2.json` and `state/c_recall_curve.json`, on the 17 answerable

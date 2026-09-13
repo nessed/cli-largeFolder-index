@@ -46,11 +46,25 @@ canonical table ranks 6th behind five prose restatements of its own subject).
 | approach | best measured result | bar |
 |---|---|---|
 | stock tools / index / index+hook | 0.167 / 0.235 / 0.176 question recall — all inside noise | — |
-| eight lexical query strategies | right file in global top-50: **0 of 17** | — |
+| eight lexical query strategies | right file in global top-50: **1 of 17** (the term-coverage rerank; 0 for the other seven) | — |
 | `evidence_v1` table catalogue | **3/17**, then **2/17** after 13 measured tuning iterations | 10/17 |
-| approach C "shelf" (document-first) | right *document* in top-10: **6/17** (8/17 with 5 paraphrases) | 12/17 |
-| approach C, multi-year trajectory walk | **1/4** editions-walk correct | 3/4 |
-| approach C, right *page* once document is right | 25 of 57 (43.9%) | 60% (40% floor) |
+| approach C "shelf" (document-first) | right *document* in top-10: **6/17** (**9/17** with 5 paraphrases) — CORRECTED 2026-09-14, was 8/17 with 2 questions wrongly excluded | 12/17 |
+| approach C, the same pool at depth 100 | right document **in the pool on 16 of 17** — NEW; the loss is ranking, not coverage | — |
+| approach C + a compact cross-encoder reranker | **9/17** — NEW, gate STOP: it recovers what it cost and nothing more | 12/17 |
+| approach C, multi-year trajectory walk | **1/4** editions-walk correct — and the metric measures which *copy* the shelf calls primary, not page retrieval | 3/4 |
+| approach C, right *page* once document is right | **24 of 57 (42.1%)** — CORRECTED 2026-09-14, was 25/57 measured with a defective query | 60% (40% floor) |
+| approach C + caption-aware page retrieval | **42 of 57 (73.7%)** — NEW, but *all* of the gain is on trajectory questions and none elsewhere | 60% |
+| approach C, structural edition selection | **3/17** — NEW; the year a question asks for is usually not the year on the document that answers it | 15/17 |
+
+> **Corrected and extended 2026-09-14.** An adversarial review found four defects in the
+> harness behind the approach-C rows; every historical number still reproduces exactly from
+> the original code path, but several were measurements of something other than what they
+> were read as. The review is at
+> [`REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md`](REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md),
+> what replaced it at
+> [`REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md),
+> and the phase in twelve plain answers at
+> [`REPORT/08_what_next/HANDOFF_2026-09-14.md`](REPORT/08_what_next/HANDOFF_2026-09-14.md).
 
 ---
 
@@ -94,9 +108,14 @@ Each was measured, and the reasons are written up:
 
 - **Dense/semantic embedding over the small card pool.** Approach C built it: BGE-small
   vectors over 12,760 document cards (28 minutes, 7.6 cards/s), fused with FTS5 top-200 by
-  reciprocal-rank fusion, plus query rewrites. **It is inside the 6/17 and 8/17 numbers
-  above.** Semantic retrieval at card scale is tested, not untried.
-- **Full-page dense embedding** — 8.2 pages/s measured, 20.8 hours projected, no GPU.
+  reciprocal-rank fusion, plus query rewrites. **It is inside the 6/17 and 9/17 numbers
+  above.** Semantic retrieval at card scale is tested, not untried. A compact cross-encoder
+  reranked on top of it on 2026-09-14 and failed its gate — see
+  [`REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md)
+  and [`REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md`](REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md).
+- **Full-page dense embedding** — 8.2 pages/s measured, **40.9–46 hours** for this harness's
+  1,206,260 pages, no GPU. (The 20.8-hour figure quoted here until 2026-09-14 was the
+  projection for the smaller ra-ship fixture, not for this corpus.)
 - **A relevance-score threshold for absence** — disproven; absent and answerable questions
   score in the same range ([`probe_score_floor.json`](REPORT/03_night3_rescore_and_rank/probe_score_floor.json)).
 - **Multi-query fusion by summation** — rewards documents for repeating shared generic
