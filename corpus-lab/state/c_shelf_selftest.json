@@ -6,8 +6,8 @@
  "find_budget": {
   "pass": true,
   "n_families": 45,
-  "cold_s": 1.43,
-  "warm_s": 0.03,
+  "cold_s": 1.2,
+  "warm_s": 0.02,
   "warm_le_5s": true
  },
  "have_economic_survey": {

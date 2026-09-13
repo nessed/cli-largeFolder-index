@@ -668,3 +668,65 @@ The oracle number above is the union across questions, not one better rewrite.
 *Condition: this corpus, this shelf, this fused candidate generator, top-200 pool. "Gold
 family" is the family holding the key's evidence, resolved through the shelf's duplicate map.
 A0 is a statement about where the loss is, not a claim that a reranker will recover it.*
+
+## F42. Captions fix the trajectory walk and do nothing for anything else
+
+**Measured**, `state/c_page_gate.json`, correct document handed in (Experiment A bypassed),
+57 PDF evidence addresses across the 13 frozen questions that have any, top 5:
+
+| run | query | caption channel | micro | macro |
+|---|---|---|---|---|
+| B0 (HISTORICAL, reproduced) | whole question | off | 25/57 = 43.9% | 30.5% |
+| B1 (CORRECTED baseline) | short row phrase | off | 24/57 = 42.1% | 27.9% |
+| B2 (NEW) | short row phrase | `first` | **42/57 = 73.7%** | 39.7% |
+
+**B0 → B1 is a harness correction, not a retrieval result**, and it is worth saying that it
+cost one address. The review was right that the page row fed `inside` the whole question
+while the series walk had already been fixed to feed it a short row phrase (defect D1). It
+was a real inconsistency in the code. It was not what was losing the page row.
+
+**B2 against the pre-registered gate: micro clears its 60% bar, macro does not.** PASS
+required both, so this is not a PASS. It is nowhere near the STOP condition either (STOP was
+B2 ≤ B1 + 1 address; it is B1 + 18). The band table did not anticipate a result that splits
+this way, and the bar has not been moved to accommodate it.
+
+**Why it splits — the whole gain is on one question type:**
+
+| type | questions | addresses | B1 | B2 |
+|---|---|---|---|---|
+| trajectory | 4 | 42 | 22 | **40** |
+| multi_branch | 3 | 9 | 1 | 1 |
+| point_lookup | 3 | 3 | 0 | 0 |
+| reconciliation | 2 | 2 | 0 | 0 |
+| relationship | 1 | 1 | 1 | 1 |
+
+Not one non-trajectory address moved. On 9 of the 13 questions no caption in the gold
+document contains every query content word, so the channel is simply inert there, and those
+9 are what holds macro down. Trajectory questions carry 42 of the 57 addresses, which is why
+micro moves so far. The honest claim is narrow: **a harvested table caption is a good page
+address for a question that names a table row and asks for it across years, and is no help
+at all for a question that asks for one number in prose.**
+
+`rrf` was written alongside `first` in the same edit but, per the pre-registered rule, was
+not run: the rule permitted it only as a fallback if `first` came in worse than B1.
+
+**The series walk is still 1/4 with the winning page method — and that number does not mean
+what the gate has been reading it as.** Re-running the corrected walk (k=5, exact family)
+with `caption_channel="first"` threaded through `series` changes nothing: 1 of 4. The reason
+is not page retrieval. Counted directly (`state/c_series_v2.json` and the diagnostic behind
+it): across the four questions the fiscal years line up almost perfectly — 21 of 24 evidence
+years are years the walked family actually holds — but **the file the walk opens at that
+year is the file the key cites on only 3 of those 21 years.** The shelf's `is_primary` pick
+inside an edition selects a different copy from the one the key names, and a page index only
+carries across byte-identical copies. One question's evidence spans three families and the
+walk opens none of its twelve evidence files.
+
+So `series_ok` has been measuring *which copy the shelf calls primary*, not whether the row
+can be found. With the correct document handed in, the same trajectory pages are found in
+the top 5 on 40 of 42 addresses. Edition selection, not page retrieval, is what the
+trajectory result was failing on — which is the sub-problem F43 measures.
+
+*Condition: this corpus, this shelf, 13 questions with PDF addresses, 4 of them trajectory.
+A caption "hits" when it contains every content word of the short row phrase; no synonym
+list, no title list, nothing derived from the key. The trajectory result rests on 4
+questions and should not be reported as a general finding without more of them.*

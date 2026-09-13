@@ -155,9 +155,11 @@ def page_rank_for(ctx, question_text, rel, page_index):
     return None
 
 
-def series_ok_for(ctx, question_text, family_of_evidence, evidence_pages_by_fy, k=5):
+def series_ok_for(ctx, question_text, family_of_evidence, evidence_pages_by_fy, k=5,
+                  caption_channel=None):
     row_words = row_words_from_question(question_text)
-    res = CSH.do_series(ctx, row_words, family_of_evidence, k=k, exact_family=True)
+    res = CSH.do_series(ctx, row_words, family_of_evidence, k=k, exact_family=True,
+                        caption_channel=caption_channel)
     hit = 0
     per_edition_rank = []  # (fy, rank-within-k or None)
     for e in res.get("editions", []):
@@ -174,7 +176,7 @@ def series_ok_for(ctx, question_text, family_of_evidence, evidence_pages_by_fy, 
     return hit, res.get("n", 0), row_words, per_edition_rank
 
 
-def run_series_measurement(ctx, qs_by_id, trajectory_ids):
+def run_series_measurement(ctx, qs_by_id, trajectory_ids, caption_channel=None):
     series_results = {}
     for qid in trajectory_ids:
         q = qs_by_id[qid]
@@ -195,7 +197,8 @@ def run_series_measurement(ctx, qs_by_id, trajectory_ids):
         for e in ev:
             if e.get("fy") and e.get("page_index") is not None:
                 pages_by_fy[e["fy"]] = e["page_index"]
-        hit, n_ed, row_words, per_edition_rank = series_ok_for(ctx, q["question"], family, pages_by_fy)
+        hit, n_ed, row_words, per_edition_rank = series_ok_for(
+            ctx, q["question"], family, pages_by_fy, caption_channel=caption_channel)
         series_results[qid] = {"hit_editions": hit, "n_editions": n_ed,
                                "ok": hit >= 2, "skipped": False,
                                "row_words_word_count": len(row_words.split()),
@@ -862,8 +865,13 @@ def run_gate_v2(argv):
 
     if want("--series"):
         trajectory_ids = [q for q in answerable_ids if per_q[q]["type"] == "trajectory"]
-        sr = run_series_measurement(ctx, qs_by_id, trajectory_ids)
+        chan = None
+        if "--caption-channel" in argv:
+            c = argv[argv.index("--caption-channel") + 1]
+            chan = None if c == "off" else c
+        sr = run_series_measurement(ctx, qs_by_id, trajectory_ids, caption_channel=chan)
         report["series_ok_rerun"] = {
+            "page_method": "row" + ("" if chan is None else "+caption_" + chan),
             "hits": sum(1 for v in sr.values() if v.get("ok")), "n": len(trajectory_ids),
             "per_question": {k: {kk: vv for kk, vv in v.items() if kk != "per_edition_rank"}
                              for k, v in sr.items()}}

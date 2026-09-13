@@ -483,12 +483,43 @@ def _best_line(body, words):
     return " ".join(best_line.split())[:200]
 
 
-def do_inside(ctx, rel, terms, k=8):
+def _caption_hit_pages(ctx, rel, words):
+    """2026-09-14, experiment B2. Pages of `rel` whose harvested table caption
+    contains EVERY query content word. Substring match on the lowercased
+    caption, same content_words() normalisation the body tier uses -- a
+    caption is a short label, so requiring all of them is the point: it is
+    what tells "Table 4.2: <subject>" apart from a prose page that merely
+    mentions the subject. Returns (set_of_page_indices, {page: caption})."""
+    if not words:
+        return set(), {}
+    lw = [w.lower() for w in words]
+    pages, captions = set(), {}
+    for page_index, caption in ctx.shelf.execute(
+            "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)):
+        low = (caption or "").lower()
+        if all(w in low for w in lw):
+            pages.add(page_index)
+            if page_index not in captions:
+                captions[page_index] = caption
+    return pages, captions
+
+
+def do_inside(ctx, rel, terms, k=8, caption_channel=None):
+    """caption_channel=None is the original behaviour, unchanged.
+
+    "first": pages whose caption matches every query word are ranked ahead of
+    everything else, ordered among themselves by their body BM25 rank; a
+    caption page the body ranking never returned goes after those; the rest of
+    the body ranking follows. Each hit carries `via`.
+
+    "rrf": reciprocal-rank fusion of the caption list (ordered by number of
+    matching query words, then page index) with the body list."""
     row = ctx.rel_to_row.get(rel)
     n_pages = row["n_pages"] if row else None
     pages = _load_doc_pages(ctx, rel)
     if not pages:
-        return {"rel": rel, "n_pages": n_pages, "tier": "none", "hits": []}
+        return {"rel": rel, "n_pages": n_pages, "tier": "none", "hits": [],
+                "n_caption_hits": 0}
 
     mem = sqlite3.connect(":memory:")
     mem.execute("CREATE VIRTUAL TABLE p USING fts5(page_index UNINDEXED, body)")
@@ -496,6 +527,9 @@ def do_inside(ctx, rel, terms, k=8):
     mem.commit()
 
     words = content_words(terms)
+    # the caption channel reorders the body ranking, so it needs to see more of
+    # it than the k rows the caller wants back; the final list is still cut to k.
+    lim = k if caption_channel is None else max(k * 5, 50)
     tier = "any"
     rows = []
     if words:
@@ -508,7 +542,7 @@ def do_inside(ctx, rel, terms, k=8):
         try:
             rows = mem.execute(
                 "SELECT page_index, body, bm25(p) FROM p WHERE p MATCH ? ORDER BY bm25(p) LIMIT ?",
-                (m, k)).fetchall()
+                (m, lim)).fetchall()
         except sqlite3.OperationalError:
             rows = []
         if not rows and words:
@@ -516,7 +550,7 @@ def do_inside(ctx, rel, terms, k=8):
             try:
                 rows = mem.execute(
                     "SELECT page_index, body, bm25(p) FROM p WHERE p MATCH ? ORDER BY bm25(p) LIMIT ?",
-                    (m2, k)).fetchall()
+                    (m2, lim)).fetchall()
             except sqlite3.OperationalError:
                 rows = []
             tier = "any"
@@ -524,7 +558,50 @@ def do_inside(ctx, rel, terms, k=8):
     for page_index, body, score in rows:
         hits.append({"page_index": page_index, "score": round(score, 3),
                      "line": _best_line(body, words)})
-    return {"rel": rel, "n_pages": n_pages, "tier": tier if words else "none", "hits": hits}
+
+    if caption_channel is None:
+        return {"rel": rel, "n_pages": n_pages,
+                "tier": tier if words else "none", "hits": hits}
+
+    cap_pages, cap_text = _caption_hit_pages(ctx, rel, words)
+    body_pages = {h["page_index"] for h in hits}
+    for h in hits:
+        h["via"] = "caption" if h["page_index"] in cap_pages else "body"
+
+    if caption_channel == "first":
+        cap_with_body = [h for h in hits if h["page_index"] in cap_pages]
+        cap_only = [{"page_index": pi, "score": None, "via": "caption",
+                     "line": " ".join((cap_text.get(pi) or "").split())[:200]}
+                    for pi in sorted(cap_pages - body_pages)]
+        rest = [h for h in hits if h["page_index"] not in cap_pages]
+        final = cap_with_body + cap_only + rest
+    elif caption_channel == "rrf":
+        # caption list ordered by how many query words the caption carries,
+        # then page index; fused with the body list at the usual k=60.
+        lw = [w.lower() for w in words]
+        def _n_words(pi):
+            low = (cap_text.get(pi) or "").lower()
+            return sum(1 for w in lw if w in low)
+        cap_order = sorted(cap_pages, key=lambda pi: (-_n_words(pi), pi))
+        body_order = [h["page_index"] for h in hits]
+        scores = {}
+        for lst in (cap_order, body_order):
+            for r, pi in enumerate(lst, start=1):
+                scores[pi] = scores.get(pi, 0.0) + 1.0 / (60 + r)
+        by_page = {h["page_index"]: h for h in hits}
+        final = []
+        for pi in sorted(scores, key=lambda x: (-scores[x], x)):
+            if pi in by_page:
+                final.append(by_page[pi])
+            else:
+                final.append({"page_index": pi, "score": None, "via": "caption",
+                              "line": " ".join((cap_text.get(pi) or "").split())[:200]})
+    else:
+        raise ValueError("unknown caption_channel: %r" % (caption_channel,))
+
+    return {"rel": rel, "n_pages": n_pages, "tier": tier if words else "none",
+            "hits": final[:k], "n_caption_hits": len(cap_pages),
+            "caption_channel": caption_channel}
 
 
 def _print_inside(res):
@@ -553,7 +630,8 @@ def _print_tables(res):
 # --------------------------------------------------------------------- #
 # series
 # --------------------------------------------------------------------- #
-def do_series(ctx, row_words, family_words, fy_from=None, fy_to=None, k=1, exact_family=False):
+def do_series(ctx, row_words, family_words, fy_from=None, fy_to=None, k=1,
+              exact_family=False, caption_channel=None):
     """exact_family=True: `family_words` IS already a real docs.family key (the
     caller resolved it directly from ctx.rel_to_family, not from user text) --
     use it as-is instead of re-resolving through do_have's fuzzy search. That
@@ -581,7 +659,8 @@ def do_series(ctx, row_words, family_words, fy_from=None, fy_to=None, k=1, exact
 
     out, matched = [], 0
     for r in members:
-        ins = do_inside(ctx, r["rel"], row_words, k=k)
+        ins = do_inside(ctx, r["rel"], row_words, k=k,
+                        caption_channel=caption_channel)
         if ins["hits"]:
             matched += 1
             h = ins["hits"][0]

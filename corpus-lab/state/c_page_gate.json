@@ -559,5 +559,192 @@
     "hits_le_5": 4
    }
   }
+ },
+ "row+caption_first": {
+  "query_mode": "row",
+  "caption_channel": "first",
+  "micro_hits": 42,
+  "micro_n": 57,
+  "micro_pct": 73.7,
+  "macro_pct": 39.7,
+  "n_questions_with_pdf_addresses": 13,
+  "by_type": {
+   "multi_branch": {
+    "hits": 1,
+    "n": 9,
+    "questions": 3
+   },
+   "point_lookup": {
+    "hits": 0,
+    "n": 3,
+    "questions": 3
+   },
+   "reconciliation": {
+    "hits": 0,
+    "n": 2,
+    "questions": 2
+   },
+   "relationship": {
+    "hits": 1,
+    "n": 1,
+    "questions": 1
+   },
+   "trajectory": {
+    "hits": 40,
+    "n": 42,
+    "questions": 4
+   }
+  },
+  "n_questions_no_caption_covers_all_query_words": 9,
+  "per_question": {
+   "mb_04": {
+    "type": "multi_branch",
+    "page_ranks": [
+     null,
+     10,
+     null
+    ],
+    "n_addresses": 3,
+    "hits_le_5": 0
+   },
+   "mb_05": {
+    "type": "multi_branch",
+    "page_ranks": [
+     null,
+     null,
+     null
+    ],
+    "n_addresses": 3,
+    "hits_le_5": 0
+   },
+   "mb_07": {
+    "type": "multi_branch",
+    "page_ranks": [
+     13,
+     2,
+     null
+    ],
+    "n_addresses": 3,
+    "hits_le_5": 1
+   },
+   "pl_01": {
+    "type": "point_lookup",
+    "page_ranks": [
+     null
+    ],
+    "n_addresses": 1,
+    "hits_le_5": 0
+   },
+   "pl_14": {
+    "type": "point_lookup",
+    "page_ranks": [
+     null
+    ],
+    "n_addresses": 1,
+    "hits_le_5": 0
+   },
+   "pl_21": {
+    "type": "point_lookup",
+    "page_ranks": [
+     null
+    ],
+    "n_addresses": 1,
+    "hits_le_5": 0
+   },
+   "rc_05": {
+    "type": "reconciliation",
+    "page_ranks": [
+     null
+    ],
+    "n_addresses": 1,
+    "hits_le_5": 0
+   },
+   "rc_07": {
+    "type": "reconciliation",
+    "page_ranks": [
+     null
+    ],
+    "n_addresses": 1,
+    "hits_le_5": 0
+   },
+   "rl_05": {
+    "type": "relationship",
+    "page_ranks": [
+     2
+    ],
+    "n_addresses": 1,
+    "hits_le_5": 1
+   },
+   "tr_04": {
+    "type": "trajectory",
+    "page_ranks": [
+     1,
+     1,
+     3,
+     3,
+     2,
+     2,
+     5,
+     5,
+     1,
+     1
+    ],
+    "n_addresses": 10,
+    "hits_le_5": 10
+   },
+   "tr_07": {
+    "type": "trajectory",
+    "page_ranks": [
+     1,
+     1,
+     1,
+     1,
+     2,
+     2,
+     2,
+     2
+    ],
+    "n_addresses": 8,
+    "hits_le_5": 8
+   },
+   "tr_10": {
+    "type": "trajectory",
+    "page_ranks": [
+     1,
+     1,
+     2,
+     2,
+     1,
+     1,
+     null,
+     null,
+     2,
+     2,
+     1,
+     1
+    ],
+    "n_addresses": 12,
+    "hits_le_5": 10
+   },
+   "tr_16": {
+    "type": "trajectory",
+    "page_ranks": [
+     1,
+     1,
+     3,
+     3,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "n_addresses": 12,
+    "hits_le_5": 12
+   }
+  }
  }
 }
