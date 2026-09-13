@@ -4,119 +4,178 @@
 vague question in ordinary language, and get back the actual number with the file and page
 it came from — and an honest "not in here" when the answer genuinely isn't?
 
-**The answer so far: no, and we now know fairly precisely why.** Four nights of measured
-experiments, five distinct approaches, about $31 spent. This repository is the full record:
-the code, the measurements, the failures, and the diagnosis.
+**Answer so far: the honest-refusal half works. The find-the-right-page half does not,
+and we now know fairly precisely why.** Four nights, five approaches measured end to end,
+three more ruled out on measurements rather than opinion, about $31 spent. This repository
+is the full record — code, measurements, failures, and the diagnosis.
 
 > ### 👉 Start at [`REPORT/README.md`](REPORT/README.md)
 >
-> It walks the entire project start to finish in plain English — the problem, every
-> approach tried, what each one measured, and what is and isn't solved. Written for
-> someone who has never seen this repo. Everything else here is supporting evidence.
+> It walks the whole project start to finish in plain English, written for someone who has
+> never seen this repo. Everything else here is supporting evidence.
+>
+> Every number on this page is traceable: [`REPORT/MANIFEST.md`](REPORT/MANIFEST.md) maps
+> each report to its source file and checksum, and
+> [`corpus-lab/state/progress.jsonl`](corpus-lab/state/progress.jsonl) is an append-only
+> log with one line per step across all four nights.
 
 ---
 
-## Status in one table
+## Status
 
 | | |
 |---|---|
-| **Solved** | Getting the model to *use* a tool you give it — one line in `CLAUDE.md` moved adoption from 0/38 sessions to 38/38 |
-| **Solved** | Knowing when material genuinely isn't there — 11/11 and 4/4 via a structural edition check (not a score threshold, which was disproven) |
-| **Built and trustworthy** | Extraction and coverage accounting over 15,010 files, content hashing, provenance records, table-cell verification, typed evidence compiler, safe install/teardown, test suites |
-| **NOT solved** | Putting the right page in front of the model for a vague question. Every approach has failed this. |
+| ✅ **Solved** | Getting the model to *use* a tool you give it. One line in `CLAUDE.md` moved index adoption from 0 of 38 sessions to 38 of 38. A hook that *forced* the same thing scored slightly worse. |
+| ✅ **Solved** | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. |
+| 🟡 **Built, trustworthy, retrieval-independent** | Coverage accounting over 15,010 files, content hashing, provenance records, geometry-aware table-cell verification, a typed evidence compiler, safe install/teardown, and test suites. None of it depends on which retrieval idea eventually wins. |
+| ❌ **Not solved** | Putting the right page in front of the model for a vague question. **Every approach has failed this**, and the numbers have barely moved in four nights. |
 
-The open problem, stated precisely: this corpus republishes the same fiscal tables every
-year across dozens of near-identical editions. A vague question's words match hundreds of
-them about equally, and the question usually doesn't name the year it wants. That makes it
-a **disambiguation** problem, not an indexing or vocabulary problem — which is why better
-word matching, query rewrites, wider aliases and deeper candidate pools all measured out to
-approximately zero.
+### The one open problem
 
-| approach | best result | bar it needed to clear |
+This corpus republishes the same fiscal tables every year across dozens of near-identical
+editions, *and* restates each year's figure in prose on many pages inside each edition. A
+vague question's words match hundreds of candidates about equally, and the question usually
+doesn't name the year it wants ("over the last decade or so").
+
+That makes this a **disambiguation** problem, not an indexing or vocabulary problem — which
+is why better word matching, query rewrites, wider aliases and deeper candidate pools all
+measured out to approximately zero. It shows up at both scales: across the corpus (the right
+page sits at rank ~500–3,000 of 1.2 million) and *within* a single correct document (the
+canonical table ranks 6th behind five prose restatements of its own subject).
+
+| approach | best measured result | bar |
 |---|---|---|
-| stock tools / index / enforced index | 0.167 / 0.235 / 0.176 recall | — |
-| eight lexical query strategies | right file in global top-50: **0/17** | — |
-| `evidence_v1` table catalogue | 3/17, then 2/17 after 13 tuning iterations | 10/17 |
-| approach C "shelf" (document-first) | right document in top-10: 6/17 (8/17 with rewrites) | 12/17 |
+| stock tools / index / index+hook | 0.167 / 0.235 / 0.176 question recall — all inside noise | — |
+| eight lexical query strategies | right file in global top-50: **0 of 17** | — |
+| `evidence_v1` table catalogue | **3/17**, then **2/17** after 13 measured tuning iterations | 10/17 |
+| approach C "shelf" (document-first) | right *document* in top-10: **6/17** (8/17 with 5 paraphrases) | 12/17 |
+| approach C, multi-year trajectory walk | **1/4** editions-walk correct | 3/4 |
+| approach C, right *page* once document is right | 25 of 57 (43.9%) | 60% (40% floor) |
 
 ---
 
 ## Where independent review would help most
 
-If you are reading this to suggest improvements, these are the live questions — roughly in
-order of how much they matter:
+If you are here to suggest improvements, these are the live questions, in rough order of
+how much they matter. **Arguments that the framing itself is wrong are as welcome as
+arguments within it.**
 
-1. **The disambiguation problem above.** Given hundreds of near-identical yearly editions
-   and a question that doesn't name a year, how do you pick the right edition? Every
-   lexical idea tried has failed. See [`REPORT/README.md`](REPORT/README.md) §6–7.
-2. **Semantic matching over *cards*, not pages — the one substantial untried lever.** Dense
-   embedding was ruled out early on a full-page estimate of 20.8 hours on this CPU-only
-   machine. That number no longer applies at card scale: approach C measured the equivalent
-   embedding work at 28 minutes for 12,760 cards. Nobody has tested whether it helps.
-3. **A second failure that no retrieval fix addresses.** On 5 of 17 questions the right
-   document *was* handed to the agent and it opened none of them, citing search snippets
-   instead. A "quote the line before you cite it" rule was written for this and has never
-   been run.
-4. **Is the whole table-card framing wrong?** See the honest assessment at the end of
-   [`REPORT/05_evidence_v1_tuning/TUNING_SUMMARY.md`](REPORT/05_evidence_v1_tuning/TUNING_SUMMARY.md).
-5. **Coverage.** 8% of the fixture is image-only PDFs unreachable without OCR, and nobody
-   has checked the equivalent share in the real target folder.
+**1. The disambiguation problem above.** Given hundreds of near-identical yearly editions
+and a question that doesn't name a year, how do you pick the right one? Every lexical idea
+tried has failed, each with a traced reason rather than a shrug. See
+[`REPORT/README.md`](REPORT/README.md) §6–7.
 
-The recommended next build is specified in
-[`REPORT/08_what_next/RESEARCH_2026-09-13.md`](REPORT/08_what_next/RESEARCH_2026-09-13.md).
-Arguments against it are as welcome as arguments for it.
+**2. Telling "this IS the table" apart from "this mentions the table's subject."** This is
+the most concrete lead in the repo and it is *not* yet built. Stage 1 of approach C already
+harvested **89,380 explicit `Table N.N:` caption lines**, and caption coverage is **100% of
+every PDF ≥100 pages (1,895 of 1,895)** — i.e. essentially complete over the large
+statistical publications, and legitimately absent only on short notes and non-PDF formats.
+A caption is a *label*, not a restatement, so it is exactly the signal that should separate
+a canonical table from prose that happens to share its words. The in-document search does
+not use that channel yet. See
+[`REPORT/06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md`](REPORT/06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md) §4.
+
+**3. A second failure that no retrieval fix addresses.** On 5 of 17 questions the right
+document *was* handed to the agent and it opened **none** of them — three were cited without
+ever being opened. A "quote the line before you cite it" rule was written for this and has
+**never been run**, because it was deliberately held behind a retrieval gate that never
+passed. That hold may itself be the wrong call; it is arguable.
+
+**4. Is the table-card framing wrong at the root?** Honest self-assessment at the end of
+[`REPORT/05_evidence_v1_tuning/TUNING_SUMMARY.md`](REPORT/05_evidence_v1_tuning/TUNING_SUMMARY.md).
+
+**5. Coverage nobody has measured.** 1,211 files (8% of the fixture) are image-only PDFs
+unreachable without OCR. Nobody has checked the equivalent share in the real target folder,
+and bulk OCR over numeric tables is unmeasured here.
+
+### What has already been tried — please don't re-propose these
+
+Each was measured, and the reasons are written up:
+
+- **Dense/semantic embedding over the small card pool.** Approach C built it: BGE-small
+  vectors over 12,760 document cards (28 minutes, 7.6 cards/s), fused with FTS5 top-200 by
+  reciprocal-rank fusion, plus query rewrites. **It is inside the 6/17 and 8/17 numbers
+  above.** Semantic retrieval at card scale is tested, not untried.
+- **Full-page dense embedding** — 8.2 pages/s measured, 20.8 hours projected, no GPU.
+- **A relevance-score threshold for absence** — disproven; absent and answerable questions
+  score in the same range ([`probe_score_floor.json`](REPORT/03_night3_rescore_and_rank/probe_score_floor.json)).
+- **Multi-query fusion by summation** — rewards documents for repeating shared generic
+  words; traced concretely on one question.
+- **Forcing tool use with a hook** rather than asking in `CLAUDE.md` — measured slightly worse.
+- **A PDF MCP server** (415 s for five small PDFs), **Recoll** (no headless installer),
+  and **swapping in a search server** (does not repair candidate representation).
+
+> ⚠️ **The `Shelf V2` recommendation in
+> [`RESEARCH_2026-09-13.md`](REPORT/08_what_next/RESEARCH_2026-09-13.md) is superseded.**
+> It named semantic retrieval over the card pool as the main untested lever; approach C had
+> already measured that route and failed its gate. The correction is
+> [`REPORT/08_what_next/CORRECTION_2026-09-13.md`](REPORT/08_what_next/CORRECTION_2026-09-13.md).
+> The research body is kept unchanged as the historical recommendation. Future work should
+> be a separately specified, offline-gated ablation on the existing shelf — not a rebuild
+> of the same architecture.
 
 ---
 
 ## Layout
 
 ```
-REPORT/          ← the walkthrough + copies of every report, in reading order. START HERE.
-INDEX.md         the original repo map and the ground rules
-SOLUTION.md      the evidence_v1 design rationale
-BUILD_PROMPT.md  the staged build contract evidence_v1 was executed against
-RESEARCH_*.md    the research pass that reads all the evidence and recommends what's next
-EXECUTE_SHELF_V2.md  the build contract for that recommendation
-00_brief/        the task as originally given, incl. SOLVE_BRIEF.md for an outside designer
-plans_fable/     two further approaches, planned; C was built, B never was
-corpus-lab/      all code, findings and run state
-  bin/             the instruments (measurement primitives, index builder, scorers)
-  evidence_v1/     the table-catalogue engine runtime
-  tests/           its test suites
-  01_reports/      the original research passes
-  05_findings/     FINDINGS_LIVE.md — every finding with the condition it holds under
-  state/           machine-readable run state; progress.jsonl is the step-by-step audit trail
+REPORT/              the walkthrough + copies of every report, in reading order. START HERE.
+  00_orientation/      what the project is, the brief, the tool matrix
+  01..03/              nights 1-3: stock tools, the six-approach bake-off, offline re-scoring
+  04..05/              evidence_v1: the build, its honest stop, and the tuning loop
+  06_approach_c_shelf/ the document-first shelf: build, self-test, full Stage 3 gate report
+  07_approach_b_planned/  hybrid multi-query — specified, never built
+  08_what_next/        the research pass AND the correction that supersedes it
+  09_ledgers/          every finding, every step, and the cold-start guide
+INDEX.md             the original repo map and ground rules
+SOLUTION.md          the evidence_v1 design rationale
+BUILD_PROMPT.md      the staged contract evidence_v1 was executed against
+RESEARCH_2026-09-13.md   the research pass (recommendation superseded — see above)
+EXECUTE_SHELF_V2.md  its build contract (likewise superseded; kept for the reasoning)
+00_brief/            the task as given, incl. SOLVE_BRIEF.md for an outside designer
+plans_fable/         two further approaches; C was built, B never was
+corpus-lab/          all code, findings and run state
+  bin/                 the instruments (measurement primitives, index builder, scorers)
+  evidence_v1/         the table-catalogue engine runtime
+  tests/               its test suites
+  05_findings/         FINDINGS_LIVE.md — every finding with the condition it holds under
+  state/               machine-readable run state; progress.jsonl is the audit trail
 ```
 
 ## What is deliberately not in this repository
 
-- **`_private/`** — the answer keys, canary manifests, and 189 recorded measurement
-  sessions. Publishing them would make an honest re-run of the benchmark impossible.
+- **`_private/`** — answer keys, canary manifests, and 189 recorded measurement sessions.
 - **`harness/`** — the four generated fixture corpora *and* their generator. The generator
-  (`finalize_key.py`, `canary_slots.py`, `plant_canaries.py`, `plan.py`) is the machinery
-  that manufactures the answer key, so it is equivalent to the key itself.
-- **`ACCEPTANCE.md`** — an oracle in prose: gold source paths, literal cell values and page
-  indices. Referenced by the reports but not published.
+  (`finalize_key.py`, `canary_slots.py`, `plant_canaries.py`, `plan.py`) manufactures the
+  answer key, so shipping it ships the key.
+- **`ACCEPTANCE.md`** — an oracle in prose: gold source paths, literal cell values, page
+  indices. Its *criteria* are fully described in `BUILD_PROMPT.md` and `SOLUTION.md`, both
+  published here; only the expected answers are withheld.
 - **Derived indexes** — a ~7 GB FTS5 page index, the shelf database, card vectors. All
   rebuildable from code that *is* here.
 
-> ⚠️ **A caveat if you intend to re-run the benchmark.** Some answer-derived material was
-> published in earlier commits and is still present: 13 canary phrases quoted as evidence
-> in `FINDINGS_LIVE.md`, 21 gold evidence paths in `state/c_card_sample_100.csv`, and a
-> handful in `probe_score_floor.json` and `rescore_from_results.json`. They were left in
-> place because scrubbing them means rewriting public history and stripping verbatim
+> ⚠️ **If you intend to re-run the benchmark, read this first.** Some answer-derived
+> material was published in earlier commits and is still present: 13 canary phrases quoted
+> as evidence in `FINDINGS_LIVE.md`, 21 gold evidence paths in `state/c_card_sample_100.csv`,
+> and a handful in `probe_score_floor.json` and `rescore_from_results.json`. They were left
+> in place because scrubbing them means rewriting public history and stripping verbatim
 > evidence out of the night-1 findings. **Reading this repository therefore contaminates
-> you (or an agent) for re-running the measurement.** Reviewing the design and the
-> reasoning is unaffected.
+> you — or an agent you point at it — for re-running the measurement.** Reviewing the
+> design and the reasoning is unaffected.
 
 ## Reproducing anything
 
 Every path derives from `corpus-lab/bin/labpaths.py`; no script hardcodes a location.
 `corpus-lab/RESUME.md` is the cold-start guide, including the traps worth not
-rediscovering. `corpus-lab/state/progress.jsonl` is the append-only audit trail — one JSON
-line per step across all four nights.
+rediscovering (several cost a full night to find).
 
-Note that the fixture corpora are not in this repository and regeneration is banned: the
-generator's own determinism check failed (6,060 of 6,064 files reproduced), so rebuilding
-would silently change the ground truth. Results here are reproducible in reasoning and in
-code, but not bit-for-bit re-runnable without the archived corpora.
+The fixture corpora are not here, and regeneration is **banned**: the generator's own
+determinism check failed — 6,060 of 6,064 files reproduced — so rebuilding would silently
+change the ground truth. Results here are reproducible in reasoning and in code, but not
+bit-for-bit re-runnable without the archived corpora.
+
+**A note on how results are reported.** Findings carry the condition they hold under, gates
+state their bar before the number, and several headline figures in this repo were revised
+*downward* on review — the night-1 conclusion was overturned, the night-2 recall numbers
+were superseded by a re-score, and approach C's trajectory result moved after a bug was
+found in the test itself. Where a number is contested or superseded, both versions are kept.

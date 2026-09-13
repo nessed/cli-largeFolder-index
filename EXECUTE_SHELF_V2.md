@@ -1,5 +1,16 @@
 # Shelf V2 execution contract
 
+> **Superseded — 2026-09-13. Do not execute this contract as written.** It implements the
+> Shelf V2 recommendation in `RESEARCH_2026-09-13.md`, which rested on the premise that
+> semantic retrieval over the small card pool was untested. Approach C had already built and
+> measured that route (BGE-small vectors over 12,760 document cards, fused with FTS5 by
+> reciprocal-rank fusion) and it failed its offline gate — 6/17 documents in the top 10
+> against a 12/17 bar. See
+> [`REPORT/08_what_next/CORRECTION_2026-09-13.md`](REPORT/08_what_next/CORRECTION_2026-09-13.md)
+> and [`REPORT/06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md`](REPORT/06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md).
+> Kept for its staging, gating and verification design, which remain sound. Future work
+> should be a separately specified, offline-gated ablation on the shelf that already exists.
+
 ## Purpose and scope
 
 Build and evaluate the Shelf V2 discovery layer described in `RESEARCH_2026-09-13.md`.

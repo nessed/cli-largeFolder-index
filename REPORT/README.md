@@ -12,8 +12,9 @@ There is one deliberate omission: nothing from `_private/` is copied here. That 
 the answer keys for the test questions. Keeping it out means this folder can be read by
 anyone — including a future automated test run — without contaminating a measurement.
 
-[`MANIFEST.md`](MANIFEST.md) lists all 43 files with the original path and a checksum for
-each, so any copy can be traced back and verified against its source.
+[`MANIFEST.md`](MANIFEST.md) lists all 46 files with the original path and a checksum for
+each, so any copy can be traced back and verified against its source. Three were written
+directly here and two carry a superseded-recommendation notice; the manifest marks both.
 
 *On GitHub, one file listed in the manifest is absent: `ACCEPTANCE.md` is an oracle (gold
 paths, literal values, page indices) and is excluded from the repository — see
@@ -270,7 +271,7 @@ have needed. All 13 self-tests pass.
 |---|---|---|
 | right document ranked in top 10 | 6/17 (8/17 with query rewrites) | **FAIL** — needed ≥12 |
 | right page in top 5, once in the right document | 43.9% of 57 | weak pass |
-| trajectory questions resolved across editions | 0/4 | **FAIL** |
+| trajectory questions resolved across editions | 1/4 (was 0/4 — see below) | **FAIL** — needed 3/4 |
 | **absence: correctly said "no edition for that"** | **11/11** | **PASS** |
 | **absence: exact-identifier searches correctly returned nothing** | **4/4** | **PASS** |
 | control: correctly confirmed editions it *does* hold | 14/17 | weak pass |
@@ -285,10 +286,36 @@ The shelf itself carries a caveat: it is flagged `GATE1_FAILED_STRUCTURAL` becau
 family clustering has a known defect — a repeatedly-copied paper reads as 16 "editions."
 The numbers above are measured on that unrepaired shelf.
 
-Approach C's trajectory failure was also diagnosed rather than guessed at: the in-document
-search takes the whole question as its phrase, and a multi-clause trajectory question has
-far too many content words, so it falls through to a loose any-word match that rarely lands
-on the one page the key names.
+**Two things about this result were corrected on review, and both are worth knowing.**
+
+*The trajectory number moved.* It first measured 0/4, which reads as a total failure of the
+"search inside one document" idea. Writing up the gate turned up two defects in the test
+rather than the approach: the in-document search was being handed the entire question as its
+phrase (far past its 4-word exact-match cutoff, so it fell through to a near-useless
+any-word match), and the walk was re-finding each publication family by searching for the
+family's own internal name — a template containing a literal `{fy}` placeholder, which
+matches no real title, so on at least one question it walked the wrong document entirely.
+Fixed, it measures **1/4**. Still a failure against the 3/4 bar, but now a measurement of
+the approach rather than of the harness.
+
+*Semantic retrieval is inside these numbers, not missing from them.* The shelf ranks
+documents by fusing FTS5 and BGE-small semantic top-200 lists with reciprocal-rank fusion,
+plus query rewrites. So 6/17 and 8/17 are what lexical **and** dense retrieval achieve
+together over the small card pool — which retires the idea, stated elsewhere in this repo,
+that card-scale embedding was the big untried lever.
+
+**Why it still misses, and the one concrete lead that follows.** Once the right document is
+found, the search space drops from 1.2 million pages to a few hundred — and it *still*
+misses, because this corpus restates each year's figure in prose across many pages of the
+same publication. Measured on one real document: searching it for "cotton production"
+returns eight pages, and the actual table ranks **sixth**, behind five prose restatements.
+Picking the right book off the shelf shrinks the haystack; it doesn't remove it.
+
+The lead: a `Table N.N:` caption is a *label*, not a restatement, and Stage 1 already
+harvested 89,380 of them — covering **100% of every PDF ≥100 pages (1,895 of 1,895)**, i.e.
+essentially all the large statistical publications. The in-document search doesn't use that
+channel yet. Full detail in
+[`STAGE3_OFFLINE_GATE_REPORT.md`](06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md).
 
 ---
 
@@ -323,6 +350,17 @@ It explicitly rejects, on this project's own measured evidence: relevance thresh
 absence, full-page dense embedding, swapping in a search server, treating a search snippet
 as a citation, and grading a design intended to run several searches by giving it one.
 
+> ⚠️ **That recommendation is superseded —
+> [`CORRECTION_2026-09-13.md`](08_what_next/CORRECTION_2026-09-13.md).** It named semantic
+> retrieval over the small card pool as the central untested lever. Approach C had already
+> built and measured exactly that route (BGE-small vectors over 12,760 document cards, fused
+> with FTS5 by reciprocal-rank fusion, plus rewrites and family grouping) and it failed the
+> offline gate. The research body is kept unchanged as the historical recommendation, and
+> its individual rejections above still stand on their own evidence. What does *not* follow
+> from the evidence is rebuilding the same shelf architecture as the next experiment; future
+> work should be a separately specified, offline-gated ablation on the shelf that already
+> exists — the caption channel in §7 being the clearest candidate.
+
 ---
 
 ## 10. The ledgers
@@ -332,8 +370,8 @@ as a citation, and grading a design intended to run several searches by giving i
 - [`FINDINGS_LIVE.md`](09_ledgers/FINDINGS_LIVE.md) — every finding as it landed, each
   with the exact condition it holds under. F1–F6 night 1, the night-2 grid run, F20–F24
   night 3, F40 approach C.
-- [`progress.jsonl`](09_ledgers/progress.jsonl) — one line per step, all four nights, 123
-  entries. The audit trail.
+- [`progress.jsonl`](09_ledgers/progress.jsonl) — one line per step across all four nights — the
+  audit trail. Appended to, never edited.
 - [`RESUME.md`](09_ledgers/RESUME.md) — how to pick the work back up from cold, including
   the traps worth not rediscovering.
 
@@ -361,7 +399,9 @@ failed this, and the numbers have barely moved across four nights:
 | stock tools / index / enforced index | 0.167 / 0.235 / 0.176 recall | — |
 | eight lexical query strategies | right file in top-50: **0/17** | — |
 | evidence_v1 table catalogue | 3/17, then 2/17 after tuning | 10/17 |
-| approach C shelf | right document in top-10: 6/17, 8/17 with rewrites | 12/17 |
+| approach C shelf (lexical + semantic, fused) | right document in top-10: 6/17, 8/17 with rewrites | 12/17 |
+| approach C, multi-year trajectory walk | 1/4 | 3/4 |
+| approach C, right page once document is right | 25/57 (43.9%) | 60% |
 
 **The diagnosis is now specific, and it is the same one from two independent directions.**
 The corpus is full of near-identical yearly editions of the same publications. A vague
@@ -370,11 +410,25 @@ name the year it wants. This is a *disambiguation* problem, not a vocabulary or 
 problem — which is why better word matching, more rewordings, wider aliases, and deeper
 candidate pools all measured out to approximately zero.
 
-**What has never been tested:** matching on meaning rather than words, over the small card
-pool (tens of thousands of records) rather than over 1.2 million pages. That was ruled out
-early on a full-page cost estimate of 20.8 hours — a number that no longer applies at card
-scale, where approach C measured the equivalent work at 28 minutes. That is the one
-substantial untried lever, and it is what Shelf V2 is built to test.
+And it operates at **two scales, not one**: across the corpus (the right page at rank
+500–3,000 of 1.2 million) and *within* a single correct document (the right table at rank 6
+of 8 matching pages). Cutting the haystack from 1.2 million pages to a few hundred — which
+approach C does successfully — does not by itself solve the second one.
+
+**Matching on meaning rather than words HAS now been tested, and it did not rescue this.**
+An earlier draft of this summary called it the one big untried lever, on the reasoning that
+dense embedding had only ever been costed over full pages (20.8 hours) and not over the much
+smaller card pool. Approach C then built it — BGE-small vectors over 12,760 document cards
+in 28 minutes, fused with FTS5 top-200 by reciprocal-rank fusion, with query rewrites and
+family grouping on top — and that combined lexical-plus-semantic route is what produced the
+6/17 and 8/17 above. Card-scale semantic retrieval is measured, not missing.
+
+**The clearest genuinely untried lever is narrower and more specific:** use the harvested
+`Table N.N:` captions to tell a canonical table apart from prose that merely repeats its
+subject. 89,380 captions are already extracted, covering 100% of every PDF ≥100 pages
+(1,895 of 1,895). Neither the in-document search nor the series walk uses that channel yet,
+and the failure it would address — the real table ranking 6th behind five prose
+restatements *inside the correct document* — is measured, not hypothesised.
 
 **A second failure that no retrieval fix addresses:** on 5 of 17 questions the right
 document *was* handed to the agent and it opened none of them, citing snippets instead. A
