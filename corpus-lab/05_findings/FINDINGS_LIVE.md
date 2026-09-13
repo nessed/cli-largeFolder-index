@@ -884,3 +884,64 @@ the `find` CLI and on the gate so the number can be reproduced.
 particular cash-out of the F41 oracle fails; it does not show that no selection rule can beat
 summation — but the next such idea needs a mechanism for choosing which rewrite to trust,
 which is the thing neither F41 nor this experiment has.*
+
+---
+
+## F47. Experiment E1 — the caption line is a real document signal, but not at the top ten. STOP
+
+**Measured**, `state/c_caption_family_gate.json` key `lex`, 17 answerable frozen questions,
+C2 rewrites, `rrf` fusion (frozen by F46), plus one holdout evaluation. A new FTS5 index over
+all **89,380** harvested captions (`state/c_caption_index.json`), one row per caption, built
+beside `shelf.db` without modifying it. No model calls.
+
+Every query contributes a third ranked list: its content words minus fiscal-year tokens and
+minus the trajectory scaffolding words, matched all-words-then-any against the caption index,
+ordered by bm25, entering the fusion as the documents those captions sit in.
+
+| depth | C2 + rrf (baseline) | E1 (+ caption lexical) | holdout baseline | holdout E1 |
+|---|---|---|---|---|
+| top 10 | 9 | **10** | 14 | **14** |
+| top 20 | 10 | **12** | 16 | **20** |
+| top 50 | 11 | **14** | 24 | **28** |
+| top 100 | 16 | 16 | 28 | **29** |
+| top 200 | 16 | 16 | 28 | 29 |
+
+**Pre-registered gate: PASS ≥12/17 and holdout ≥17/30; WEAK 10–11/17 *and* holdout ≥16/30.
+The development set is 10, which is inside the WEAK band, but the holdout top ten is 14,
+which is not. Both halves are required. STOP.** The bar was not moved and the development
+number was not allowed to carry the result on its own — that conjunction is exactly what the
+holdout is for.
+
+**What it nevertheless establishes, and it is not nothing.** Below the top ten the caption
+channel is the largest single improvement this project has measured on the document channel:
++2 at depth 20 and +3 at depth 50 on the development set, and on the holdout **+4 at 20, +4
+at 50, and the first movement of recall@100 in the project's history (28 → 29 of 30)**.
+Captions find documents that catalog cards do not. The channel is real; what it does not do
+is convert that into the top ten, which is where the gate lives and where an agent's
+attention actually is.
+
+**The joint diagnostic is the sharpest result here, and it is negative.** Taking the union of
+each question's top-20 caption hits across all six rewrites — up to 120 (file, page) pairs per
+question — a gold evidence *address* appears in it on **1 of 13** questions. So the caption
+channel is emphatically **not** solving page-finding and document-finding at once. It ranks
+the right *publication* better while almost never pointing at the right *page*. The hope that
+motivated E — that the caption line is the better retrieval unit for table questions, jointly
+— is not supported. It is a better unit for one half of the problem only.
+
+On exactly **1 of 17** questions no rewrite produced any caption hit at all, so coverage of
+the channel is not the limitation; ranking within it is.
+
+**One implementation defect, recorded because it cost a holdout look.** The first E1 run
+returned the baseline's numbers at every depth on both sets — 9/10/11/16/16 and
+14/16/24/28/28, identical to the last question. That was the bug signature, not a result:
+`_cap_search` returns a *family* list and fusion happens in *document* space, so
+`rel_to_family` silently dropped every caption entry and the channel contributed nothing.
+Fixed by entering the caption list as the documents its captions sit in, in first-seen order.
+The inert run is counted against tonight's five-look holdout budget even though the
+configuration it measured was numerically the already-published baseline and so told us
+nothing new about the holdout. **Holdout looks used after E1: 2 of 5.**
+
+*Condition: this corpus, this caption harvest, bm25 over caption text only, all-words then
+any-word, pool 200, k=60, rrf. It shows this caption channel does not reach the top-ten bar;
+it also shows the deeper pool is genuinely better, which is a fact about the shelf a future
+reranking experiment would be working against.*

@@ -270,6 +270,123 @@ def _editions_for_family(ctx, family):
     return singletons, n_copies, "singleton"
 
 
+# --------------------------------------------------------------------- #
+# caption channel (experiment E, 2026-09-15)
+#
+# A table's caption line is the shortest honest description of what the table
+# holds. B2 (F42) showed it is a strong page-level signal inside a document
+# already known to be the right one. E asks the harder question: is it also a
+# DOCUMENT-level signal at corpus scale -- can "which publication" be answered
+# by searching 89,380 caption lines instead of 12,760 catalog cards?
+# --------------------------------------------------------------------- #
+def _label_words(query):
+    """The query reduced to the words a caption would plausibly print: content
+    words, minus fiscal-year tokens, minus the trajectory scaffolding words.
+
+    The two exclusion rules are imported from c_offline_gate rather than
+    restated, so there is exactly one definition of each in the repository and
+    no chance of quietly widening either. The import is deferred to call time
+    because c_offline_gate imports this module.
+    """
+    from c_offline_gate import _TRAJECTORY_FILLER
+    stripped = FY_RE.sub(" ", query or "")
+    return [w for w in content_words(stripped) if w not in _TRAJECTORY_FILLER]
+
+
+def _cap_db(ctx):
+    if not hasattr(ctx, "_capdb"):
+        p = Path(ctx.shelf_path).parent / "captions_fts.db"
+        ctx._capdb = sqlite3.connect(f"file:{p}?mode=ro", uri=True) if p.exists() else None
+    return ctx._capdb
+
+
+def _cap_search(ctx, query, limit):
+    """Lexical caption channel. Returns (families in first-seen order,
+    ranked [(rel, page_index), ...]).
+
+    All words first: a caption is a label, so requiring every one of them is
+    what tells a table ABOUT the subject apart from one that merely mentions
+    it. Below 20 hits that is too strict to rank with, so it falls back to any
+    word -- the same all-then-any shape `inside` already uses on page bodies.
+    """
+    db = _cap_db(ctx)
+    if db is None:
+        return [], []
+    words = _label_words(query)
+    if not words:
+        return [], []
+
+    def run(match):
+        try:
+            return db.execute(
+                "SELECT rel, page_index FROM cap WHERE cap MATCH ? "
+                "ORDER BY bm25(cap) LIMIT ?", (match, limit)).fetchall()
+        except sqlite3.OperationalError:
+            return []
+
+    rows = run(" AND ".join('"%s"' % w for w in words))
+    if len(rows) < 20:
+        rows = run(" OR ".join('"%s"' % w for w in words))
+
+    families, seen = [], set()
+    pages = []
+    for rel, page_index in rows:
+        pages.append((rel, page_index))
+        fam = ctx.rel_to_family.get(rel)
+        if fam and fam not in seen:
+            seen.add(fam)
+            families.append(fam)
+    return families, pages
+
+
+def _cap_vec_search(ctx, query, limit):
+    """Dense caption channel (E2). Same label-word string as the lexical one,
+    cosine over the caption embeddings."""
+    import numpy as np
+    base = Path(ctx.shelf_path).parent
+    if not hasattr(ctx, "_capvecs"):
+        npy, idsf = base / "captions.f16.npy", base / "captions_ids.jsonl"
+        if not (npy.exists() and idsf.exists()):
+            ctx._capvecs, ctx._capvec_ids = None, None
+        else:
+            ctx._capvecs = np.load(npy).astype("float32")
+            ctx._capvec_ids = [json.loads(l) for l in
+                               idsf.read_text(encoding="utf-8").splitlines()]
+    if ctx._capvecs is None:
+        return [], []
+    words = _label_words(query)
+    if not words:
+        return [], []
+    qv = np.asarray(next(iter(_model().embed([" ".join(words)]))), dtype="float32")
+    n = np.linalg.norm(qv)
+    if n > 0:
+        qv = qv / n
+    scores = ctx._capvecs @ qv
+    top = np.argsort(-scores)[:limit]
+
+    families, seen = [], set()
+    pages = []
+    for i in top:
+        rec = ctx._capvec_ids[int(i)]
+        rel = rec["rel"]
+        pages.append((rel, rec["page_index"]))
+        fam = ctx.rel_to_family.get(rel)
+        if fam and fam not in seen:
+            seen.add(fam)
+            families.append(fam)
+    return families, pages
+
+
+def _rels_first_seen(pages):
+    """[(rel, page_index), ...] -> the distinct rels in first-seen order."""
+    out, seen = [], set()
+    for rel, _ in pages:
+        if rel not in seen:
+            seen.add(rel)
+            out.append(rel)
+    return out
+
+
 def _fam_rank_from_doc_scores(ctx, doc_scores):
     """Collapse a doc-level score map to a family-level one: a family scores
     what its single best-scoring document scores (unchanged from the original
@@ -315,10 +432,16 @@ def do_find(ctx, queries, pool=200, fusion="rrf", caption_channel=None):
     per_query_lists = []
     for q in queries:
         lists = [_lex_search(ctx, q, pool), _vec_search(ctx, q, pool)]
+        # The caption channel ranks CAPTIONS; fusion happens in document
+        # space, so a caption list enters as the documents those captions
+        # sit in, in first-seen order. Handing over the family list here
+        # instead silently contributes nothing at all -- rel_to_family
+        # drops every key it does not recognise as a rel, which is how
+        # the first E1 run reproduced the baseline to the last question.
         if caption_channel in ("lex", "lex+vec"):
-            lists.append(_cap_search(ctx, q, pool)[0])
+            lists.append(_rels_first_seen(_cap_search(ctx, q, pool)[1]))
         if caption_channel == "lex+vec":
-            lists.append(_cap_vec_search(ctx, q, pool)[0])
+            lists.append(_rels_first_seen(_cap_vec_search(ctx, q, pool)[1]))
         per_query_lists.append(lists)
 
     if fusion == "rrf":
