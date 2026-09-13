@@ -1,0 +1,30 @@
+{
+ "run_id": "20260912T220732Z-cede10c8",
+ "started_utc": "2026-09-12T22:07:32Z",
+ "started_unix": 1789250852.1881704,
+ "deadline_unix": 1789279652.1881704,
+ "deadline_hours": 8,
+ "metered_usd_ceiling": 0,
+ "metered_usd_spent": 0.0,
+ "session_budget": 175,
+ "sessions_used": 0,
+ "status": "stopped",
+ "stage_reached": 5,
+ "last_heartbeat_unix": 1789259470.2038114,
+ "amendments": {
+  "prior_run_id": "20260912T214913Z-7864bc46",
+  "prior_stop_reason": "CORPUS_BASELINE_CHANGED",
+  "cleanup_by": "Ali, manually, between runs",
+  "cleanup_detail": "harness/corpus_15000/nul and harness/corpus_15000/rg_err.log removed -- both confirmed junk from an old ripgrep error, no research content. corpus_15000 now back to 15010 files.",
+  "stage_2_2_scope": "Audit only the 20 frozen development question IDs in depth at Stage 2.2, not all 135. The other 115 final-validation questions are explicitly left ORACLE_UNRESOLVED at Stage 2 (per the contract's own provision: 'An unresolved oracle becomes ORACLE_UNRESOLVED, never automatic success or dropped denominator') rather than silently counted or skipped. They remain failures in any final complete-answer metric until audited.",
+  "stage_5_3_relaxation": "If, after the one permitted correction pass, the Stage 5.2 retrieval gate (>=15/17 top-24, >=14/17 top-120, macro recall@120>=0.90) still fails, but >=10/17 of the positive frozen questions get a correct address in the top 24, continue to Stage 6 anyway, labeled DEVELOPMENT_ONLY everywhere this run's results are reported. Below 10/17, RETRIEVAL_GATE_FAILED still applies and the run stops.",
+  "deadline_starts": "on Ali's restart instruction, not on the prior stopped run",
+  "instruction": "Restart from Stage 1, fresh run ID. Both amendments still apply ... The 8-hour deadline starts now. ... dont bother me again or stop i genuinely need to sleep and i wont be able to come in and save the day again i dont want a night wasted"
+ },
+ "stage1_ok": true,
+ "stage1_2_ok": true,
+ "stage1_3_ok": true,
+ "stage2_ok": true,
+ "reason_code": "RETRIEVAL_GATE_FAILED",
+ "finished_utc": "2026-09-13T00:31:10Z"
+}

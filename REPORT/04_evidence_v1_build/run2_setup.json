@@ -1,0 +1,21 @@
+{
+ "run_id": "20260912T220732Z-cede10c8",
+ "root": "harness/corpus_15000",
+ "wall_s": 1109.43,
+ "budget_s": 1800,
+ "timed_out": false,
+ "workers": 8,
+ "n_discovered": 15010,
+ "accounting_residual": 0,
+ "status_counts": {
+  "empty": 13,
+  "encrypted": 18,
+  "no_text": 1199,
+  "parser_failed": 136,
+  "partially_readable": 184,
+  "readable": 12685,
+  "unsupported": 775
+ },
+ "ready": true,
+ "note": "Two real bugs found and fixed during this stage: (1) idempotent-cleanup DELETE statements on three FTS5 virtual tables with no usable index on content_sha256 caused a full-table scan on every newly-ingested file, getting slower as the tables grew -- removed since they only ever ran on genuinely-new content, where nothing exists yet to delete; (2) a rare SQLite write-lock contention case under 8 concurrent workers could exhaust even the last-resort fallback row write, silently dropping up to 195 files from the catalogue while an in-memory counter still looked internally consistent -- fixed by giving that specific fallback write a longer (20s) busy_timeout. Verified by direct disk-vs-database comparison, not just the self-reported residual, after each fix."
+}

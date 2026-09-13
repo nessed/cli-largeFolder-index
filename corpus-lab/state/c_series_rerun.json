@@ -1,0 +1,245 @@
+{
+ "series_ok": "1/4",
+ "per_question": {
+  "tr_04": {
+   "hit_editions": 2,
+   "n_editions": 15,
+   "ok": true,
+   "skipped": false,
+   "row_words_word_count": 3,
+   "per_edition_rank": [
+    [
+     "2011-12",
+     null
+    ],
+    [
+     "2012-13",
+     null
+    ],
+    [
+     "2013-14",
+     null
+    ],
+    [
+     "2014-15",
+     null
+    ],
+    [
+     "2015-16",
+     null
+    ],
+    [
+     "2016-17",
+     null
+    ],
+    [
+     "2017-18",
+     null
+    ],
+    [
+     "2018-19",
+     null
+    ],
+    [
+     "2019-20",
+     null
+    ],
+    [
+     "2020-21",
+     null
+    ],
+    [
+     "2021-22",
+     3
+    ],
+    [
+     "2022-23",
+     null
+    ],
+    [
+     "2023-24",
+     null
+    ],
+    [
+     "2024-25",
+     null
+    ],
+    [
+     "2025-26",
+     5
+    ]
+   ]
+  },
+  "tr_07": {
+   "hit_editions": 0,
+   "n_editions": 15,
+   "ok": false,
+   "skipped": false,
+   "row_words_word_count": 3,
+   "per_edition_rank": [
+    [
+     "2011-12",
+     null
+    ],
+    [
+     "2012-13",
+     null
+    ],
+    [
+     "2013-14",
+     null
+    ],
+    [
+     "2014-15",
+     null
+    ],
+    [
+     "2015-16",
+     null
+    ],
+    [
+     "2016-17",
+     null
+    ],
+    [
+     "2017-18",
+     null
+    ],
+    [
+     "2018-19",
+     null
+    ],
+    [
+     "2019-20",
+     null
+    ],
+    [
+     "2020-21",
+     null
+    ],
+    [
+     "2021-22",
+     null
+    ],
+    [
+     "2022-23",
+     null
+    ],
+    [
+     "2023-24",
+     null
+    ],
+    [
+     "2024-25",
+     null
+    ],
+    [
+     "2025-26",
+     null
+    ]
+   ]
+  },
+  "tr_10": {
+   "hit_editions": 0,
+   "n_editions": 15,
+   "ok": false,
+   "skipped": false,
+   "row_words_word_count": 2,
+   "per_edition_rank": [
+    [
+     "2011-12",
+     null
+    ],
+    [
+     "2012-13",
+     null
+    ],
+    [
+     "2013-14",
+     null
+    ],
+    [
+     "2014-15",
+     null
+    ],
+    [
+     "2015-16",
+     null
+    ],
+    [
+     "2016-17",
+     null
+    ],
+    [
+     "2017-18",
+     null
+    ],
+    [
+     "2018-19",
+     null
+    ],
+    [
+     "2019-20",
+     null
+    ],
+    [
+     "2020-21",
+     null
+    ],
+    [
+     "2021-22",
+     null
+    ],
+    [
+     "2022-23",
+     null
+    ],
+    [
+     "2023-24",
+     null
+    ],
+    [
+     "2024-25",
+     null
+    ],
+    [
+     "2025-26",
+     null
+    ]
+   ]
+  },
+  "tr_16": {
+   "hit_editions": 0,
+   "n_editions": 6,
+   "ok": false,
+   "skipped": false,
+   "row_words_word_count": 3,
+   "per_edition_rank": [
+    [
+     "2013-14",
+     null
+    ],
+    [
+     "2015-16",
+     null
+    ],
+    [
+     "2017-18",
+     null
+    ],
+    [
+     "2019-20",
+     null
+    ],
+    [
+     "2022-23",
+     null
+    ],
+    [
+     "2025-26",
+     null
+    ]
+   ]
+  }
+ }
+}

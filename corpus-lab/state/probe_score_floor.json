@@ -1,0 +1,709 @@
+{
+ "db": "harness_15000.db",
+ "or_cap": 12,
+ "deep_rank": 10,
+ "rows": [
+  {
+   "q_id": "ab_09",
+   "type": "absence",
+   "present": false,
+   "n_tokens": 7,
+   "n_tokens_or": 7,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 914292,
+    "top1": -17.556,
+    "deep": -17.533,
+    "top1_path": "Teaching/ECON341/2022-23/Problem Sets/docx_prov_punjab_nfc_share.docx"
+   },
+   "identifiers": [
+    "2008"
+   ],
+   "ident_counts": {
+    "2008": 5734
+   },
+   "ident_and": {
+    "total": 5734,
+    "top1": -10.12,
+    "deep": -9.605,
+    "top1_path": "Sources/Provincial/Punjab/agricultural_support_prices_and_cropping_patterns_evidence.pdf"
+   },
+   "ident_min_count": 5734,
+   "or_top1_per_token": -2.508,
+   "or_gap_top1_deep": 0.023
+  },
+  {
+   "q_id": "ab_11",
+   "type": "absence",
+   "present": false,
+   "n_tokens": 7,
+   "n_tokens_or": 7,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 585719,
+    "top1": -28.609,
+    "deep": -22.753,
+    "top1_path": "_NEW_STRUCTURE/extraction/output/auto_duty_cbu_mn.csv"
+   },
+   "identifiers": [
+    "2024",
+    "1500",
+    "SRO"
+   ],
+   "ident_counts": {
+    "2024": 547582,
+    "1500": 2165,
+    "SRO": 0
+   },
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": 0,
+   "or_top1_per_token": -4.087,
+   "or_gap_top1_deep": 5.856
+  },
+  {
+   "q_id": "ab_13",
+   "type": "absence",
+   "present": false,
+   "n_tokens": 7,
+   "n_tokens_or": 7,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 585701,
+    "top1": -28.609,
+    "deep": -22.753,
+    "top1_path": "_NEW_STRUCTURE/extraction/output/auto_duty_cbu_mn.csv"
+   },
+   "identifiers": [
+    "2024",
+    "1502",
+    "SRO"
+   ],
+   "ident_counts": {
+    "2024": 547582,
+    "1502": 2175,
+    "SRO": 0
+   },
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": 0,
+   "or_top1_per_token": -4.087,
+   "or_gap_top1_deep": 5.856
+  },
+  {
+   "q_id": "cd_04",
+   "type": "canonical_duplicate",
+   "present": true,
+   "n_tokens": 12,
+   "n_tokens_or": 12,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1172862,
+    "top1": -31.324,
+    "deep": -29.266,
+    "top1_path": "RA Work/debt_sustainability/raw/reading_list.md"
+   },
+   "identifiers": [
+    "2025"
+   ],
+   "ident_counts": {
+    "2025": 487610
+   },
+   "ident_and": {
+    "total": 487610,
+    "top1": -0.823,
+    "deep": -0.795,
+    "top1_path": "agent_workspace/.claude/commands/transcript_0410.json"
+   },
+   "ident_min_count": 487610,
+   "or_top1_per_token": -2.61,
+   "or_gap_top1_deep": 2.058
+  },
+  {
+   "q_id": "mb_04",
+   "type": "multi_branch",
+   "present": true,
+   "n_tokens": 13,
+   "n_tokens_or": 12,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1167758,
+    "top1": -44.505,
+    "deep": -41.546,
+    "top1_path": "Sources/Federal/Economic Survey/2011-12/lecture_outline.md"
+   },
+   "identifiers": [
+    "2019"
+   ],
+   "ident_counts": {
+    "2019": 1003029
+   },
+   "ident_and": {
+    "total": 1003029,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "agent_workspace/runs/2026/transcript_0290.json"
+   },
+   "ident_min_count": 1003029,
+   "or_top1_per_token": -3.709,
+   "or_gap_top1_deep": 2.959
+  },
+  {
+   "q_id": "mb_05",
+   "type": "multi_branch",
+   "present": true,
+   "n_tokens": 13,
+   "n_tokens_or": 12,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1148552,
+    "top1": -44.505,
+    "deep": -41.546,
+    "top1_path": "Sources/Federal/Economic Survey/2011-12/lecture_outline.md"
+   },
+   "identifiers": [
+    "2022"
+   ],
+   "ident_counts": {
+    "2022": 755393
+   },
+   "ident_and": {
+    "total": 755393,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "agent_workspace/transcript_0242.json"
+   },
+   "ident_min_count": 755393,
+   "or_top1_per_token": -3.709,
+   "or_gap_top1_deep": 2.959
+  },
+  {
+   "q_id": "mb_07",
+   "type": "multi_branch",
+   "present": true,
+   "n_tokens": 12,
+   "n_tokens_or": 12,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1167479,
+    "top1": -45.082,
+    "deep": -41.996,
+    "top1_path": "Sources/Federal/Economic Survey/2011-12/lecture_outline.md"
+   },
+   "identifiers": [
+    "2019"
+   ],
+   "ident_counts": {
+    "2019": 1003029
+   },
+   "ident_and": {
+    "total": 1003029,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "agent_workspace/runs/2026/transcript_0290.json"
+   },
+   "ident_min_count": 1003029,
+   "or_top1_per_token": -3.757,
+   "or_gap_top1_deep": 3.086
+  },
+  {
+   "q_id": "nm_09",
+   "type": "name_content_mismatch",
+   "present": true,
+   "n_tokens": 5,
+   "n_tokens_or": 5,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 830266,
+    "top1": -11.39,
+    "deep": -11.097,
+    "top1_path": "Papers/Fiscal decentralisation/figures/panel country year literacy rate.csv"
+   },
+   "identifiers": [
+    "2025"
+   ],
+   "ident_counts": {
+    "2025": 487610
+   },
+   "ident_and": {
+    "total": 487610,
+    "top1": -0.823,
+    "deep": -0.795,
+    "top1_path": "agent_workspace/.claude/commands/transcript_0410.json"
+   },
+   "ident_min_count": 487610,
+   "or_top1_per_token": -2.278,
+   "or_gap_top1_deep": 0.293
+  },
+  {
+   "q_id": "pl_01",
+   "type": "point_lookup",
+   "present": true,
+   "n_tokens": 9,
+   "n_tokens_or": 9,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1167264,
+    "top1": -31.061,
+    "deep": -30.02,
+    "top1_path": "Teaching/ECON341/2022-23/referee_report.md"
+   },
+   "identifiers": [
+    "2012"
+   ],
+   "ident_counts": {
+    "2012": 1128262
+   },
+   "ident_and": {
+    "total": 1128262,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "Sources/Federal/PSDP/2013-14/PSDP 2013-14.pdf"
+   },
+   "ident_min_count": 1128262,
+   "or_top1_per_token": -3.451,
+   "or_gap_top1_deep": 1.041
+  },
+  {
+   "q_id": "pl_14",
+   "type": "point_lookup",
+   "present": true,
+   "n_tokens": 3,
+   "n_tokens_or": 3,
+   "and": {
+    "total": 20692,
+    "top1": -10.587,
+    "deep": -10.477,
+    "top1_path": "Downloads/papers/to read/fbr_sales_superseded_row_label.csv"
+   },
+   "or": {
+    "total": 809508,
+    "top1": -10.587,
+    "deep": -10.504,
+    "top1_path": "Downloads/papers/to read/fbr_sales_superseded_row_label.csv"
+   },
+   "identifiers": [
+    "2023"
+   ],
+   "ident_counts": {
+    "2023": 718608
+   },
+   "ident_and": {
+    "total": 718608,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "agent_workspace/.claude/commands/transcript_0170.json"
+   },
+   "ident_min_count": 718608,
+   "or_top1_per_token": -3.529,
+   "or_gap_top1_deep": 0.083
+  },
+  {
+   "q_id": "pl_21",
+   "type": "point_lookup",
+   "present": true,
+   "n_tokens": 3,
+   "n_tokens_or": 3,
+   "and": {
+    "total": 19801,
+    "top1": -15.801,
+    "deep": -15.76,
+    "top1_path": "Sources/Federal/Demands for Grants/2013-14/Demands for Grants and Appropriations 2013-14 Vol-2.pdf"
+   },
+   "or": {
+    "total": 1130063,
+    "top1": -15.801,
+    "deep": -15.76,
+    "top1_path": "Sources/Federal/Demands for Grants/2013-14/Demands for Grants and Appropriations 2013-14 Vol-2.pdf"
+   },
+   "identifiers": [
+    "2012"
+   ],
+   "ident_counts": {
+    "2012": 1128262
+   },
+   "ident_and": {
+    "total": 1128262,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "Sources/Federal/PSDP/2013-14/PSDP 2013-14.pdf"
+   },
+   "ident_min_count": 1128262,
+   "or_top1_per_token": -5.267,
+   "or_gap_top1_deep": 0.041
+  },
+  {
+   "q_id": "rc_05",
+   "type": "reconciliation",
+   "present": true,
+   "n_tokens": 10,
+   "n_tokens_or": 10,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1140620,
+    "top1": -54.396,
+    "deep": -45.875,
+    "top1_path": "Teaching/ECON341/2016-17/Problem Sets/NOTES.md"
+   },
+   "identifiers": [
+    "2013"
+   ],
+   "ident_counts": {
+    "2013": 1126630
+   },
+   "ident_and": {
+    "total": 1126630,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "agent_workspace/.claude/commands/transcript_0230.json"
+   },
+   "ident_min_count": 1126630,
+   "or_top1_per_token": -5.44,
+   "or_gap_top1_deep": 8.521
+  },
+  {
+   "q_id": "rc_07",
+   "type": "reconciliation",
+   "present": true,
+   "n_tokens": 12,
+   "n_tokens_or": 12,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1105178,
+    "top1": -54.396,
+    "deep": -44.879,
+    "top1_path": "Teaching/ECON341/2016-17/Problem Sets/NOTES.md"
+   },
+   "identifiers": [
+    "2016"
+   ],
+   "ident_counts": {
+    "2016": 1085229
+   },
+   "ident_and": {
+    "total": 1085229,
+    "top1": -0.0,
+    "deep": -0.0,
+    "top1_path": "agent_workspace/runs/2025/transcript_0302.json"
+   },
+   "ident_min_count": 1085229,
+   "or_top1_per_token": -4.533,
+   "or_gap_top1_deep": 9.517
+  },
+  {
+   "q_id": "rl_05",
+   "type": "relationship",
+   "present": true,
+   "n_tokens": 8,
+   "n_tokens_or": 8,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1061573,
+    "top1": -30.373,
+    "deep": -23.444,
+    "top1_path": "Sources/Federal/Demands for Grants/2016-17/NOTES.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -3.797,
+   "or_gap_top1_deep": 6.929
+  },
+  {
+   "q_id": "sd_03",
+   "type": "stale_doc",
+   "present": true,
+   "n_tokens": 2,
+   "n_tokens_or": 2,
+   "and": {
+    "total": 2,
+    "top1": -20.27,
+    "deep": null,
+    "top1_path": "Papers/ADP execution/code/HANDOFF.md"
+   },
+   "or": {
+    "total": 482,
+    "top1": -20.27,
+    "deep": -14.401,
+    "top1_path": "Papers/ADP execution/code/HANDOFF.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -10.135,
+   "or_gap_top1_deep": 5.869
+  },
+  {
+   "q_id": "sd_05",
+   "type": "stale_doc",
+   "present": true,
+   "n_tokens": 3,
+   "n_tokens_or": 3,
+   "and": {
+    "total": 6,
+    "top1": -25.462,
+    "deep": null,
+    "top1_path": "archive/old drives/thesis backup/session_summary_2026-02-27.md"
+   },
+   "or": {
+    "total": 130016,
+    "top1": -25.462,
+    "deep": -23.302,
+    "top1_path": "archive/old drives/thesis backup/session_summary_2026-02-27.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -8.487,
+   "or_gap_top1_deep": 2.16
+  },
+  {
+   "q_id": "tr_04",
+   "type": "trajectory",
+   "present": true,
+   "n_tokens": 7,
+   "n_tokens_or": 7,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 686775,
+    "top1": -25.204,
+    "deep": -22.779,
+    "top1_path": "Sources/Federal/Economic Survey/2015-16/CLAUDE.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -3.601,
+   "or_gap_top1_deep": 2.425
+  },
+  {
+   "q_id": "tr_07",
+   "type": "trajectory",
+   "present": true,
+   "n_tokens": 8,
+   "n_tokens_or": 8,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 835873,
+    "top1": -23.476,
+    "deep": -21.218,
+    "top1_path": "Sources/Federal/Economic Survey/2015-16/CLAUDE.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -2.934,
+   "or_gap_top1_deep": 2.258
+  },
+  {
+   "q_id": "tr_10",
+   "type": "trajectory",
+   "present": true,
+   "n_tokens": 6,
+   "n_tokens_or": 6,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 1150676,
+    "top1": -16.835,
+    "deep": -15.333,
+    "top1_path": "Teaching/ECON232/2018-19/Problem Sets/README.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -2.806,
+   "or_gap_top1_deep": 1.502
+  },
+  {
+   "q_id": "tr_16",
+   "type": "trajectory",
+   "present": true,
+   "n_tokens": 9,
+   "n_tokens_or": 9,
+   "and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "or": {
+    "total": 845615,
+    "top1": -18.878,
+    "deep": -18.17,
+    "top1_path": "Papers/Tax effort/data/SOURCE SELECTION.md"
+   },
+   "identifiers": [],
+   "ident_counts": {},
+   "ident_and": {
+    "total": 0,
+    "top1": null,
+    "deep": null,
+    "top1_path": null
+   },
+   "ident_min_count": null,
+   "or_top1_per_token": -2.098,
+   "or_gap_top1_deep": 0.708
+  }
+ ],
+ "verdicts": {
+  "AND matching pages": {
+   "separates": false,
+   "margin": 0,
+   "threshold": 0.0
+  },
+  "AND top1 bm25": {
+   "separates": null,
+   "margin": null,
+   "threshold": null
+  },
+  "OR matching pages": {
+   "separates": false,
+   "margin": -913810,
+   "threshold": 457387.0
+  },
+  "OR top1 bm25": {
+   "separates": false,
+   "margin": -18.022,
+   "threshold": -19.598
+  },
+  "OR top1 per token": {
+   "separates": false,
+   "margin": -1.989,
+   "threshold": -3.092
+  },
+  "OR gap top1->top10": {
+   "separates": false,
+   "margin": -5.815,
+   "threshold": 2.949
+  },
+  "IDENT and-pages": {
+   "separates": false,
+   "margin": -5734,
+   "threshold": 2867.0
+  },
+  "IDENT rarest token": {
+   "separates": true,
+   "margin": 481876,
+   "threshold": 246672.0
+  }
+ }
+}

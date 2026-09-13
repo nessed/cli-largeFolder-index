@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+99_scratch/
+02_stacks/s2_fts5/*.db
+02_stacks/s2_fts5/*.db-shm
+02_stacks/s2_fts5/*.db-wal
+99_scratch/*.log
+02_stacks/s7_shelf/
+
+# Derived retrieval indexes, model/vector caches, and run-local scratch data.
+# Keep source code, tests, findings, and small reproducibility state in Git.
+02_stacks/s6_hybrid/
+02_stacks/shelf_v2/
+02_stacks/evidence_v1/
+state/evidence_v1/
+state/shelf_v2/
+__pycache__/
+*.py[cod]
+.pytest_cache/

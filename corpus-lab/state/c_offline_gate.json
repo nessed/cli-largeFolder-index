@@ -1,0 +1,47 @@
+{
+ "n_answerable": 17,
+ "excluded_not_on_shelf": 2,
+ "absence_split": {
+  "document_level_n": 11,
+  "identifier_level_n": 4
+ },
+ "n_haiku_calls": 0,
+ "gate_rows": {
+  "C1_doc_rank_le_10": {
+   "hits": 6,
+   "n": 17,
+   "band": "FAIL"
+  },
+  "C2_doc_rank_le_10": {
+   "hits": 8,
+   "n": 17
+  },
+  "C1_page_rank_le_5": {
+   "hits": 25,
+   "n": 57,
+   "pct": 43.9,
+   "band": "PASS-WEAK"
+  },
+  "series_ok": {
+   "hits": 0,
+   "n": 4,
+   "band": "FAIL"
+  },
+  "doc_level_absence_NO_EDITION": {
+   "hits": 11,
+   "n": 11,
+   "band": "PASS"
+  },
+  "control_EDITION_PRESENT": {
+   "hits": 14,
+   "n": 17,
+   "band": "PASS-WEAK"
+  },
+  "identifier_level_absence_zero_hits": {
+   "hits": 4,
+   "n": 4
+  }
+ },
+ "overall": "FAIL",
+ "wall_s": 15.3
+}

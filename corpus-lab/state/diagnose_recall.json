@@ -1,0 +1,140 @@
+{
+ "A": {
+  "evidence_files_total": 64,
+  "evidence_files_indexed": 64
+ },
+ "B": {
+  "questions_with_all_evidence_indexed": 17,
+  "evidence_NOT_in_top50_by_question_words": 17
+ },
+ "ranks": {
+  "not_found": 17
+ },
+ "C": {
+  "s0_baseline__never_opened_evidence": 13,
+  "s1_policy__never_opened_evidence": 17,
+  "s2_hook__never_opened_evidence": 17,
+  "s0_baseline__opened_evidence": 4
+ },
+ "per_question": [
+  {
+   "q_id": "pl_01",
+   "type": "point_lookup",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "pl_14",
+   "type": "point_lookup",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "pl_21",
+   "type": "point_lookup",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "tr_04",
+   "type": "trajectory",
+   "n_evidence": 10,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "tr_07",
+   "type": "trajectory",
+   "n_evidence": 8,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "tr_10",
+   "type": "trajectory",
+   "n_evidence": 12,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "tr_16",
+   "type": "trajectory",
+   "n_evidence": 12,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "mb_04",
+   "type": "multi_branch",
+   "n_evidence": 3,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "mb_05",
+   "type": "multi_branch",
+   "n_evidence": 3,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "mb_07",
+   "type": "multi_branch",
+   "n_evidence": 3,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "nm_09",
+   "type": "name_content_mismatch",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "cd_04",
+   "type": "canonical_duplicate",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "rc_05",
+   "type": "reconciliation",
+   "n_evidence": 2,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "rc_07",
+   "type": "reconciliation",
+   "n_evidence": 2,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "sd_03",
+   "type": "stale_doc",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "sd_05",
+   "type": "stale_doc",
+   "n_evidence": 1,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  },
+  {
+   "q_id": "rl_05",
+   "type": "relationship",
+   "n_evidence": 2,
+   "all_indexed": true,
+   "best_rank_by_question_words": null
+  }
+ ]
+}

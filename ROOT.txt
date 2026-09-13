@@ -1,0 +1,3 @@
+retrieval-lab project root.
+Read INDEX.md in this directory for the map and the entry points.
+Deliverable: corpus-lab/05_findings/NIGHT2_FULL_REPORT.md

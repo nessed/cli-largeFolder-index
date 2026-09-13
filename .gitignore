@@ -1,19 +1,65 @@
-__pycache__/
-*.pyc
-99_scratch/
-02_stacks/s2_fts5/*.db
-02_stacks/s2_fts5/*.db-shm
-02_stacks/s2_fts5/*.db-wal
-99_scratch/*.log
-02_stacks/s7_shelf/
+# ---------------------------------------------------------------------------
+# retrieval-lab .gitignore
+#
+# The repository root is the PROJECT root. Three things must never be pushed:
+#   1. anything that reveals the answers to the benchmark questions
+#   2. the generated fixture corpora and derived search indexes (large, rebuildable)
+#   3. virtualenvs and caches
+# Everything else - code, tests, findings, reports, plans, run state - is tracked.
+# ---------------------------------------------------------------------------
 
-# Derived retrieval indexes, model/vector caches, and run-local scratch data.
-# Keep source code, tests, findings, and small reproducibility state in Git.
-02_stacks/s6_hybrid/
-02_stacks/shelf_v2/
-02_stacks/evidence_v1/
-state/evidence_v1/
-state/shelf_v2/
+# --- 1. ANSWER KEYS AND MEASUREMENT PRIVACY -------------------------------
+# _private/ holds answer_key.json, the canary manifests, and 189 recorded
+# measurement sessions. If this leaks, no honest re-run of the benchmark is
+# possible. Never remove this rule.
+_private/
+
+# The entire fixture tree. harness/generator/ is the machinery that MANUFACTURES
+# the answer key - finalize_key.py, canary_slots.py, plant_canaries.py, plan.py -
+# and harness/world/ is the ground-truth model every planted answer derives from.
+# Publishing either is equivalent to publishing the key, so the whole tree stays
+# local. How the fixture was built is described in the reports instead.
+harness/
+
+# ACCEPTANCE.md is an oracle in prose: gold source paths, literal cell values
+# and page indices for the 30 acceptance cells. Kept local, deliberately.
+ACCEPTANCE.md
+
+# Stage 2.2's source audit resolves every frozen question to its gold address.
+corpus-lab/state/evidence_v1/
+
+# --- 2. GENERATED CORPORA AND DERIVED INDEXES -----------------------------
+# (The four fixture corpora - 15,010 / 5,000 / 2,000 / 500 files - are covered
+# by the harness/ rule above. Regeneration is banned anyway: the generator's own
+# determinism check failed, so rebuilding would silently change the ground truth.)
+
+# FTS5 page indexes (~7 GB), shelf database, and card vector files.
+corpus-lab/02_stacks/s2_fts5/*.db
+corpus-lab/02_stacks/s2_fts5/*.db-shm
+corpus-lab/02_stacks/s2_fts5/*.db-wal
+corpus-lab/02_stacks/s6_hybrid/
+corpus-lab/02_stacks/s7_shelf/
+corpus-lab/02_stacks/shelf_v2/
+corpus-lab/02_stacks/evidence_v1/
+corpus-lab/state/shelf_v2/
+*.db
+*.db-shm
+*.db-wal
+*.npy
+
+# --- 3. ENVIRONMENTS, CACHES, SCRATCH -------------------------------------
+.venv/
+**/.venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+99_scratch/
+99_scratch_test_cwd/
+corpus-lab/99_scratch/
+*.log
+*.bak_pass2
+
+# OS noise
+Thumbs.db
+.DS_Store

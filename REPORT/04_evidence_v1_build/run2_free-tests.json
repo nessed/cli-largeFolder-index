@@ -1,0 +1,46 @@
+{
+ "run_id": "20260912T220732Z-cede10c8",
+ "ok": true,
+ "suites": {
+  "2.4_scoring": {
+   "n_run": 12,
+   "n_failed": 0,
+   "failures": [],
+   "errors": [],
+   "required_n": 12,
+   "ok": true
+  },
+  "3.3_inventory": {
+   "n_run": 12,
+   "n_failed": 0,
+   "failures": [],
+   "errors": [],
+   "required_n": 12,
+   "ok": true
+  },
+  "6.3_compile": {
+   "n_run": 20,
+   "n_failed": 0,
+   "failures": [],
+   "errors": [],
+   "required_n": 20,
+   "ok": true
+  },
+  "6.2_verify": {
+   "n_run": 4,
+   "n_failed": 0,
+   "failures": [],
+   "errors": [],
+   "required_n": null,
+   "ok": true
+  },
+  "7.4_hooks": {
+   "n_run": 13,
+   "n_failed": 0,
+   "failures": [],
+   "errors": [],
+   "required_n": 12,
+   "ok": true
+  }
+ }
+}

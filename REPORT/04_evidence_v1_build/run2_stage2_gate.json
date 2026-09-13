@@ -1,0 +1,9 @@
+{
+ "run_id": "20260912T220732Z-cede10c8",
+ "ok": true,
+ "2.1_absence_replay_ok": true,
+ "2.2_oracle_audit_ok": true,
+ "2.3_oracle_frozen_ok": true,
+ "2.4_scoring_tests_12_of_12": true,
+ "scope_amendment_applied": "Audit only the 20 frozen development question IDs in depth at Stage 2.2, not all 135. The other 115 final-validation questions are explicitly left ORACLE_UNRESOLVED at Stage 2 (per the contract's own provision: 'An unresolved oracle becomes ORACLE_UNRESOLVED, never automatic success or dropped denominator') rather than silently counted or skipped. They remain failures in any final complete-answer metric until audited."
+}

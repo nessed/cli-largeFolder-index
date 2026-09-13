@@ -1,0 +1,206 @@
+{
+ "cd_04": {
+  "q_id": "cd_04",
+  "queries": [
+   "there are a few copies of the sindh -- annual development programme series lying around - which one is current, and what does it say for 2025-26",
+   "there are a few copies of the sindh -- annual development programme series lying around - which one is current, and what does it say for 2025-26",
+   "Sindh Annual Development Programme",
+   "Annual Development Plan Sindh",
+   "Sindh Annual Development Programme 2025-26",
+   "Sindh ADP 2025-26"
+  ],
+  "rewrite_failed": false
+ },
+ "mb_04": {
+  "q_id": "mb_04",
+  "queries": [
+   "for Khyber Pakhtunkhwa around 2019-20, how does the federal development allocation compare with what was actually released and with the province's own development programme",
+   "for Khyber Pakhtunkhwa around 2019-20, how does the federal development allocation compare with what was actually released and with the province's own development programme",
+   "Khyber Pakhtunkhwa Federal Development Allocation and Release",
+   "PSDP Allocation and Disbursement Against Provincial ADP: Khyber Pakhtunkhwa",
+   "Economic Survey of Pakistan 2019-20",
+   "development allocation release Khyber Pakhtunkhwa 2019-20"
+  ],
+  "rewrite_failed": false
+ },
+ "mb_05": {
+  "q_id": "mb_05",
+  "queries": [
+   "for Khyber Pakhtunkhwa around 2022-23, how does the federal development allocation compare with what was actually released and with the province's own development programme",
+   "for Khyber Pakhtunkhwa around 2022-23, how does the federal development allocation compare with what was actually released and with the province's own development programme",
+   "Federal Development Allocation and Releases to Khyber Pakhtunkhwa",
+   "Federal Development Programme Disbursement and Provincial Appropriation Khyber Pakhtunkhwa",
+   "PSDP 2022-23",
+   "federal development allocation releases Khyber Pakhtunkhwa 2022-23"
+  ],
+  "rewrite_failed": false
+ },
+ "mb_07": {
+  "q_id": "mb_07",
+  "queries": [
+   "for Sindh around 2019-20, how does the federal development allocation compare with what was actually released and with the province's own development programme",
+   "for Sindh around 2019-20, how does the federal development allocation compare with what was actually released and with the province's own development programme",
+   "Federal Development Allocation to Sindh",
+   "Federal Public Sector Development Programme Allocation to Sindh",
+   "Federal PSDP 2019-20",
+   "federal allocation release Sindh 2019-20"
+  ],
+  "rewrite_failed": false
+ },
+ "nm_09": {
+  "q_id": "nm_09",
+  "queries": [
+   "what is literacy rate (10 years and above) for 2025-26 - it is in here somewhere",
+   "what is literacy rate (10 years and above) for 2025-26 - it is in here somewhere",
+   "Literacy Rate Population 10 Years and Above",
+   "Adult Literacy Rate 10+ Years",
+   "Pakistan Bureau of Statistics 2025-26",
+   "literacy rate, 10 years above, 2025-26"
+  ],
+  "rewrite_failed": false
+ },
+ "pl_01": {
+  "q_id": "pl_01",
+  "queries": [
+   "I need the 2012-13 number for non-tax revenue, whatever the official figure is",
+   "I need the 2012-13 number for non-tax revenue, whatever the official figure is",
+   "Non-Tax Revenue",
+   "Non-Taxation Revenue / Receipts from Non-Tax Sources",
+   "Federal Budget 2012-13 / Pakistan Economic Survey 2012-13",
+   "Non-tax revenue Pakistan 2012-13"
+  ],
+  "rewrite_failed": false
+ },
+ "pl_14": {
+  "q_id": "pl_14",
+  "queries": [
+   "what was sales tax in 2023-24",
+   "what was sales tax in 2023-24",
+   "Sales Tax Revenue",
+   "General Sales Tax Collection 2023-24",
+   "Federal Board of Revenue Statistics 2023-24",
+   "sales tax Pakistan 2023-24"
+  ],
+  "rewrite_failed": false
+ },
+ "pl_21": {
+  "q_id": "pl_21",
+  "queries": [
+   "what was direct taxes in 2012-13",
+   "what was direct taxes in 2012-13",
+   "Direct Taxes",
+   "Direct Tax Revenue",
+   "Federal Board of Revenue Annual Report 2012-13",
+   "direct taxes Pakistan 2012-13"
+  ],
+  "rewrite_failed": false
+ },
+ "rc_05": {
+  "q_id": "rc_05",
+  "queries": [
+   "the spreadsheet and the published document give different numbers for domestic debt in 2013-14 - which is right",
+   "the spreadsheet and the published document give different numbers for domestic debt in 2013-14 - which is right",
+   "Domestic Debt",
+   "Internal Debt 2013-14",
+   "Pakistan Economic Survey 2013-14",
+   "domestic debt Pakistan 2013-14"
+  ],
+  "rewrite_failed": false
+ },
+ "rc_07": {
+  "q_id": "rc_07",
+  "queries": [
+   "the spreadsheet and the published document give different numbers for automobile production (cars and lcvs) in 2016-17 - which is right",
+   "the spreadsheet and the published document give different numbers for automobile production (cars and lcvs) in 2016-17 - which is right",
+   "Automobile Production: Cars and Light Commercial Vehicles",
+   "Motor Vehicle Manufacturing: Cars and Light Goods Vehicles",
+   "Large Scale Manufacturing Industries Survey 2016-17 automobile production",
+   "automobile production cars LCVs Pakistan 2016-17"
+  ],
+  "rewrite_failed": false
+ },
+ "rl_05": {
+  "q_id": "rl_05",
+  "queries": [
+   "the memo mentions development expenditure and points at a table - what is the number it is pointing at",
+   "the memo mentions development expenditure and points at a table - what is the number it is pointing at",
+   "Development Expenditure Table",
+   "Capital Expenditure and Public Sector Development Programme Allocation",
+   "Economic Survey of Pakistan 2024-25",
+   "development expenditure Pakistan allocation"
+  ],
+  "rewrite_failed": false
+ },
+ "sd_03": {
+  "q_id": "sd_03",
+  "queries": [
+   "is the reorganisation finished or not",
+   "is the reorganisation finished or not",
+   "Reorganisation Status",
+   "Reorganization Completion Progress",
+   "Administrative Reorganisation Report 2025-26",
+   "reorganisation completion Pakistan status"
+  ],
+  "rewrite_failed": false
+ },
+ "sd_05": {
+  "q_id": "sd_05",
+  "queries": [
+   "what is left to do on the provincial extraction",
+   "what is left to do on the provincial extraction",
+   "Provincial Extraction Outstanding Tasks",
+   "Subnational Data Extraction Pending Work",
+   "Provincial Statistics Report 2024-25",
+   "extraction provincial pending"
+  ],
+  "rewrite_failed": false
+ },
+ "tr_04": {
+  "q_id": "tr_04",
+  "queries": [
+   "how does sindh -- annual development programme look over the last decade or so",
+   "how does sindh -- annual development programme look over the last decade or so",
+   "Annual Development Programme, Sindh",
+   "Sindh Annual Development Plan",
+   "Sindh Development Statistics 2015-16 to 2024-25",
+   "Sindh development programme decade"
+  ],
+  "rewrite_failed": false
+ },
+ "tr_07": {
+  "q_id": "tr_07",
+  "queries": [
+   "how does gilgit-baltistan -- total budget outlay look over the last decade or so",
+   "how does gilgit-baltistan -- total budget outlay look over the last decade or so",
+   "Gilgit-Baltistan Total Budget Outlay",
+   "Gilgit-Baltistan Budget Allocation",
+   "Federal Budget of Pakistan Gilgit-Baltistan 2015-16 to 2025-26",
+   "Gilgit-Baltistan budget 2015-2025"
+  ],
+  "rewrite_failed": false
+ },
+ "tr_10": {
+  "q_id": "tr_10",
+  "queries": [
+   "has cotton production gone up or down over the period, and by how much",
+   "has cotton production gone up or down over the period, and by how much",
+   "Cotton Production",
+   "Cotton Output",
+   "Agricultural Statistics of Pakistan 2015-16 to 2023-24",
+   "cotton production Pakistan growth"
+  ],
+  "rewrite_failed": false
+ },
+ "tr_16": {
+  "q_id": "tr_16",
+  "queries": [
+   "give me the trajectory of punjab -- annual development programme across the years we have",
+   "give me the trajectory of punjab -- annual development programme across the years we have",
+   "Punjab Annual Development Programme",
+   "Punjab Development Plan (ADP) or Punjab Annual Development Plan",
+   "Planning Commission of Pakistan and Government of Punjab Planning and Development Department, 2015-16 to 2024-25",
+   "Punjab annual development programme trajectory years"
+  ],
+  "rewrite_failed": false
+ }
+}

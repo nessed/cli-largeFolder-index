@@ -1,0 +1,512 @@
+{
+ "deep": 5000,
+ "per_q": [
+  {
+   "q_id": "cd_04",
+   "type": "canonical_duplicate",
+   "n_words": 13,
+   "rarest": [
+    [
+     "copies",
+     0
+    ],
+    [
+     "--",
+     0
+    ],
+    [
+     "lying",
+     0
+    ],
+    [
+     "say",
+     185
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 870,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": 1313
+  },
+  {
+   "q_id": "mb_04",
+   "type": "multi_branch",
+   "n_words": 12,
+   "rarest": [
+    [
+     "compare",
+     0
+    ],
+    [
+     "released",
+     41
+    ],
+    [
+     "actually",
+     140
+    ],
+    [
+     "province",
+     290
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 515,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": 1576
+  },
+  {
+   "q_id": "mb_05",
+   "type": "multi_branch",
+   "n_words": 12,
+   "rarest": [
+    [
+     "compare",
+     0
+    ],
+    [
+     "released",
+     41
+    ],
+    [
+     "actually",
+     140
+    ],
+    [
+     "province",
+     290
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 516,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": 1571
+  },
+  {
+   "q_id": "mb_07",
+   "type": "multi_branch",
+   "n_words": 11,
+   "rarest": [
+    [
+     "compare",
+     0
+    ],
+    [
+     "released",
+     41
+    ],
+    [
+     "actually",
+     140
+    ],
+    [
+     "province",
+     290
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 643,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": 1596
+  },
+  {
+   "q_id": "nm_09",
+   "type": "name_content_mismatch",
+   "n_words": 6,
+   "rarest": [
+    [
+     "somewhere",
+     0
+    ],
+    [
+     "literacy",
+     61501
+    ],
+    [
+     "rate",
+     284108
+    ],
+    [
+     "years",
+     353690
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 2853,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": 3602,
+   "rerank": null
+  },
+  {
+   "q_id": "pl_01",
+   "type": "point_lookup",
+   "n_words": 7,
+   "rarest": [
+    [
+     "official",
+     45
+    ],
+    [
+     "whatever",
+     57
+    ],
+    [
+     "number",
+     2389
+    ],
+    [
+     "non-tax",
+     58760
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": null,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": null
+  },
+  {
+   "q_id": "pl_14",
+   "type": "point_lookup",
+   "n_words": 3,
+   "rarest": [
+    [
+     "sales",
+     39317
+    ],
+    [
+     "tax",
+     212359
+    ],
+    [
+     "2023-24",
+     709848
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": null,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": null
+  },
+  {
+   "q_id": "pl_21",
+   "type": "point_lookup",
+   "n_words": 3,
+   "rarest": [
+    [
+     "taxes",
+     20580
+    ],
+    [
+     "direct",
+     40814
+    ],
+    [
+     "2012-13",
+     1124155
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": null,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": null
+  },
+  {
+   "q_id": "rc_05",
+   "type": "reconciliation",
+   "n_words": 9,
+   "rarest": [
+    [
+     "spreadsheet",
+     0
+    ],
+    [
+     "right",
+     146
+    ],
+    [
+     "published",
+     180
+    ],
+    [
+     "numbers",
+     194
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 1456,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": 942
+  },
+  {
+   "q_id": "rc_07",
+   "type": "reconciliation",
+   "n_words": 11,
+   "rarest": [
+    [
+     "spreadsheet",
+     0
+    ],
+    [
+     "right",
+     146
+    ],
+    [
+     "published",
+     180
+    ],
+    [
+     "numbers",
+     194
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 2917,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": null
+  },
+  {
+   "q_id": "rl_05",
+   "type": "relationship",
+   "n_words": 8,
+   "rarest": [
+    [
+     "mentions",
+     0
+    ],
+    [
+     "pointing",
+     49
+    ],
+    [
+     "points",
+     91
+    ],
+    [
+     "memo",
+     129
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 62,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": 85,
+   "rerank": 39
+  },
+  {
+   "q_id": "sd_03",
+   "type": "stale_doc",
+   "n_words": 2,
+   "rarest": [
+    [
+     "reorganisation",
+     145
+    ],
+    [
+     "finished",
+     339
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 163,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": 163,
+   "or_rare_5": 163,
+   "rerank": 163
+  },
+  {
+   "q_id": "sd_05",
+   "type": "stale_doc",
+   "n_words": 3,
+   "rarest": [
+    [
+     "extraction",
+     499
+    ],
+    [
+     "left",
+     7628
+    ],
+    [
+     "provincial",
+     122677
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": null,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": null
+  },
+  {
+   "q_id": "tr_04",
+   "type": "trajectory",
+   "n_words": 7,
+   "rarest": [
+    [
+     "--",
+     0
+    ],
+    [
+     "decade",
+     38
+    ],
+    [
+     "last",
+     240
+    ],
+    [
+     "sindh",
+     247134
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 1524,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": 1411,
+   "rerank": 1259
+  },
+  {
+   "q_id": "tr_07",
+   "type": "trajectory",
+   "n_words": 7,
+   "rarest": [
+    [
+     "--",
+     0
+    ],
+    [
+     "decade",
+     38
+    ],
+    [
+     "last",
+     240
+    ],
+    [
+     "gilgit-baltistan",
+     245195
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": null,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": null,
+   "rerank": null
+  },
+  {
+   "q_id": "tr_10",
+   "type": "trajectory",
+   "n_words": 6,
+   "rarest": [
+    [
+     "gone",
+     0
+    ],
+    [
+     "much",
+     29
+    ],
+    [
+     "cotton",
+     59773
+    ],
+    [
+     "production",
+     168704
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 979,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": 4734,
+   "or_rare_5": 979,
+   "rerank": 927
+  },
+  {
+   "q_id": "tr_16",
+   "type": "trajectory",
+   "n_words": 9,
+   "rarest": [
+    [
+     "trajectory",
+     0
+    ],
+    [
+     "--",
+     0
+    ],
+    [
+     "across",
+     497
+    ],
+    [
+     "punjab",
+     262524
+    ]
+   ],
+   "legacy_and": null,
+   "or_all": 564,
+   "and_rare_2": null,
+   "and_rare_3": null,
+   "and_rare_4": null,
+   "or_rare_3": null,
+   "or_rare_5": 627,
+   "rerank": 1087
+  }
+ ]
+}

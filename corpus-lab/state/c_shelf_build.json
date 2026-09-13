@@ -1,0 +1,29 @@
+{
+ "gate1_status": "GATE1_FAILED_STRUCTURAL",
+ "gate1_note": "n_docs/cards_rows != 13634 literally, but the sha256-collapse accounting identity n_docs + n_dupes = 13634 holds exactly (verified). Sanity probe fails: top-by-editions family is a near-duplicate clustering defect (repeatedly-copied paper misread as 16 editions), deferred to Stage 2 precision audit, not re-fixed. Every downstream (Stage 2 selftest, Stage 3 gate) number carries this flag.",
+ "accounting_identity": {"n_docs": 12760, "n_dupes": 874, "sum": 13634, "holds": true},
+ "n_docs": 12760,
+ "n_docs_expected": 13634,
+ "n_docs_matches_expected": false,
+ "n_title_from_page0": 11737,
+ "n_with_fy": 8002,
+ "n_families": 1618,
+ "n_families_with_2plus_editions": 393,
+ "n_captions": 89380,
+ "n_dupes": 874,
+ "card_vector_rows": 12760,
+ "sanity_probe": {
+  "family": "effective protection in the automobile sector a",
+  "n_editions": 16,
+  "avg_primary_pages": 63.8
+ },
+ "timing_s": {
+  "page_scan": 39.2,
+  "clustering": 0.1,
+  "db_write": 0.9,
+  "embed": 1675.3,
+  "total": 1715.5
+ },
+ "embed_rate_per_s": 7.62,
+ "built_at": "2026-09-13T17:09:24"
+}

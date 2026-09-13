@@ -1,0 +1,63 @@
+{
+ "coverage": {
+  "pass": true,
+  "pages": 1206260
+ },
+ "find_budget": {
+  "pass": true,
+  "n_families": 45,
+  "cold_s": 1.43,
+  "warm_s": 0.03,
+  "warm_le_5s": true
+ },
+ "have_economic_survey": {
+  "pass": true,
+  "best_family_n_editions": 15
+ },
+ "have_fy_absent": {
+  "pass": true,
+  "status": "NO_EDITION_FOR"
+ },
+ "have_fy_present": {
+  "pass": true,
+  "status": "EDITION_PRESENT",
+  "fy_tested": "2011-12"
+ },
+ "have_no_match": {
+  "pass": true
+ },
+ "inside_contents": {
+  "pass": true,
+  "n_hits": 2,
+  "wall_s": 0.02
+ },
+ "tables": {
+  "pass": true,
+  "n_captions": 142
+ },
+ "series": {
+  "pass": true,
+  "n_editions": 15,
+  "matched": 15
+ },
+ "copies": {
+  "pass": true,
+  "n_members": 3
+ },
+ "exact_no_match": {
+  "pass": true,
+  "total": 0
+ },
+ "open_notes": {
+  "pass": true,
+  "opened_found": true,
+  "n_opened_in_notes": 1
+ },
+ "bogus_subcommand": {
+  "pass": true,
+  "rc": 2
+ },
+ "_overall": {
+  "pass": true
+ }
+}
