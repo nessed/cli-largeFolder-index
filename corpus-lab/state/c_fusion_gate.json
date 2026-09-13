@@ -1,0 +1,82 @@
+{
+ "generated_utc": "2026-09-13T21:48:31Z",
+ "n": 17,
+ "queries": "C2",
+ "dev": {
+  "rrf": {
+   "curve": {
+    "recall_at_10": 9,
+    "recall_at_20": 10,
+    "recall_at_50": 11,
+    "recall_at_100": 16,
+    "recall_at_200": 16
+   },
+   "family_le_10": 9,
+   "per_question_rank": {
+    "cd_04": 7,
+    "mb_04": 69,
+    "mb_05": 28,
+    "mb_07": 100,
+    "nm_09": 60,
+    "pl_01": 15,
+    "pl_14": 3,
+    "pl_21": 74,
+    "rc_05": 5,
+    "rc_07": 1,
+    "rl_05": 2,
+    "sd_03": 5,
+    "sd_05": null,
+    "tr_04": 9,
+    "tr_07": 3,
+    "tr_10": 3,
+    "tr_16": 57
+   }
+  },
+  "best": {
+   "curve": {
+    "recall_at_10": 5,
+    "recall_at_20": 8,
+    "recall_at_50": 12,
+    "recall_at_100": 16,
+    "recall_at_200": 16
+   },
+   "family_le_10": 5,
+   "per_question_rank": {
+    "cd_04": 24,
+    "mb_04": 74,
+    "mb_05": 30,
+    "mb_07": 54,
+    "nm_09": 94,
+    "pl_01": 34,
+    "pl_14": 1,
+    "pl_21": 91,
+    "rc_05": 1,
+    "rc_07": 1,
+    "rl_05": 15,
+    "sd_03": 1,
+    "sd_05": null,
+    "tr_04": 15,
+    "tr_07": 14,
+    "tr_10": 1,
+    "tr_16": 32
+   }
+  }
+ },
+ "better_rule_dev": "rrf",
+ "dev_family_le_10": {
+  "rrf": 9,
+  "best": 5
+ },
+ "diagnostic_above_gold": {
+  "n_questions_gold_found": 16,
+  "families_above_gold_kind_singleton": 75,
+  "families_above_gold_kind_fy": 586
+ },
+ "holdout": {
+  "fusion": "rrf",
+  "recall_at_10": 14,
+  "source": "F41, already measured; no new look spent"
+ },
+ "holdout_look_spent": 0,
+ "wall_s": 15.9
+}

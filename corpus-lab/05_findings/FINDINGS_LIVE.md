@@ -825,3 +825,62 @@ variants also find is worth something, and the rule could not see that.
 *Condition: this corpus, this shelf, one cross-encoder, two configurations, no weight sweeps.
 It does not show that no reranker can help — it shows that this compact cross-encoder over
 shelf catalog cards does not, and that the document bottleneck survives A0's diagnosis intact.*
+
+---
+
+## F46. Experiment C — per-query selection loses to rank summation. STOP
+
+**Measured**, `state/c_fusion_gate.json`, 17 answerable frozen questions, C2 rewrites, the
+same shelf and the same candidate pool. No model calls; no holdout look spent.
+
+The 2026-09-14 handoff named this the best-supported untried idea in the repository, on the
+strength of F41's oracle: on 12 of 17 questions *some* single rewrite alone already puts the
+gold family in its own top 10, while all six fused together manage 9. Experiment C is the
+obvious cash-out — score a family by its **best rank across the rewrites** instead of by
+summed reciprocal rank, break ties on how many rewrites found it, then on summed RRF.
+
+| depth | rrf (summation) | best (per-query selection) |
+|---|---|---|
+| top 10 | **9** | **5** |
+| top 20 | 10 | 8 |
+| top 50 | 11 | 12 |
+| top 100 | 16 | 16 |
+| top 200 | 16 | 16 |
+
+**Pre-registered gate: PASS ≥12/17, WEAK 10–11, STOP ≤9. It is 5. STOP.** The bar was not
+moved, no tie-break was re-specified, and the holdout was not consulted — the development set
+decides, as pre-registered, and spending a look to confirm a result four questions below the
+stop line would buy nothing. Holdout looks used tonight so far: **0 of 5.**
+
+**Why the oracle did not cash out, stated plainly.** The oracle is a *union* over questions —
+for each question, some rewrite works — but it says nothing about which rewrite, and a rule
+has to pick without knowing. Best-rank selection gives every rewrite a veto-free top slot: a
+family that any single rewrite happens to rank #1 outranks a gold family that a *good*
+rewrite ranks #3, because 1 < 3 and nothing else is consulted until the tie-break. Six
+rewrites therefore inject six independent chances for a noisy neighbour to take the top of
+the list. Summation is doing real work precisely because it is slow to be convinced: a family
+has to be found repeatedly to rise. The minimum is a maximally noise-sensitive statistic and
+the sum is not.
+
+Note the crossover at depth 50, where `best` (12) passes `rrf` (11). Per-query selection does
+surface a couple of families that summation buries — it simply pays for them with four
+questions at the top, which is where the measure lives. Both rules reach the same 16 of 17 at
+depth 100, confirming again that candidate generation is not the loss.
+
+**Aggregate diagnostic, families ranked above the gold family under the winning rule (rrf).**
+Across the 16 questions where the gold family is ranked at all, **661** families outrank it:
+**586** of kind `fy` (the family has dated primary editions) against **75** of kind
+`singleton`. So what crowds out the right publication is overwhelmingly *other dated
+statistical series* — near neighbours in the same genre — not undated one-off documents. The
+document channel is not confusing a yearbook with a memo; it is confusing a yearbook with
+another yearbook.
+
+**Consequence for the rest of the run.** The fusion rule is frozen at **`rrf`**, by the
+pre-registered "higher development count, ties to rrf" rule. `fusion="best"` stays in
+`c_shelf.do_find` as a measured negative result, off by default, and `--fusion` is exposed on
+the `find` CLI and on the gate so the number can be reproduced.
+
+*Condition: this corpus, this shelf, these six rewrites, k=60, pool 200. It shows that this
+particular cash-out of the F41 oracle fails; it does not show that no selection rule can beat
+summation — but the next such idea needs a mechanism for choosing which rewrite to trust,
+which is the thing neither F41 nor this experiment has.*
