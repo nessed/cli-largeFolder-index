@@ -90,12 +90,21 @@ def run_s2(ctx, qs_by_id, per_q, trajectory_ids):
         primaries = [ctx.rel_to_row[r] for r in ctx.family_to_rels.get(fam, ())
                      if ctx.rel_to_row[r]["is_primary"] and ctx.rel_to_row[r]["fy_primary"]]
 
-        q_strict = q_tol = q_n = 0
+        # A "year address" is one (question, fiscal year) pair -- the unit F42's
+        # 24 was counted in. Several evidence files can carry the same year, and
+        # finding any one of them answers that year, so they are grouped rather
+        # than counted separately.
+        by_fy = {}
         for a in pq["page_addresses"]:
-            fy = a.get("fy")
+            if a.get("fy"):
+                by_fy.setdefault(a["fy"], []).append(a)
+
+        q_strict = q_tol = q_n = 0
+        for fy in sorted(by_fy):
             Y = fy_int(fy)
             if Y is None:
                 continue
+            addrs = by_fy[fy]
             n_addr += 1
             q_n += 1
             cands = [r for r in primaries
@@ -103,10 +112,15 @@ def run_s2(ctx, qs_by_id, per_q, trajectory_ids):
                      and Y <= fy_int(r["fy_primary"]) <= Y + WINDOW]
             cand_sizes.append(len(cands))
 
-            want_rel, want_page = a["rel"], a["page_index"]
-            want_row = ctx.rel_to_row.get(want_rel) or {}
-            want_ek = want_row.get("edition_key")
-            want_text = page_text(ctx, want_rel, want_page)
+            wants = {(a["rel"], a["page_index"]) for a in addrs}
+            want_eks = {}
+            want_texts = {}
+            for a in addrs:
+                row = ctx.rel_to_row.get(a["rel"]) or {}
+                if row.get("edition_key"):
+                    want_eks[row["edition_key"]] = a
+                want_texts[(a["rel"], a["page_index"])] = page_text(
+                    ctx, a["rel"], a["page_index"])
 
             got_strict = got_tol = False
             hit_offset = None
@@ -117,12 +131,13 @@ def run_s2(ctx, qs_by_id, per_q, trajectory_ids):
                     body = page_text(ctx, r["rel"], h["page_index"])
                     if not body or fy not in body:
                         continue
-                    if r["rel"] == want_rel and h["page_index"] == want_page:
+                    if (r["rel"], h["page_index"]) in wants:
                         got_strict = True
-                    elif (want_ek and ctx.rel_to_row.get(r["rel"], {}).get("edition_key") == want_ek
-                          and want_text is not None
-                          and body == want_text):
-                        got_tol = True
+                    else:
+                        ek = ctx.rel_to_row.get(r["rel"], {}).get("edition_key")
+                        if ek in want_eks and body in [t for t in want_texts.values()
+                                                       if t is not None]:
+                            got_tol = True
                     if got_strict or got_tol:
                         off = fy_int(r["fy_primary"]) - Y
                         hit_offset = {0: "Y", 1: "Y+1", 2: "Y+2"}.get(off)
@@ -144,6 +159,7 @@ def run_s2(ctx, qs_by_id, per_q, trajectory_ids):
         "page_method": "row+caption_%s" % PAGE_CAPTION,
         "window": "[Y, Y+%d]" % WINDOW, "topk": TOPK,
         "n_year_addresses": n_addr,
+        "unit": "distinct (question, fiscal year) pairs",
         "strict_hits": strict, "tolerant_hits": tolerant,
         "mean_candidate_set_size": round(sum(cand_sizes) / float(len(cand_sizes)), 2)
                                    if cand_sizes else None,

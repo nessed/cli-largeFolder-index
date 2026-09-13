@@ -1183,3 +1183,84 @@ arguments at `--parallel 2`; `run_harness.py` was not modified.
 *Condition: this corpus, this shelf, this CLAUDE.md, claude-sonnet-5, 25 turns, 300 s, one
 battery, no prompt variants. It measures this configuration once and is not evidence about
 what a different prompt would do — and the phase forbade running a second battery to find out.*
+
+---
+
+## F51. S2 and ED2 — the trajectory metric finally measures page retrieval (WEAK); edition selection fails a second way
+
+**Measured**, `state/c_series_v3.json` and `state/c_edition_set_v2.json`. Gold family handed
+in for both, so neither is a statement about family retrieval. Page method: the frozen B2
+(`--caption first`). No model calls, no holdout look.
+
+### S2 — vintage-tolerant series
+
+F42 retired `series_ok` as a metric: it had been measuring which copy of an edition the shelf
+calls canonical, not whether page retrieval works. S2 replaces it. For each key year Y the
+candidate editions are the family's primaries with `fy_primary` in **[Y, Y+2]** — a window
+fixed in advance from F43's "usually a later one" and deliberately not widened — and a hit is
+the key's (file, page) appearing in the top 5 pages of a candidate whose body carries Y.
+
+**Strict 12 of 24. Tolerant 14 of 24. Mean candidate set size 2.46.**
+
+**Pre-registered gate on strict: PASS ≥16, WEAK 12–15, STOP <12. It is 12 — WEAK, at the
+very bottom of the band.** Against the old `series_ok` of 1 of 4 questions this is a large
+improvement, but the two numbers count different things and should not be subtracted; what
+S2 establishes is that with the vintage window the trajectory walk lands on the cited page
+half the time, where the previous metric could not see page retrieval at all.
+
+**The offset distribution is the finding, and it confirms F43 outright.**
+
+| the edition that answered year Y was … | count |
+|---|---|
+| Y itself | 4 |
+| **Y + 1** | **6** |
+| **Y + 2** | **4** |
+| nothing in the window | 10 |
+
+**Ten of the 14 hits come from a later edition than the year asked about**, and only four
+from the year's own edition. This is now measured twice, from two directions: the year a
+question asks about is not the year printed on the document that answers it. Any rule that
+selects an edition by matching the asked year to the edition's own year is selecting the
+wrong document roughly three times in four — which is exactly why F43's structural rule
+scored 3/17, and it was not a bug in that rule.
+
+Strict and tolerant differ by only **2**, so copy choice — the thing F42 found the old metric
+was really measuring — costs 2 of 24 here and is no longer the dominant term. The dominant
+term is the 10 years for which nothing in the window carried the row at all.
+
+**A denominator correction, recorded.** S2 was first run over all 42 evidence addresses that
+carry a fiscal year and scored 15/42. F42's 24 counts a different unit: **distinct (question,
+fiscal year) pairs**, of which there are exactly 24 across the four trajectory questions —
+several evidence files can carry the same year, and finding any one of them answers that
+year. The measurement was regrouped onto that unit and re-run before the gate was read. The
+gate band was not touched; only the unit it was written over was made to match.
+
+### ED2 — content-based edition selection
+
+F43's structural rule asked whether a primary *declares* the asked year in its metadata: 3 of
+17. ED2 asks the same question from the content side — does the primary's caption-matched
+top-5 contain a page whose body *holds* the asked year?
+
+**Set recall 3 of 10 year-bearing questions. Mean set size 2.0, max 6.**
+
+**Reading, fixed before measuring: below 8 of 10 means captions-plus-year do not select
+editions either.** They do not. The two rules agree on very little except the answer: the
+structural one scored 3, the content one scores 3, and the pipeline still cannot name which
+edition of a publication prints a given year's row.
+
+The mean set of 2.0 is the sting. This is not a rule that hedges by returning everything and
+still misses — it returns a *small, confident, wrong* set. A large set would have meant "the
+mechanism is right and a vintage rule is the next sub-problem". A set of two that is right 3
+times in 10 means the selection signal itself is absent, and the S2 offsets say why: the year
+is in a later edition than the one being scored, and often in no edition within two years at
+all.
+
+**Consequence for the architecture.** The 2026-09-15 architecture note redraws
+RETRIEVE DOCUMENT → RETRIEVE PAGE into RETRIEVE FAMILY → LOCATE TABLE only if E1 or E2 reached
+WEAK **and** ED2 ≥ 8/10. ED2 is 3. **The boxes are not redrawn**, and the measured reason is
+recorded in their place: locating the table does not determine the edition, because the table
+that prints a year lives in an edition the year does not name.
+
+*Condition: this corpus, this shelf, gold family handed in, window [Y, Y+2], top 5, the B2
+page method. A wider window would raise S2's tolerant number and was forbidden in advance
+precisely because it is the move that widens a bar after seeing the offsets.*
