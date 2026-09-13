@@ -27,12 +27,52 @@ def connect(db):
     return sqlite3.connect(f"file:{db}?mode=ro", uri=True)
 
 
+# 2026-09-13: the front door could not take a sentence.
+#
+# fts_quote() emitted every token as a quoted term, and FTS5's implicit operator
+# between terms is AND. So "how does Pakistan's development spending trajectory
+# look since 2015" became a nine-way conjunction and matched nothing. Measured on
+# the frozen 20: the question's own words returned ZERO pages on 16 of 20, and on
+# 13 of the 17 questions whose evidence is sitting in this index. The agent only
+# ever got results by inventing short phrases of its own.
+#
+# Now: try the conjunction first, because when every word really does co-occur
+# that page is almost always the right one; fall back to ANY word, ranked by
+# bm25, rather than returning nothing. The tier used is printed, so a loose match
+# is never mistaken for a precise one.
+STOP = set("""a an the of in on at to for and or is are was were be been being with by
+from as that this these those it its which what when where who whom how why does do did
+doing than then there their them they he she his her you your we our us i me my if but
+not no nor so such only own same too very can will just should now over under between
+into through during before after above below up down out off again further once here
+both each few more most other some any all need want give show tell find look""".split())
+
+
+def content_words(q):
+    """Words worth searching on: 2+ chars, not stopwords, duplicates dropped."""
+    out, seen = [], set()
+    for t in re.findall(r"[A-Za-z0-9_\-]+", (q or "").lower()):
+        if len(t) < 2 or t in STOP or t in seen:
+            continue
+        seen.add(t)
+        out.append(t)
+    return out
+
+
 def fts_quote(q):
-    """Make an arbitrary user string safe for FTS5 MATCH as a phrase-ish query."""
+    """Legacy AND form, kept so the old behaviour can still be reproduced."""
     toks = re.findall(r"[A-Za-z0-9_\-]+", q)
     if not toks:
         return None
     return " ".join(f'"{t}"' for t in toks)
+
+
+def fts_all(words):
+    return " ".join(f'"{w}"' for w in words) if words else None
+
+
+def fts_any(words):
+    return " OR ".join(f'"{w}"' for w in words) if words else None
 
 
 def coverage(db):
@@ -64,16 +104,45 @@ def coverage(db):
     return out
 
 
-def search(db, query, limit, exact):
-    m = f'"{query}"' if exact else fts_quote(query)
-    if not m:
-        return [], 0
+def _run(db, m, limit):
     total = db.execute("SELECT COUNT(*) FROM pages WHERE pages MATCH ?", (m,)).fetchone()[0]
     rows = db.execute(
         "SELECT rel, page_index, snippet(pages,2,'>>','<<','...',24), bm25(pages) "
         "FROM pages WHERE pages MATCH ? ORDER BY bm25(pages) LIMIT ?",
         (m, limit)).fetchall()
     return rows, total
+
+
+def search(db, query, limit, exact, legacy=False):
+    """-> rows, total, tier. tier is 'exact', 'all', 'any' or 'none'."""
+    if exact:
+        rows, total = _run(db, f'"{query}"', limit)
+        return rows, total, "exact"
+    if legacy:
+        m = fts_quote(query)
+        if not m:
+            return [], 0, "none"
+        rows, total = _run(db, m, limit)
+        return rows, total, "all"
+
+    words = content_words(query)
+    if not words:
+        return [], 0, "none"
+    # precise first: every word on one page
+    m = fts_all(words)
+    try:
+        rows, total = _run(db, m, limit)
+    except sqlite3.OperationalError:
+        rows, total = [], 0
+    if rows:
+        return rows, total, "all"
+    # then loose: any word, ranked. Better a ranked list than "NO MATCHES".
+    m = fts_any(words)
+    try:
+        rows, total = _run(db, m, limit)
+    except sqlite3.OperationalError:
+        return [], 0, "none"
+    return rows, total, ("any" if rows else "none")
 
 
 def main():
@@ -85,6 +154,8 @@ def main():
     ap.add_argument("--coverage", action="store_true")
     ap.add_argument("--page", nargs=2, metavar=("REL", "PAGE_INDEX"))
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--legacy-and", action="store_true",
+                    help="pre-2026-09-13 behaviour: require every word on one page")
     a = ap.parse_args()
     db = connect(a.db)
 
@@ -102,12 +173,13 @@ def main():
     q = " ".join(a.query).strip()
     if not q:
         ap.error("give a query, or --coverage, or --page")
-    rows, total = search(db, q, a.limit, a.exact)
+    rows, total, tier = search(db, q, a.limit, a.exact, legacy=a.legacy_and)
     cov = coverage(db)
 
     if a.json:
         print(json.dumps({
-            "query": q, "returned": len(rows), "total_matching_pages": total,
+            "query": q, "match_tier": tier, "returned": len(rows),
+            "total_matching_pages": total,
             "results": [{"path": r[0], "page_index": r[1], "snippet": r[2],
                          "score": round(r[3], 3)} for r in rows],
             "receipt": cov}, indent=1))
@@ -116,6 +188,9 @@ def main():
     if not rows:
         print(f"NO MATCHES for {q!r}.")
     else:
+        if tier == "any":
+            print(f"LOOSE MATCH: no page holds every word, so these are ranked on")
+            print(f"overlap. Treat the ranking as a lead, not an answer.\n")
         print(f"{total} matching pages; showing top {len(rows)}:\n")
         for rel, pi, snip, score in rows:
             print(f"  {rel}  [page_index={pi}]  score={score:.2f}")

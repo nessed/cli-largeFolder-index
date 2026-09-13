@@ -1,0 +1,16 @@
+{
+  "_note": "Discovery-only vocabulary expansion. No gold paths, numbers, or synthetic series IDs. Aliases widen what is SEARCHED; they never certify that two labels mean the same observation -- that equivalence check happens in compile.py against literal table labels, not here.",
+  "groups": [
+    ["labor", "labour"],
+    ["defense", "defence"],
+    ["enrolment", "enrollment"],
+    ["sales tax", "GST", "GST collection"],
+    ["direct taxes", "income and corporation tax"],
+    ["non-tax revenue", "non-tax receipts"],
+    ["development spending", "development expenditure"],
+    ["PSDP", "public sector development programme"],
+    ["ADP", "annual development programme"],
+    ["FX", "foreign exchange"],
+    ["KP", "Khyber Pakhtunkhwa"]
+  ]
+}

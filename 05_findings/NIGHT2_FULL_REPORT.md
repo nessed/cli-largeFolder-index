@@ -239,6 +239,9 @@ live:
 **A. Ingestion — not the problem.** All **64 of 64** evidence files referenced by the 20
 questions are in the index with status `indexed`.
 
+> **SUPERSEDED 2026-09-12 (P9).** Recall numbers and this finding's strength are
+> superseded by the re-score from tool results — see `state/rescore_from_results.json`.
+
 **B. Lexical ranking — this is the failure.** For the 17 questions whose evidence is
 fully indexed, running the question's own content words as a BM25 query returns the
 correct evidence file in the top 50 hits **zero times**. Not once.

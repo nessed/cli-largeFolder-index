@@ -6,9 +6,83 @@ A fresh session can continue from this file alone.
 cd C:\Users\Ali\Desktop\retrieval-lab\corpus-lab
 ```
 
+## Night 4 (evidence_v1), 2026-09-13 — read this first
+
+A full build of BUILD_PROMPT.md's evidence engine ran unattended overnight. It got
+further than any prior night: Stages 1-4 genuinely passed (corpus integrity,
+scorer/oracle audit on the 20 frozen dev questions, the full runtime
+store/inventory/extract/catalogue/retrieve/verify/compile/hooks/install stack built
+and unit-tested, a cold catalogue build on corpus_15000 -- 15010/15010 files,
+1109s/1800s). It stopped honestly at **Stage 5, RETRIEVAL_GATE_FAILED**: 3/17 of the
+positive frozen questions found a correct address in the top 24 leads, far under
+both the strict gate (15/17) and Ali's authorized 10/17 amendment. $0 spent, 0/175
+sessions used, 0 corpus changes (independently re-hashed and confirmed
+byte-identical to the Stage 1 baseline). Nothing is running; no stack is installed
+in any corpus.
+
+**Read `corpus-lab/state/evidence_v1/20260912T220732Z-cede10c8/STOP_REASON.md`
+first.** It has the full diagnosis, including the concrete root cause found right
+after the stop: 92.5% of the 1.2M-card catalogue came from BUILD_PROMPT.md's own
+captionless-table heuristic misfiring on ordinary prose sentences (two years, two
+numbers, one sentence -- no table), so the catalogue never got meaningfully smaller
+than the old full-page index the whole design was meant to beat. A real alias bug
+was also found and fixed along the way (moved hit-rate 0/17 -> 3/17); an AND-first
+query strategy was tried and measured WORSE, then reverted. All of `corpus-lab/
+evidence_v1/` (the runtime) and its test suites in `corpus-lab/tests/evidence_v1/`
+are real, working code, independent of whether the retrieval gate ever passes.
+
 **Night 2 complete, 2026-09-12.** Nothing is running. No stack is installed in any
 corpus. All 31 planted files verified unchanged. **The deliverable is
 `05_findings/GRID.md`.**
+
+> **SUPERSEDED 2026-09-12 (P9).** The recall numbers below are superseded by the
+> re-score from tool results — see `state/rescore_from_results.json`.
+
+---
+
+## 0. STATE AS OF 2026-09-13 — read this before §1
+
+Night 3 was **offline only. No sessions run, nothing spent.** Four new findings, F20–F24 in
+`05_findings/FINDINGS_LIVE.md`, and two new entries in `state/progress.jsonl` (P9, P10).
+
+**What changed on disk**
+
+| | |
+|---|---|
+| `bin/corpus_search.py` | **now takes a sentence.** It used to AND every token, so a nine-word question matched nothing. Tries the conjunction first, falls back to any-word ranked by bm25, labels the loose tier. `--legacy-and` reproduces the old behaviour exactly. |
+| `bin/stack.py` | `CLAUDE_MD` gained a **quote-before-cite** rule: open the page, quote the line verbatim, cite path + page_index; if you did not open it you may not cite it. `s0_baseline` still installs no `CLAUDE.md`. |
+| new instruments | `rescore_from_results.py`, `probe_score_floor.py`, `rank_experiments.py`, `verify_search_fix.py` — all offline, all free to re-run |
+
+**What was learned**
+
+1. The scorer was blind to files the agent learned about from tool *results*, which
+   undercounted the index stacks by construction. Re-scored: S1 0.176 → 0.235, S2 0.118 →
+   0.176, S0 unchanged. Still inside noise. (F20)
+2. **The search handed S1 a correct document on 5 of 17 questions and it opened 0 of them**
+   — three were cited without ever being opened. A second failure, downstream of retrieval,
+   that no retrieval change fixes. (F21)
+3. **A score floor cannot power abstention.** Absence questions score inside the answerable
+   range. (F22)
+4. **Fixing the sentence bug removed every empty result and improved finding by nothing:**
+   top-15 hit rate 0/17 → 0/17 across eight query strategies. The correct page sits at rank
+   ~500–3,000 of 1.2M. Lexical retrieval is finished here; what is untested is matching on
+   meaning. (F23)
+
+**What is built but unproven:** the search fix and the quote-before-cite rule. Neither has
+ever been run in a session. The paid battery was **held deliberately** at the F23 gate,
+because it would test the quote rule against a search that cannot put the right page in the
+agent's window on 17 of 17 questions. (F24)
+
+**Open, free, and worth doing first:** pull every absence-type question out of the
+135-question key — the abstention result currently rests on three. And count image-only
+PDFs in sir's real folder; 8% of the harness is unreachable without OCR and nobody has
+checked the target.
+
+**A brief for an outside model** to design the solution from scratch, pointed at all the
+evidence and deliberately not at anyone's suggestions, is at `00_brief/SOLVE_BRIEF.md`.
+
+**Uncommitted:** night 3's changes are on disk but not committed. `git status` in
+`corpus-lab/` shows them.
 
 ---
 
@@ -63,6 +137,11 @@ Every path derives from `bin/labpaths.py`. No script hardcodes a location.
 
 **Not done, if anyone wants to continue:** S1 and S2 on ra-ship (2 cells, ~$4). Low
 value — ra-ship is a fixture whose defining property does not exist on the target.
+
+**Held, not skipped (2026-09-13):** the 20 questions on s1_policy and s2_hook with the
+search fix and quote-before-cite installed, ~$6–12. Held at the F23 gate. Expect it to
+measure honesty (does it refuse on the absence questions) rather than finding, since the
+right page is still not in the agent's window.
 
 ## 5. How to run a cell
 

@@ -455,3 +455,137 @@ reach it. Scored as its own row so it neither flatters a grep-based stack nor
 penalises an index-based one. Both PDF canaries returned page indices matching the
 manifest exactly (734 and 200), confirming physical index and printed label are
 tracked separately and correctly.
+
+---
+
+# Night 3 — 2026-09-12/13. Offline only; no sessions run, nothing spent.
+
+## F20. The scorer was blind to every file the agent learned about from a tool RESULT
+
+**Measured.** `ask.py` builds `files_opened[]` only inside its `type == "assistant"` /
+`tool_use` branch, from tool *inputs*. A tool result is a separate stream event
+(`type == "user"`, a `tool_result` content block) and no branch reads it. So a path that
+arrived in a search result was invisible to scoring.
+
+This undercounts the index stacks **by construction**: S1/S2 work by reading
+`corpus_search` hit lines, while S0 reaches files through `Read(file_path=...)`, which is
+an input and was scored in full.
+
+Re-scored from the raw transcripts already on disk — free, no sessions — with paths tiered
+by what the session actually saw: `input`, `snippet` (path arrived attached to that file's
+own content), `listing` (a bare name in a Glob/ls listing), `mention` (a path named inside
+another file's content; never counted). Headline is input|snippet.
+
+| mean question recall | S0 | S1 | S2 |
+|---|---|---|---|
+| published | 0.167 | 0.176 | 0.118 |
+| re-scored | 0.167 | **0.235** | **0.176** |
+| crediting bare listings too (upper bound) | 0.345 | 0.235 | 0.176 |
+
+The re-scorer reproduces **both** published instruments exactly before changing anything —
+`run_harness.py`'s recall, and `diagnose_recall.py`'s 4/0/0 evidence contact. Those two
+differed because the first credits an answer-text citation and the second does not, which
+had never been written down.
+
+Three questions moved, all verified by hand against the transcripts. Tooling:
+`bin/rescore_from_results.py`, raw at `state/rescore_from_results.json`.
+
+*Condition: none. This is a property of the instrument, not of a corpus.*
+
+## F21. The search handed the agent the right document and the agent walked past it
+
+**Measured.** Decomposing the 17 fully-indexed questions into "did a result contain a
+correct evidence file" and "did the agent then open it":
+
+| | surfaced | then opened | ignored |
+|---|---|---|---|
+| s0_baseline | 1/17 | 1/1 | 0 |
+| s1_policy | **5/17** | **0/5** | 5 |
+| s2_hook | 2/17 | 0/2 | 2 |
+
+Three of S1's five were cited in the answer **without ever being opened** — answered off
+the search preview, never verifying the page. One preview contained
+`Table 1.1: Khyber Pakhtunkhwa -- Total Budget Outlay`, the table the question asked for.
+
+Two consequences. Night 2's finding B overstated the ranking failure — its probe was a
+crude OR of up to 12 content words, while the agents' real queries surfaced correct
+evidence on 5 of 17. And there is a **second failure downstream of retrieval** that no
+retrieval change can fix.
+
+*Condition: one model, one prompt shape. Irreducible blind spot: S0 made 11 `Agent` calls
+and a subagent's file access never enters the parent's stream, so S0's contact is a lower
+bound.*
+
+## F22. A relevance-score floor cannot tell "the answer is here" from "it isn't"
+
+**Measured**, `bin/probe_score_floor.py`, raw at `state/probe_score_floor.json`.
+
+The three absence questions score at -17.56, -28.61, -28.61; the 17 answerable ones span
+-10.59 to -54.40. The absence values sit **inside** the answerable range. `sd_03` — a
+genuinely answerable question — scores -20.27, worse than two questions whose answers do
+not exist. Every candidate discriminator overlaps: top-1 score, score per token, matching
+page count, and the gap between rank 1 and rank 10.
+
+The score tracks query length and term rarity, not whether the answer exists. In a 1.2M
+page corpus an OR over common fiscal vocabulary matches 585k–914k pages whatever is asked,
+so "no match" is never the signal.
+
+**The one metric that appeared to separate is disqualified.** All three absence questions
+name a specific item (a fiscal year, an SRO number), and the rarest identifier's page count
+is 5,734 / 0 / 0 against a minimum of 487,610 for the answerable ones. But: it is scored on
+a **subset** — 7 of 17 answerable questions contain no identifier, so the rule cannot fire
+on them; it rests on n=3; the token `sro` appears on **zero of 1,206,260 pages**, so two of
+the three are caught only because this harness contains no SRO notifications at all; and
+`2008` does appear, 5,734 times, as **bibliography entries** (`Qureshi, Ramsha Ali (2008)`),
+not fiscal-year data.
+
+*Condition: three absence questions. The key holds 135 and more absence cases can be drawn
+from it. **Fixture-specific:** sir's corpus is Pakistan tariff material, where SROs
+certainly do appear, so the enabling condition for the identifier signal is absent on the
+target. Barred from any headline.*
+
+## F23. The front door could not take a sentence — and fixing that did not help
+
+**Measured.** `corpus_search.py` built queries with `fts_quote()`, which quotes every token,
+and FTS5's implicit operator between terms is AND. A nine-word question was a nine-way
+conjunction. Sir's own question returned `NO MATCHES`; across the frozen 20 the question's
+own words returned zero pages on 16 of 20, and on 13 of the 17 answerable ones.
+
+Fixed 2026-09-13: try the conjunction first, fall back to any-word ranked by bm25, label
+the loose tier in the output. `--legacy-and` reproduces the old behaviour. Sir's question
+now returns 1,146,283 matching pages.
+
+**The gate then failed.** `bin/verify_search_fix.py`: answerable questions returning
+nothing went 17/17 → 0/17; correct evidence inside the top 15 went 0/17 → **0/17**, and
+inside the top 50, 0/17 → 0/17. Fifty wrong pages instead of zero pages.
+
+**Eight query strategies measured** (`bin/rank_experiments.py`, raw at
+`state/rank_experiments.json`), scored as the rank of the correct page within the top 5,000:
+
+| strategy | found at all | in top 500 | in top 50 |
+|---|---|---|---|
+| legacy AND | 0/17 | 0 | 0 |
+| OR all content words | 12/17 (ranks 62–2917) | 2 | 0 |
+| AND of 2 / 3 / 4 rarest terms | 0/17 | 0 | 0 |
+| OR of 3 rarest | 2/17 | 1 | 0 |
+| OR of 5 rarest | 6/17 | 2 | 0 |
+| rerank a 2,000-page pool on term coverage | 10/17 | 2 | **1** |
+
+**So: almost none of the "index doesn't help" result was the broken query.** The broken
+query made the index return nothing; fixing it makes the index return plenty and still not
+the right thing. Night 2's finding B rested on one crude probe; it now holds against eight
+strategies, including the two candidate-narrowing approaches and the reranker that the
+night-2 report itself listed as untested.
+
+*Condition: this corpus, this answer key, lexical matching only. What remains untested is
+matching on meaning, which is S3, dead on this machine for want of a GPU.*
+
+## F24. Quote-before-cite written, never run
+
+`stack.py:CLAUDE_MD` now carries a "Never answer from a search result alone" section: the
+agent must open the page, quote the line or table cell verbatim in its answer, and put path
+and page_index beside the quote; if it did not open it, it may not cite it. `s0_baseline`
+still installs no `CLAUDE.md`, so the baseline stays a baseline.
+
+**Unmeasured.** The paid battery was held at the F23 gate: running it would test the rule
+against a search that cannot put the right page in the agent's window on 17 of 17 questions.

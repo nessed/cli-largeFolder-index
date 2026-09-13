@@ -1,0 +1,51 @@
+{
+ "python": {
+  "ok": true,
+  "version": "3.11.5"
+ },
+ "imports": {
+  "ok": true
+ },
+ "db": {
+  "ok": true,
+  "path": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "size_bytes": 6971469824,
+  "size_gb": 6.971
+ },
+ "coverage": {
+  "ok": true,
+  "coverage": {
+   "corpus_root": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\harness\\corpus_15000",
+   "built_at": "2026-09-12T07:03:42",
+   "discovered_on_disk": 15010,
+   "intentionally_excluded_dependency": 0,
+   "indexed_ok": 13634,
+   "failed": 32,
+   "unsupported_or_empty": 1344,
+   "addressable_pages": 1206260,
+   "by_status": {
+    "failed_encrypted": 18,
+    "failed_parser": 14,
+    "image_only_no_text": 1211,
+    "indexed": 13634,
+    "unsupported_type": 120,
+    "zero_byte": 13
+   },
+   "accounting_identity_holds": true
+  }
+ },
+ "claude_exe": {
+  "ok": true,
+  "output": "2.1.257 (Claude Code)",
+  "rc": 0
+ },
+ "disk": {
+  "ok": true,
+  "free_gb": 432.86
+ },
+ "rung_informational": {
+  "CLAUDE.md_exists": false,
+  ".claude_exists": false
+ },
+ "overall_pass": true
+}
