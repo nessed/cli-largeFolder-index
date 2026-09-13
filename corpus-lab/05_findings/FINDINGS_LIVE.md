@@ -945,3 +945,68 @@ nothing new about the holdout. **Holdout looks used after E1: 2 of 5.**
 any-word, pool 200, k=60, rrf. It shows this caption channel does not reach the top-ten bar;
 it also shows the deeper pool is genuinely better, which is a fact about the shelf a future
 reranking experiment would be working against.*
+
+---
+
+## F48. B2b — removing the year from the caption match changes nothing, and the reason kills the hypothesis. STOP
+
+**Measured**, `state/c_page_gate.json` key `row+caption_first_label`, 13 PDF-bearing frozen
+questions, 57 evidence addresses, gold document handed in as always. No model calls, no
+holdout look spent.
+
+B2b's hypothesis was specific and reasonable. B2 requires a page's caption to contain every
+content word of the row query, and `content_words` keeps fiscal-year tokens, so on a question
+that names a year B2 was demanding the caption print that year. F43 had already established
+the year is printed in the table *body*, as a column heading, not in the caption. So B2b
+matched the caption on label words only — query minus fiscal-year tokens, minus trajectory
+filler — and required the year in the page body instead. Table selects on the caption, column
+selects on the year.
+
+| measure | B1 (row) | B2 (row + caption) | **B2b (year-aware)** |
+|---|---|---|---|
+| addresses in top 5 | 24/57 (42.1%) | 42/57 (73.7%) | **42/57 (73.7%)** |
+| questions (macro) | 27.9% | 39.7% | **39.7%** |
+| trajectory addresses | 22/42 | 40/42 | 40/42 |
+| every other type | 2/15 | 2/15 | 2/15 |
+
+**Pre-registered gate: PASS ≥60% micro and ≥60% macro; WEAK ≥60% micro and ≥45% macro. It is
+73.7% micro and 39.7% macro. STOP** — the same way and for the same reason B2 recorded WEAK,
+and the macro bar was not lowered to let it through. Because B2b did not reach WEAK, the
+holdout page evaluation its gate made conditional was **not** run. Holdout looks used: still
+**2 of 5**.
+
+**Identical is the result, and the diagnostic says why.** Not one address moved: 112 caption
+hit pages before, 112 after, **0 addresses where even the hit count differs**, 0 non-trajectory
+questions changed, and the year filter dropped **0** pages. Removing the year from the caption
+match was a no-op, which can only happen one way — and it is not the way the hypothesis
+predicted.
+
+- 12 of the 57 addresses carry a fiscal year in their row words; 45 do not.
+- On those year-carrying questions — **6 of the 13** — the number that have *any* caption
+  matching even the reduced label words is **0**.
+
+So the year was never the binding constraint. On every question that names a fiscal year,
+**no caption in the gold document contains the subject words at all**, with or without the
+year. The year filter had nothing to filter because the caption match had already returned
+nothing. All 112 caption hits in the entire measurement come from the seven questions that
+name no year, and the 40 trajectory addresses B2 gained are all in that group.
+
+**The honest restatement of the caption channel, now twice measured.** It is not "captions
+work, except the year gets in the way" (B2b's premise, now refuted). It is: **the corpus's
+harvested captions describe the tables that trajectory questions want and do not describe the
+tables that point, reconciliation, multi-branch and relationship questions want.** That is a
+fact about what a caption harvested from these documents contains, not about how it is
+matched — so it cannot be fixed by another matching rule, which is what B2b was. Combined
+with F47's joint diagnostic (a gold address is in the top-20 caption union on 1 of 13
+questions), the caption line has now failed to be the general retrieval unit at both the
+document level and the page level, while remaining a large, real win on trajectory pages.
+
+**Page method for the rest of the run:** the better of B2 and B2b by macro, ties to B2. They
+tie at 39.7%. **B2 (`--caption first`)** is frozen as the page method, and `first_label`
+stays in the code as a measured null result.
+
+*Condition: this corpus, this caption harvest, these 13 questions and 57 addresses, top-5
+cut. It does not show that captions are useless — it shows that on this caption harvest the
+subject words of year-asking questions are not in any caption of the document that answers
+them, which is an argument about caption coverage and would be answered by harvesting more
+caption text, not by another match rule.*

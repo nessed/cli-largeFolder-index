@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-09-13T21:47:44Z",
+ "generated_utc": "2026-09-13T21:56:10Z",
  "n_answerable": 17,
  "dupe_mapping": {
   "n_evidence_mapped_via_dupes": 3,
@@ -208,11 +208,11 @@
   "C2_family_le_10": 8,
   "n": 17
  },
- "wall_s": 13.1,
+ "wall_s": 1.0,
  "page": {
-  "row+caption_first": {
+  "row+caption_first_label": {
    "query_mode": "row",
-   "caption_channel": "first",
+   "caption_channel": "first_label",
    "micro_hits": 42,
    "micro_n": 57,
    "micro_pct": 73.7,

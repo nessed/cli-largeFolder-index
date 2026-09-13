@@ -684,6 +684,46 @@ def _caption_hit_pages(ctx, rel, words):
     return pages, captions
 
 
+def _caption_hit_pages_labelled(ctx, rel, query, body_by_page):
+    """B2b, 2026-09-15. Two changes to the B2 caption match, both aimed at
+    the same measured fact: a question's fiscal year is printed in the
+    table BODY, as a column heading, and almost never in the caption, so
+    requiring the caption to carry it (which B2 effectively does, since the
+    year survives content_words) throws the caption away on exactly the
+    questions that name a year.
+
+    1. The caption must contain every LABEL word -- the query minus fiscal
+       year tokens and minus trajectory filler, the same reduction the
+       corpus-scale caption channel uses.
+    2. If the query carries a fiscal year, a caption-hit page is kept only
+       if that year appears in the page body -- the year selects the column,
+       the caption selects the table.
+
+    If the year filter empties the list the unfiltered caption ordering is
+    returned instead, so the channel can never do worse than having no year.
+    Returns (pages, {page: caption}, n_dropped_by_year_filter)."""
+    words = _label_words(query)
+    if not words:
+        return set(), {}, 0
+    lw = [w.lower() for w in words]
+    pages, captions = set(), {}
+    for page_index, caption in ctx.shelf.execute(
+            "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)):
+        low = (caption or "").lower()
+        if all(w in low for w in lw):
+            pages.add(page_index)
+            if page_index not in captions:
+                captions[page_index] = caption
+    m = FY_RE.search(query or "")
+    if not m or not pages:
+        return pages, captions, 0
+    fy = m.group(1)
+    kept = {pi for pi in pages if fy in (body_by_page.get(pi) or "")}
+    if not kept:
+        return pages, captions, 0
+    return kept, {pi: captions[pi] for pi in kept if pi in captions}, len(pages) - len(kept)
+
+
 def do_inside(ctx, rel, terms, k=8, caption_channel=None):
     """caption_channel=None is the original behaviour, unchanged.
 
@@ -743,12 +783,18 @@ def do_inside(ctx, rel, terms, k=8, caption_channel=None):
         return {"rel": rel, "n_pages": n_pages,
                 "tier": tier if words else "none", "hits": hits}
 
-    cap_pages, cap_text = _caption_hit_pages(ctx, rel, words)
+    n_year_dropped = 0
+    if caption_channel == "first_label":
+        body_by_page = {pi: body for pi, body in pages}
+        cap_pages, cap_text, n_year_dropped = _caption_hit_pages_labelled(
+            ctx, rel, terms, body_by_page)
+    else:
+        cap_pages, cap_text = _caption_hit_pages(ctx, rel, words)
     body_pages = {h["page_index"] for h in hits}
     for h in hits:
         h["via"] = "caption" if h["page_index"] in cap_pages else "body"
 
-    if caption_channel == "first":
+    if caption_channel in ("first", "first_label"):
         cap_with_body = [h for h in hits if h["page_index"] in cap_pages]
         cap_only = [{"page_index": pi, "score": None, "via": "caption",
                      "line": " ".join((cap_text.get(pi) or "").split())[:200]}
@@ -781,6 +827,7 @@ def do_inside(ctx, rel, terms, k=8, caption_channel=None):
 
     return {"rel": rel, "n_pages": n_pages, "tier": tier if words else "none",
             "hits": final[:k], "n_caption_hits": len(cap_pages),
+            "n_caption_pages_dropped_by_year": n_year_dropped,
             "caption_channel": caption_channel}
 
 
