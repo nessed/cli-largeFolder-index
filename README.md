@@ -26,7 +26,7 @@ is the full record — code, measurements, failures, and the diagnosis.
 | | |
 |---|---|
 | ✅ **Solved** | Getting the model to *use* a tool you give it. One line in `CLAUDE.md` moved index adoption from 0 of 38 sessions to 38 of 38. A hook that *forced* the same thing scored slightly worse. |
-| ✅ **Solved** | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. |
+| ⚠️ **Was "solved", now disputed by its own measurement** | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. **2026-09-15: under a live battery with a stricter scorer this scores 1 of 15** — while 14 of those 15 sessions did quote the shelf's own absence verdict. The scorer conflates two failures; repairing it and re-reading the recorded transcripts is the next pre-registered experiment (F50). |
 | 🟡 **Built, trustworthy, retrieval-independent** | Coverage accounting over 15,010 files, content hashing, provenance records, geometry-aware table-cell verification, a typed evidence compiler, safe install/teardown, and test suites. None of it depends on which retrieval idea eventually wins. |
 | ❌ **Not solved** | Putting the right page in front of the model for a vague question. **Every approach has failed this**, and the numbers have barely moved in four nights. |
 
@@ -55,6 +55,23 @@ canonical table ranks 6th behind five prose restatements of its own subject).
 | approach C, right *page* once document is right | **24 of 57 (42.1%)** — CORRECTED 2026-09-14, was 25/57 measured with a defective query | 60% (40% floor) |
 | approach C + caption-aware page retrieval | **42 of 57 (73.7%)** — NEW, but *all* of the gain is on trajectory questions and none elsewhere | 60% |
 | approach C, structural edition selection | **3/17** — NEW; the year a question asks for is usually not the year on the document that answers it | 15/17 |
+| approach C + per-query selection instead of rank fusion | **5/17** — NEW 2026-09-15, gate STOP: the best-supported untried idea in the repo, and it is worse than the fusion it replaced | 12/17 |
+| approach C + a caption-line retrieval channel (89,380 captions) | **10/17** dev, **14/30** holdout — NEW 2026-09-15, gate STOP. Below the top ten it is the biggest document-channel gain yet measured (holdout recall@100 28 → 29) | 12/17 |
+| the same caption channel, plus caption embeddings | **9/17** dev, **13/30** holdout — NEW 2026-09-15, gate STOP: dense dilutes a short table title | 12/17 |
+| approach C, year-aware caption page rule | **42/57, 39.7%** — NEW 2026-09-15, identical to the plain caption rule at every address; on all 6 year-asking questions *no caption matches the subject words at all* | 60% + 60% |
+| approach C, vintage-tolerant trajectory walk | **strict 12/24, tolerant 14/24** — NEW 2026-09-15, WEAK. 10 of the 14 hits come from a *later* edition than the year asked about | 16/24 |
+| approach C, content-based edition selection | **3/10**, mean set size 2.0 — NEW 2026-09-15; a small, confident, wrong set | 8/10 |
+| **approach C, live Claude Code battery on the frozen configuration** | **surfaced 8/17, opened the right page 1/17, cited the right page 0/17, cited a file it never opened 5 times, honest-refusal 1/15** — LIVE 2026-09-15, both gates FAIL. All 17 sessions *did* open pages; they opened the wrong ones | see F50 |
+
+> **Extended 2026-09-15 — the first live battery, and the first end-to-end run.**
+> Six more pre-registered gates were read and **all six STOPped or FAILED**; no bar was moved.
+> The headline change is not a score, it is a diagnosis: 32 real Claude Code sessions show the
+> agent *following* the open-before-cite rule and still opening the wrong pages, and the
+> honest-refusal number — long the one solved thing here — scores 1 of 15 under a scorer whose
+> own transcripts say 14 of 15 found the right verdict. Which of those is true is the next
+> experiment. See
+> [`REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md)
+> and [`REPORT/08_what_next/HANDOFF_2026-09-15.md`](REPORT/08_what_next/HANDOFF_2026-09-15.md).
 
 > **Corrected and extended 2026-09-14.** An adversarial review found four defects in the
 > harness behind the approach-C rows; every historical number still reproduces exactly from

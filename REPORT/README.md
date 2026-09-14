@@ -453,3 +453,104 @@ document *was* handed to the agent and it opened none of them, citing snippets i
 the entire tuning loop, and approach C's shelf build and gate were all free. Nothing is
 currently running, no stack is installed in any corpus, and the corpus has been verified
 byte-identical to its baseline throughout.
+
+---
+
+## 12. Night 5 (2026-09-15) — both "untried levers" above were tried, and the first live battery ran
+
+**§11 named two things as the clearest untried levers. Both were built and measured tonight.
+Neither rescued the project, and the second one failed in a way nobody predicted.** The
+paragraphs above are kept exactly as written, because they were an honest statement of what
+was believed on 2026-09-14; this section is the correction.
+
+### The caption channel — built, measured, STOP
+
+§11 said: *use the harvested `Table N.N:` captions to tell a canonical table apart from prose
+that merely repeats its subject. Neither the in-document search nor the series walk uses that
+channel yet.* Both now do, at three levels.
+
+- **At page level inside a known-correct document** (B2, measured 2026-09-14): 24 → **42 of
+  57** addresses in the top five. A large win — but **all of it on trajectory questions** and
+  nothing on the other four types.
+- **At corpus level as a document channel** (E1, NEW): a new FTS5 index over all **89,380**
+  captions, entering each query's fusion as a third ranked list. Right document in the top ten
+  **9 → 10 of 17**; on the 30-question holdout the top ten did not move (14), but recall@20
+  went 16 → 20, recall@50 24 → 28, and **recall@100 28 → 29, the first movement of that
+  number in the project's history**. The pre-registered gate needed both halves. **STOP.**
+- **With caption embeddings as well** (E2, NEW): all 89,380 captions embedded. Dev **9**,
+  holdout **13** — the first configuration to go *below* the baseline. **STOP.**
+
+**The diagnostic that matters is not the score.** Taking the union of each question's top-20
+caption hits across all six rewrites — up to 120 (file, page) pairs — a gold evidence address
+appears in it on **1 of 13** questions. And a year-aware variant of the page rule (B2b, NEW)
+came out *identical to B2 at every single address*, because on all **6** year-asking questions
+**no caption in the correct document contains the question's subject words at all**, with or
+without the year.
+
+So the honest restatement is: **the captions this corpus yields describe the tables that
+trajectory questions want and do not describe the tables the other question types want.** That
+is a fact about caption *coverage*, not about caption *matching* — it cannot be fixed by
+another matching rule, which is exactly what B2b was.
+
+### The open-before-cite rule — run, and the result is the surprise of the night
+
+§11 said: *on 5 of 17 questions the right document was handed to the agent and it opened none
+of them, citing snippets instead. A "quote the line before you cite it" rule was written for
+this and has never been run.*
+
+**It has now been run**, in the first live Claude Code battery on a frozen retrieval
+configuration: 35 real sessions (`claude-sonnet-5`, fresh process per question, the folder's
+own `CLAUDE.md`, no memory carried between sessions, $8.53, 0 timeouts).
+
+| | |
+|---|---|
+| an evidence path was printed to the session | **8 / 17** |
+| it opened *any* evidence file | **2 / 17** |
+| it opened the *right page* | **1 / 17** |
+| it cited the right page | **0 / 17** |
+| it named a file it had never opened | **5** (on 2 questions) |
+| it wrote a note before answering | 12 / 17 |
+
+**The rule was followed. That is the finding.** Every one of the 17 sessions issued `open`
+commands — 56 of them across 16 of the 20 sessions — and only two questions produced a
+citation to an unopened file. The agents did not answer from snippets this time. **They opened
+the wrong pages**: on 6 of the 8 questions where the right path was printed on screen, the
+session went and opened something else.
+
+So the behavioural fix that has been sitting in the backlog for two nights turns out to be
+close to free and close to worthless *on its own*. The bottleneck is one step earlier — in
+which of the ranked candidates is worth opening — and no rule about citation discipline
+reaches it.
+
+### And the one thing that was solved is now in question
+
+The status table at the top of the repository has said, for four nights, that honest refusal
+works: 11/11 and 4/4. Under the live battery's stricter scorer, **`absence_ok2` is 1 of 15**.
+
+But **14 of those 15 sessions did run the shelf, get its absence verdict, and print it**. The
+scorer requires two things at once — a decline phrase *and* no numeric figures — and each half
+fails separately: 8 of 15 assert no figures but do not match the inherited decline regex, and
+6 decline in substance while quoting *the shelf's own edition counts*, which the metric reads
+as invented figures.
+
+**Both numbers are published, because only one of them can be right and it is not yet known
+which.** The next experiment is not a retrieval idea: repair the scorer against those two
+named defects, write the gate first, and re-read the 32 transcripts already on disk. If the
+repaired number is ≥10/15 the absence box goes back to *solved* and 1/15 was an artefact. If
+it stays low, then the one thing this project believed it had solved has been quietly failing,
+which would be the most important correction it has made.
+
+### Where this leaves the project
+
+Every retrieval lever has now been pulled: more rewrites, a cross-encoder reranker, a
+different fusion rule, a lexical caption channel, a dense caption channel, a caption page
+rule, a year-aware page rule, and two edition-selection rules. **The best of them moves the
+document top-ten from 9 to 10 of 17 and does not survive the holdout.** Six pre-registered
+gates were read on 2026-09-15 and all six STOPped or FAILED, with no bar moved.
+
+The end-to-end pipeline was also run for the first time, deterministically, with the printed
+table cell checked by the geometry-aware verifier rather than compared to the answer key —
+see F52 and the 2026-09-15 architecture note for its loss decomposition.
+
+*Full detail: [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md)
+and [`08_what_next/HANDOFF_2026-09-15.md`](08_what_next/HANDOFF_2026-09-15.md); findings F46–F52.*

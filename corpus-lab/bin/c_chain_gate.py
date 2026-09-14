@@ -34,7 +34,11 @@ import labpaths as L  # noqa: E402
 import c_shelf as CSH  # noqa: E402
 import c_offline_gate as G  # noqa: E402
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "evidence_v1"))
+# evidence_v1 is a PACKAGE (its modules use relative imports) and it contains a
+# logging.py. Putting that directory on sys.path shadows the standard library
+# logging for everything imported afterwards, pdfplumber included. Add its
+# PARENT and import it as a package instead.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 FROZEN_FUSION = "rrf"
 FROZEN_CAPTION_CHANNEL = "lex"
@@ -43,6 +47,24 @@ TOP_FAMILIES = 5
 TOP_PAGES = 5
 MAX_EDITIONS = 15
 VERIFY_CAP = 40
+
+
+# do_inside is a deterministic function of (rel, terms, k, caption_channel) and
+# the chain calls it twice on the same arguments for every year question -- once
+# to select editions and once to retrieve pages. Each call reloads a whole
+# document's pages and rebuilds an in-memory FTS index over them, which is the
+# dominant cost of this measurement. Memoised here, in the driver, so c_shelf
+# keeps its measured behaviour exactly; the cached value is the same object the
+# uncached call would have returned.
+_INSIDE_CACHE = {}
+
+
+def inside_cached(ctx, rel, terms, k, caption_channel):
+    key = (rel, terms, k, caption_channel)
+    if key not in _INSIDE_CACHE:
+        _INSIDE_CACHE[key] = CSH.do_inside(ctx, rel, terms, k=k,
+                                           caption_channel=caption_channel)
+    return _INSIDE_CACHE[key]
 
 
 def page_text(ctx, rel, page_index):
@@ -74,8 +96,8 @@ def select_editions(ctx, family, question, qtype, row_words):
         fy = m.group(1)
         sel = []
         for r in primaries:
-            ins = CSH.do_inside(ctx, r["rel"], row_words, k=TOP_PAGES,
-                                caption_channel=FROZEN_PAGE_CAPTION)
+            ins = inside_cached(ctx, r["rel"], row_words, TOP_PAGES,
+                                FROZEN_PAGE_CAPTION)
             for h in ins["hits"][:TOP_PAGES]:
                 body = page_text(ctx, r["rel"], h["page_index"])
                 if body and fy in body:
@@ -94,7 +116,7 @@ def select_editions(ctx, family, question, qtype, row_words):
 
 def main():
     t0 = time.time()
-    from verify import verify_pdf_cell
+    from evidence_v1.verify import verify_pdf_cell
 
     ctx = CSH.get_ctx(str(L.STACKS / "s2_fts5" / "harness_15000.db"),
                       str(L.STACKS / "s7_shelf" / "shelf.db"))
@@ -111,6 +133,7 @@ def main():
     n_absence = 0
 
     for qid in frozen_ids:
+        print("  -> %s" % qid, flush=True)
         q = qs_by_id[qid]
         qtype = q["type"]
         rec = {"type": qtype}
@@ -151,8 +174,8 @@ def main():
             eds, rule = select_editions(ctx, fam, pq["question"], qtype, row_words)
             rec.setdefault("edition_rule", rule)
             for r in eds:
-                ins = CSH.do_inside(ctx, r["rel"], row_words, k=TOP_PAGES,
-                                    caption_channel=FROZEN_PAGE_CAPTION)
+                ins = inside_cached(ctx, r["rel"], row_words, TOP_PAGES,
+                                    FROZEN_PAGE_CAPTION)
                 for h in ins["hits"][:TOP_PAGES]:
                     pages_opened.append((r["rel"], h["page_index"]))
                     if (r["rel"], h["page_index"]) in ev_addrs:

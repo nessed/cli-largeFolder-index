@@ -1,5 +1,10 @@
 # Current working architecture — 2026-09-14
 
+> **SUPERSEDED 2026-09-15** by [`CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](CURRENT_WORKING_ARCHITECTURE_2026-09-15.md).
+> The experiment this document proposed (Experiment C, per-query selection) was run and
+> **STOPped at 5/17 against RRF's 9/17** (F46). The numbers below are still correct as
+> measured; the recommendation in §5 is not.
+
 > Supersedes [`CURRENT_WORKING_ARCHITECTURE_2026-09-13.md`](CURRENT_WORKING_ARCHITECTURE_2026-09-13.md),
 > which proposed experiments A and B. Both were run, after the
 > [2026-09-13 adversarial review](ARCHITECTURE_REVIEW_2026-09-13.md) found four defects in

@@ -626,3 +626,712 @@ identity holds exactly, but the sanity probe still fails — the family with the
 "editions" is a near-duplicate clustering defect (a repeatedly-copied paper reading as 16
 editions), not the intended kind of copy-heavy family. This result is measured on that
 shelf, unrepaired past the one authorized title-line fix.*
+
+**Addendum 2026-09-14.** Four of the numbers above were measured by a defective harness and
+have been re-measured: see F41 (where the document loss actually is), F42 (the corrected page
+baseline and the caption channel), F43 (edition selection), F44 (the reranker, which failed
+its gate). The corrected counts are C1 6/17 and C2 9/17 with 0 of 17 excluded, page 24/57 with
+the corrected short query, and a symmetric present-edition control of 8/11. The absence result
+and the identifier result are unchanged and survived the correction. F45 was reserved for the
+offline chain test, which was not run — its pre-registered condition was not met.
+
+## F41. The document bottleneck is ranking, not candidate generation
+
+**Measured**, `state/c_gate_v2.json` and `state/c_recall_curve.json`, on the 17 answerable
+frozen questions with the corrected denominator (0 excluded, was 2), and confirmed on the
+30-question frozen holdout (aggregate counts only, never per-question).
+
+| depth | C1 (verbatim), 17 | C2 (+5 rewrites), 17 | C1, holdout 30 | C2, holdout 30 |
+|---|---|---|---|---|
+| top 10 | 6 | 9 | 10 | 14 |
+| top 20 | 8 | 10 | 13 | 16 |
+| top 50 | 12 | 11 | 19 | 24 |
+| top 100 | 14 | **16** | 27 | **28** |
+| top 200 | 14 | 16 | 27 | 28 |
+
+**The pool almost always holds the answer.** The pre-registered A0 gate was C2 gold-family
+recall@100 ≥ 12 of 17. It is 16 of 17, and 28 of 30 on the holdout. So the fused FTS5 +
+BGE candidate pool is not what is losing these questions: something that is already in the
+top 100 is failing to reach the top 10. That authorises the reranker experiment (A1) and
+rules out the competing explanation the review wanted separated out.
+
+Depth 200 adds nothing over depth 100 in either set, so the reranker pool is fixed at 100.
+
+**Two diagnostics recorded with it** (`--per-rewrite`, ranks only):
+
+- *Best-single-rewrite oracle.* On 12 of 17 questions **some** single rewrite alone puts the
+  gold family in its own top 10, against 9 of 17 for the six fused together. RRF over six
+  query variants is losing three questions that one of its own inputs already had. Per-query
+  max fusion is therefore a live future candidate — **not built here**, and not a licence to
+  tune fusion weights against these 17.
+- *Rewrite 4 (the "which publication would carry this" guess) never uniquely contributes.*
+  Across the 17, the number of questions where exactly one rewrite index found the gold
+  family at all is 0, so there is no question that rewrite 4 rescues on its own. A1 drops it
+  from candidate generation, per the pre-registered rule.
+
+Recall per rewrite index at top 10 is flat — 6, 6, 6, 6, 6, 5 for indices 0–5 — so no single
+rewrite style is carrying the others, and the fused result (9) does beat any one of them.
+The oracle number above is the union across questions, not one better rewrite.
+
+*Condition: this corpus, this shelf, this fused candidate generator, top-200 pool. "Gold
+family" is the family holding the key's evidence, resolved through the shelf's duplicate map.
+A0 is a statement about where the loss is, not a claim that a reranker will recover it.*
+
+## F42. Captions fix the trajectory walk and do nothing for anything else
+
+**Measured**, `state/c_page_gate.json`, correct document handed in (Experiment A bypassed),
+57 PDF evidence addresses across the 13 frozen questions that have any, top 5:
+
+| run | query | caption channel | micro | macro |
+|---|---|---|---|---|
+| B0 (HISTORICAL, reproduced) | whole question | off | 25/57 = 43.9% | 30.5% |
+| B1 (CORRECTED baseline) | short row phrase | off | 24/57 = 42.1% | 27.9% |
+| B2 (NEW) | short row phrase | `first` | **42/57 = 73.7%** | 39.7% |
+
+**B0 → B1 is a harness correction, not a retrieval result**, and it is worth saying that it
+cost one address. The review was right that the page row fed `inside` the whole question
+while the series walk had already been fixed to feed it a short row phrase (defect D1). It
+was a real inconsistency in the code. It was not what was losing the page row.
+
+**B2 against the pre-registered gate: micro clears its 60% bar, macro does not.** PASS
+required both, so this is not a PASS. It is nowhere near the STOP condition either (STOP was
+B2 ≤ B1 + 1 address; it is B1 + 18). The band table did not anticipate a result that splits
+this way, and the bar has not been moved to accommodate it.
+
+**Why it splits — the whole gain is on one question type:**
+
+| type | questions | addresses | B1 | B2 |
+|---|---|---|---|---|
+| trajectory | 4 | 42 | 22 | **40** |
+| multi_branch | 3 | 9 | 1 | 1 |
+| point_lookup | 3 | 3 | 0 | 0 |
+| reconciliation | 2 | 2 | 0 | 0 |
+| relationship | 1 | 1 | 1 | 1 |
+
+Not one non-trajectory address moved. On 9 of the 13 questions no caption in the gold
+document contains every query content word, so the channel is simply inert there, and those
+9 are what holds macro down. Trajectory questions carry 42 of the 57 addresses, which is why
+micro moves so far. The honest claim is narrow: **a harvested table caption is a good page
+address for a question that names a table row and asks for it across years, and is no help
+at all for a question that asks for one number in prose.**
+
+`rrf` was written alongside `first` in the same edit but, per the pre-registered rule, was
+not run: the rule permitted it only as a fallback if `first` came in worse than B1.
+
+**The series walk is still 1/4 with the winning page method — and that number does not mean
+what the gate has been reading it as.** Re-running the corrected walk (k=5, exact family)
+with `caption_channel="first"` threaded through `series` changes nothing: 1 of 4. The reason
+is not page retrieval. Counted directly (`state/c_series_v2.json` and the diagnostic behind
+it): across the four questions the fiscal years line up almost perfectly — 21 of 24 evidence
+years are years the walked family actually holds — but **the file the walk opens at that
+year is the file the key cites on only 3 of those 21 years.** The shelf's `is_primary` pick
+inside an edition selects a different copy from the one the key names, and a page index only
+carries across byte-identical copies. One question's evidence spans three families and the
+walk opens none of its twelve evidence files.
+
+So `series_ok` has been measuring *which copy the shelf calls primary*, not whether the row
+can be found. With the correct document handed in, the same trajectory pages are found in
+the top 5 on 40 of 42 addresses. Edition selection, not page retrieval, is what the
+trajectory result was failing on — which is the sub-problem F43 measures.
+
+*Condition: this corpus, this shelf, 13 questions with PDF addresses, 4 of them trajectory.
+A caption "hits" when it contains every content word of the short row phrase; no synonym
+list, no title list, nothing derived from the key. The trajectory result rests on 4
+questions and should not be reported as a general finding without more of them.*
+
+## F43. The year in the question is not the year on the edition
+
+**Measured**, `bin/c_edition_gate.py`, `state/c_edition_set.json`. Gold family handed in, so
+this is a statement about edition selection only. The structural rule was pre-registered: a
+question carrying a fiscal-year token selects the family's primaries whose `fy_all` holds
+that year; a trajectory or series question selects all primaries; anything else selects all
+primaries.
+
+**Set recall: 3 of 17.** The bar for adopting RETRIEVE FAMILY → SELECT EDITION(S) as a
+structural rule was 15 of 17 with a mean set size ≤ 3. Mean set size is 7.06, max 21.
+
+| branch | questions | failures |
+|---|---|---|
+| fiscal-year token | 10 | 10 |
+| series / trajectory | 4 | 3 |
+| all primaries (no narrowing possible) | 3 | 1 |
+
+**The year branch fails on all ten, and the reason is not a bug in the rule.** Counted
+directly over those ten questions' 18 evidence documents:
+
+- only **7 of 18** have the asked year anywhere in their `fy_all`;
+- only **1 of 18** has it as `fy_primary`;
+- only **8 of 18** are a primary at all;
+- on 4 of the 10 questions, not one evidence document carries the asked year.
+
+So the year in a question is mostly not a label on the document that answers it. A question
+about a fiscal year is answered by whichever edition happens to print that year's row — very
+often a later edition carrying a historical series. The fiscal year narrows the *row*, not
+the *edition*. `fy_all` is doing its job; it is being asked the wrong question.
+
+**The second half of the failure is the copy problem F42 found.** Ten of the 18 evidence
+documents are not primaries, so a set built out of primaries cannot contain them, and a page
+index does not carry from one copy of an edition to another.
+
+**Verdict, per the pre-registered interpretation: do not adopt the split.** Set recall is
+below 15/17, so the rule is not adopted in the 2026-09-14 architecture and RETRIEVE DOCUMENT
+stays one box. No rules were added to chase the failures — that was pre-registered too. What
+this does establish is that "which edition, and which copy of it" is a real, separate,
+currently-unsolved sub-problem, and that it is sitting underneath both the trajectory result
+and the page result.
+
+*Condition: this corpus, this shelf's family and edition_key grouping, 17 questions, gold
+family handed in. A different family/edition grouping could change every number here.*
+
+## F44. The reranker recovers exactly what dropping a rewrite cost, and nothing more
+
+**Measured**, `bin/c_rerank_gate.py`, `state/c_rerank_gate.json`. Model
+`Xenova/ms-marco-MiniLM-L-6-v2` through fastembed's cross-encoder; preflight passed on the
+first model at 5/5 generic everyday pairs ordered correctly and 16.2 pairs/s on 350-word
+passages, so no second model was tried. Candidate generation frozen, pool depth 100
+(authorised by F41), passage = the family's best document's title, fiscal year and up to 8
+catalog lines by content-word overlap, capped at 350 words. Query = the verbatim question.
+
+Gold family in the top 10:
+
+| configuration | dev 17 | holdout 30 |
+|---|---|---|
+| C2 fused, all six queries (F41 baseline) | 9 | 14 |
+| fused pool as A1 sees it (rewrite 4 dropped, cut to 100) | 7 | 13 |
+| **A1** — cross-encoder score alone | **4** | 12 |
+| **A1b** — RRF(60) of the A1 rank and the fused rank | **9** | 16 |
+
+**Pre-registered gate: STOP.** The bar was ≥12/17 for PASS, 10–11/17 for WEAK, ≤9/17 for
+STOP, applied to the better configuration on the dev set. A1b is 9 of 17. The holdout moved
+the right way (+2 over C2) but the configuration may not be chosen on the holdout and the
+dev gate is not met, so this is a STOP and the bar was not moved to rescue it.
+
+**The cross-encoder on its own is actively harmful**: 4 of 17, down from a 7 of 17 pool it
+was handed. Ranking a publication by how well a question matches its *catalog card* is not
+the same task the model was trained for — the card is a label, not a passage that answers
+anything — and on this evidence the model cannot tell a directly relevant government
+publication from a plausibly-titled neighbour. A1b's 9 of 17 is not the reranker working;
+it is RRF pulling the fused rank back in after the cross-encoder pushed it out.
+
+**A pre-registered rule that turned out to cost something.** F41 recorded that no question is
+found by exactly one rewrite index, so A1 dropped rewrite 4 (the "which publication would
+carry this" guess) from candidate generation, as pre-registered. Doing so cost one question
+out of the top-100 pool (recall@100 16 → 15) and two out of the fused top 10 (9 → 7). So
+A1b's 9 exactly restores C2's 9, and the honest reading of the whole experiment is: **the
+reranker bought nothing.** "Never uniquely contributes a find" was the wrong test for whether
+a query variant earns its place in an RRF fusion; contributing rank mass to a family other
+variants also find is worth something, and the rule could not see that.
+
+*Condition: this corpus, this shelf, one cross-encoder, two configurations, no weight sweeps.
+It does not show that no reranker can help — it shows that this compact cross-encoder over
+shelf catalog cards does not, and that the document bottleneck survives A0's diagnosis intact.*
+
+---
+
+## F46. Experiment C — per-query selection loses to rank summation. STOP
+
+**Measured**, `state/c_fusion_gate.json`, 17 answerable frozen questions, C2 rewrites, the
+same shelf and the same candidate pool. No model calls; no holdout look spent.
+
+The 2026-09-14 handoff named this the best-supported untried idea in the repository, on the
+strength of F41's oracle: on 12 of 17 questions *some* single rewrite alone already puts the
+gold family in its own top 10, while all six fused together manage 9. Experiment C is the
+obvious cash-out — score a family by its **best rank across the rewrites** instead of by
+summed reciprocal rank, break ties on how many rewrites found it, then on summed RRF.
+
+| depth | rrf (summation) | best (per-query selection) |
+|---|---|---|
+| top 10 | **9** | **5** |
+| top 20 | 10 | 8 |
+| top 50 | 11 | 12 |
+| top 100 | 16 | 16 |
+| top 200 | 16 | 16 |
+
+**Pre-registered gate: PASS ≥12/17, WEAK 10–11, STOP ≤9. It is 5. STOP.** The bar was not
+moved, no tie-break was re-specified, and the holdout was not consulted — the development set
+decides, as pre-registered, and spending a look to confirm a result four questions below the
+stop line would buy nothing. Holdout looks used tonight so far: **0 of 5.**
+
+**Why the oracle did not cash out, stated plainly.** The oracle is a *union* over questions —
+for each question, some rewrite works — but it says nothing about which rewrite, and a rule
+has to pick without knowing. Best-rank selection gives every rewrite a veto-free top slot: a
+family that any single rewrite happens to rank #1 outranks a gold family that a *good*
+rewrite ranks #3, because 1 < 3 and nothing else is consulted until the tie-break. Six
+rewrites therefore inject six independent chances for a noisy neighbour to take the top of
+the list. Summation is doing real work precisely because it is slow to be convinced: a family
+has to be found repeatedly to rise. The minimum is a maximally noise-sensitive statistic and
+the sum is not.
+
+Note the crossover at depth 50, where `best` (12) passes `rrf` (11). Per-query selection does
+surface a couple of families that summation buries — it simply pays for them with four
+questions at the top, which is where the measure lives. Both rules reach the same 16 of 17 at
+depth 100, confirming again that candidate generation is not the loss.
+
+**Aggregate diagnostic, families ranked above the gold family under the winning rule (rrf).**
+Across the 16 questions where the gold family is ranked at all, **661** families outrank it:
+**586** of kind `fy` (the family has dated primary editions) against **75** of kind
+`singleton`. So what crowds out the right publication is overwhelmingly *other dated
+statistical series* — near neighbours in the same genre — not undated one-off documents. The
+document channel is not confusing a yearbook with a memo; it is confusing a yearbook with
+another yearbook.
+
+**Consequence for the rest of the run.** The fusion rule is frozen at **`rrf`**, by the
+pre-registered "higher development count, ties to rrf" rule. `fusion="best"` stays in
+`c_shelf.do_find` as a measured negative result, off by default, and `--fusion` is exposed on
+the `find` CLI and on the gate so the number can be reproduced.
+
+*Condition: this corpus, this shelf, these six rewrites, k=60, pool 200. It shows that this
+particular cash-out of the F41 oracle fails; it does not show that no selection rule can beat
+summation — but the next such idea needs a mechanism for choosing which rewrite to trust,
+which is the thing neither F41 nor this experiment has.*
+
+---
+
+## F47. Experiment E1 — the caption line is a real document signal, but not at the top ten. STOP
+
+**Measured**, `state/c_caption_family_gate.json` key `lex`, 17 answerable frozen questions,
+C2 rewrites, `rrf` fusion (frozen by F46), plus one holdout evaluation. A new FTS5 index over
+all **89,380** harvested captions (`state/c_caption_index.json`), one row per caption, built
+beside `shelf.db` without modifying it. No model calls.
+
+Every query contributes a third ranked list: its content words minus fiscal-year tokens and
+minus the trajectory scaffolding words, matched all-words-then-any against the caption index,
+ordered by bm25, entering the fusion as the documents those captions sit in.
+
+| depth | C2 + rrf (baseline) | E1 (+ caption lexical) | holdout baseline | holdout E1 |
+|---|---|---|---|---|
+| top 10 | 9 | **10** | 14 | **14** |
+| top 20 | 10 | **12** | 16 | **20** |
+| top 50 | 11 | **14** | 24 | **28** |
+| top 100 | 16 | 16 | 28 | **29** |
+| top 200 | 16 | 16 | 28 | 29 |
+
+**Pre-registered gate: PASS ≥12/17 and holdout ≥17/30; WEAK 10–11/17 *and* holdout ≥16/30.
+The development set is 10, which is inside the WEAK band, but the holdout top ten is 14,
+which is not. Both halves are required. STOP.** The bar was not moved and the development
+number was not allowed to carry the result on its own — that conjunction is exactly what the
+holdout is for.
+
+**What it nevertheless establishes, and it is not nothing.** Below the top ten the caption
+channel is the largest single improvement this project has measured on the document channel:
++2 at depth 20 and +3 at depth 50 on the development set, and on the holdout **+4 at 20, +4
+at 50, and the first movement of recall@100 in the project's history (28 → 29 of 30)**.
+Captions find documents that catalog cards do not. The channel is real; what it does not do
+is convert that into the top ten, which is where the gate lives and where an agent's
+attention actually is.
+
+**The joint diagnostic is the sharpest result here, and it is negative.** Taking the union of
+each question's top-20 caption hits across all six rewrites — up to 120 (file, page) pairs per
+question — a gold evidence *address* appears in it on **1 of 13** questions. So the caption
+channel is emphatically **not** solving page-finding and document-finding at once. It ranks
+the right *publication* better while almost never pointing at the right *page*. The hope that
+motivated E — that the caption line is the better retrieval unit for table questions, jointly
+— is not supported. It is a better unit for one half of the problem only.
+
+On exactly **1 of 17** questions no rewrite produced any caption hit at all, so coverage of
+the channel is not the limitation; ranking within it is.
+
+**One implementation defect, recorded because it cost a holdout look.** The first E1 run
+returned the baseline's numbers at every depth on both sets — 9/10/11/16/16 and
+14/16/24/28/28, identical to the last question. That was the bug signature, not a result:
+`_cap_search` returns a *family* list and fusion happens in *document* space, so
+`rel_to_family` silently dropped every caption entry and the channel contributed nothing.
+Fixed by entering the caption list as the documents its captions sit in, in first-seen order.
+The inert run is counted against tonight's five-look holdout budget even though the
+configuration it measured was numerically the already-published baseline and so told us
+nothing new about the holdout. **Holdout looks used after E1: 2 of 5.**
+
+*Condition: this corpus, this caption harvest, bm25 over caption text only, all-words then
+any-word, pool 200, k=60, rrf. It shows this caption channel does not reach the top-ten bar;
+it also shows the deeper pool is genuinely better, which is a fact about the shelf a future
+reranking experiment would be working against.*
+
+---
+
+## F48. B2b — removing the year from the caption match changes nothing, and the reason kills the hypothesis. STOP
+
+**Measured**, `state/c_page_gate.json` key `row+caption_first_label`, 13 PDF-bearing frozen
+questions, 57 evidence addresses, gold document handed in as always. No model calls, no
+holdout look spent.
+
+B2b's hypothesis was specific and reasonable. B2 requires a page's caption to contain every
+content word of the row query, and `content_words` keeps fiscal-year tokens, so on a question
+that names a year B2 was demanding the caption print that year. F43 had already established
+the year is printed in the table *body*, as a column heading, not in the caption. So B2b
+matched the caption on label words only — query minus fiscal-year tokens, minus trajectory
+filler — and required the year in the page body instead. Table selects on the caption, column
+selects on the year.
+
+| measure | B1 (row) | B2 (row + caption) | **B2b (year-aware)** |
+|---|---|---|---|
+| addresses in top 5 | 24/57 (42.1%) | 42/57 (73.7%) | **42/57 (73.7%)** |
+| questions (macro) | 27.9% | 39.7% | **39.7%** |
+| trajectory addresses | 22/42 | 40/42 | 40/42 |
+| every other type | 2/15 | 2/15 | 2/15 |
+
+**Pre-registered gate: PASS ≥60% micro and ≥60% macro; WEAK ≥60% micro and ≥45% macro. It is
+73.7% micro and 39.7% macro. STOP** — the same way and for the same reason B2 recorded WEAK,
+and the macro bar was not lowered to let it through. Because B2b did not reach WEAK, the
+holdout page evaluation its gate made conditional was **not** run. Holdout looks used: still
+**2 of 5**.
+
+**Identical is the result, and the diagnostic says why.** Not one address moved: 112 caption
+hit pages before, 112 after, **0 addresses where even the hit count differs**, 0 non-trajectory
+questions changed, and the year filter dropped **0** pages. Removing the year from the caption
+match was a no-op, which can only happen one way — and it is not the way the hypothesis
+predicted.
+
+- 12 of the 57 addresses carry a fiscal year in their row words; 45 do not.
+- On those year-carrying questions — **6 of the 13** — the number that have *any* caption
+  matching even the reduced label words is **0**.
+
+So the year was never the binding constraint. On every question that names a fiscal year,
+**no caption in the gold document contains the subject words at all**, with or without the
+year. The year filter had nothing to filter because the caption match had already returned
+nothing. All 112 caption hits in the entire measurement come from the seven questions that
+name no year, and the 40 trajectory addresses B2 gained are all in that group.
+
+**The honest restatement of the caption channel, now twice measured.** It is not "captions
+work, except the year gets in the way" (B2b's premise, now refuted). It is: **the corpus's
+harvested captions describe the tables that trajectory questions want and do not describe the
+tables that point, reconciliation, multi-branch and relationship questions want.** That is a
+fact about what a caption harvested from these documents contains, not about how it is
+matched — so it cannot be fixed by another matching rule, which is what B2b was. Combined
+with F47's joint diagnostic (a gold address is in the top-20 caption union on 1 of 13
+questions), the caption line has now failed to be the general retrieval unit at both the
+document level and the page level, while remaining a large, real win on trajectory pages.
+
+**Page method for the rest of the run:** the better of B2 and B2b by macro, ties to B2. They
+tie at 39.7%. **B2 (`--caption first`)** is frozen as the page method, and `first_label`
+stays in the code as a measured null result.
+
+*Condition: this corpus, this caption harvest, these 13 questions and 57 addresses, top-5
+cut. It does not show that captions are useless — it shows that on this caption harvest the
+subject words of year-asking questions are not in any caption of the document that answers
+them, which is an argument about caption coverage and would be answered by harvesting more
+caption text, not by another match rule.*
+
+---
+
+## F49. Experiment E2 — dense captions add nothing the lexical ones did not. STOP. And the FREEZE
+
+**Measured**, `state/c_caption_family_gate.json` key `lex+vec` and `state/c_freeze.json`.
+All 89,380 captions embedded with bge-small in 819 s at 109/s (`state/c_caption_embed.json`);
+vector rows, id rows and caption rows all equal 89,380. One holdout evaluation.
+
+E2 gives every rewrite a fourth ranked list: the same label-word string, cosine over the
+caption embeddings, top 200.
+
+| depth | C2 + rrf | E1 (+ caption lexical) | E2 (+ caption dense) |
+|---|---|---|---|
+| dev top 10 | 9 | **10** | 9 |
+| dev top 20 | 10 | 12 | 10 |
+| dev top 50 | 11 | 14 | 14 |
+| holdout top 10 | 14 | 14 | **13** |
+| holdout top 20 | 16 | 20 | 21 |
+| holdout top 50 | 24 | 28 | 27 |
+| holdout top 100 | 28 | 29 | 29 |
+
+**Pre-registered gate: PASS ≥12/17 and holdout ≥17/30; WEAK 10–11 and ≥16. It is 9 and 13.
+STOP** — and note it is the first configuration tonight to go *below* the baseline on the
+holdout top ten. The dense channel does what dense retrieval usually does to a short label:
+it dilutes a precise lexical match with semantic near-neighbours. Captions are short
+institutional titles; that is the case where embeddings help least and cost most.
+
+The one thing it fixes is coverage: **0** questions have empty caption lists under
+`lex+vec`, against 1 under `lex` — a dense channel always returns something. It buys nothing
+with it. The joint diagnostic is unchanged at **1 of 13**, exactly as in F47: adding a second
+caption channel does not make captions point at gold *pages*.
+
+### FREEZE
+
+Four document configurations were measured tonight. The pre-registered rule is the highest
+gold-family recall@10 on the 17, ties by holdout, then by simplicity.
+
+| configuration | fusion | caption channel | dev ≤10 | holdout ≤10 | gate |
+|---|---|---|---|---|---|
+| C2-rrf (the 2026-09-14 baseline) | rrf | off | 9 | 14 | — |
+| C-best (F46) | best | off | 5 | not measured | STOP |
+| **E1 (F47)** | **rrf** | **lex** | **10** | **14** | STOP |
+| E2 (this finding) | rrf | lex+vec | 9 | 13 | STOP |
+
+**Frozen for the rest of the run: `fusion=rrf caption_channel=lex page=first`.**
+
+This needs saying plainly, because it looks like a contradiction and is not. **Every
+adoption gate tonight STOPped, and the configuration frozen for the live battery is one of
+the configurations that STOPped.** Those are two different decisions. An adoption gate asks
+"is this a real improvement worth carrying forward as a claim?" — E1's answer is no, because
+its holdout top ten did not move. The FREEZE rule asks "which of the four measured
+configurations should the live battery run on?" — and it is stated over the development
+count, where E1's 10 is the highest of the four. Running the battery on a configuration
+known to be worse on the measure would make the live numbers answer a question nobody asked.
+So E1 is frozen as *the configuration under test*, not as an adopted improvement, and the
+architecture document records it as WEAK-and-not-adopted.
+
+The page method is **B2 (`--caption first`)**, per F48's tie-to-B2 rule.
+
+**Holdout looks: 3 of 5 used** (E1 inert, E1 corrected, E2). The frozen configuration's
+holdout curve is E1's, already measured in Phase 2 — 14 / 20 / 28 / 29 / 29 — so the fifth
+look the phase reserved for it was **not** spent re-measuring a deterministic number that
+was already on disk. C-best's holdout was never measured because its development number was
+four questions below its own stop line.
+
+*Condition: this corpus, this caption harvest, bge-small, cosine, top 200, k=60. It shows
+dense caption retrieval does not add to lexical caption retrieval here; on a corpus whose
+captions were free prose rather than institutional table titles the balance could differ.*
+
+---
+
+## F50. LIVE — the first Claude Code battery on the frozen configuration. Both gates FAIL
+
+**Measured**, `state/c_live_battery.json` (aggregates) and the private per-question file.
+35 sessions on the Max subscription: 1 auth probe, 2 isolation probes, the frozen 20, and 12
+extra absence questions. Model **`claude-sonnet-5`** — the account's default (`"model":
+"sonnet"` in the user settings, confirmed as the resolved id in the probe's stream-json init
+event), passed explicitly to every battery session. `--max-turns 25 --timeout 300
+--permission-mode bypassPermissions`, the question text alone as the prompt, a fresh process
+per question, no memory carried between sessions. **32 of 32 battery sessions completed, 0
+timeouts, $8.53 total, cost recorded for 32 of 32, mean wall 87 s.**
+
+**Isolation held.** Probe 2 (print a 16-hex token from a scratch file) and probe 3 (list the
+private tree) were both refused by the installed deny list; neither the token nor any private
+filename appears anywhere in either answer or in any tool result. Checksums: **18 planted
+files, 0 changed, 0 missing.** Memory files created: **0**. 72 transcripts containing canary
+phrases were quarantined afterwards. The rung root holds neither `CLAUDE.md` nor `.claude/`.
+
+### Behaviour, on the 17 answerable questions
+
+| measure | count |
+|---|---|
+| surfaced (an evidence path was printed to the session) | **8 / 17** |
+| opened *any* evidence file | **2 / 17** |
+| opened the right page | **1 / 17** |
+| cited the right page | **0 / 17** |
+| wrote at least one note before answering | 12 / 17 |
+| cited a file it never opened | **5** (on 2 questions) |
+| figures in the answer grounded on no opened page | **1** |
+| used `series` on a trajectory question | 2 / 4 |
+| cited a `must_not_cite` file | 3 |
+
+**Pre-registered gate: PASS needs cited_unopened ≤2, figures_ungrounded ≤2 and
+opened_right_page ≥6/17. WEAK needs cited_unopened ≤4 and opened_right_page ≥4/17. It is 5, 1
+and 1. FAIL.**
+
+**Which of the three pre-registered readings applies: the first.** Surfaced is comparatively
+high and opened_right_page is near zero, so the loss sits *after* retrieval. And the shape of
+it is not the shape anyone expected. **Every one of the 17 sessions issued at least one
+`open` command — 56 opens across 16 of the 20 sessions.** The rule was read and obeyed: the
+agents did not skip opening, they did not answer from search snippets, they wrote notes on 12
+of 17, and they named a file they had not opened on only 2 questions. **They opened the wrong
+pages.** On 6 of the 8 questions where the right path was printed on screen, the session went
+and opened something else instead.
+
+So "did it open what it was handed" has a precise answer: **it opened diligently and chose
+badly.** The open-before-cite rule is close to free — it cost almost nothing to follow and
+almost nothing was gained, because the bottleneck is one step earlier, in which of the ranked
+candidates is worth opening. The comparison point is S1's surfaced 5/17 and opened 0/5; this
+is 8/17 surfaced and 2/8 opened, better on both, and still nowhere near usable.
+
+Live retrieval did **not** underperform the offline gate by much: the frozen configuration
+puts the gold family in the offline top ten on 10 of 17, and the agent's own hand-written
+rewrites surfaced an evidence path on 8 of 17. The agent's rewrites are roughly as good as
+Haiku's. That closes off the second reading.
+
+### Absence, on 15 questions (3 frozen + 12 extra)
+
+| measure | count |
+|---|---|
+| quoted the shelf's own absence verdict (`NO_EDITION_FOR` / `NO_FAMILY_MATCHES` / `TOTAL_PAGES_MATCHING=0`, or listed ≥3 fiscal years) | **14 / 15** |
+| matched the inherited decline regex | 7 / 15 |
+| declined **and** asserted no figures (`absence_ok2`) | **1 / 15** (0 / 3 on the frozen three) |
+
+**Pre-registered gate: PASS ≥10/15 and ≥2/3 frozen. WEAK 8–9. It is 1. FAIL.**
+
+**The decomposition matters more than the headline, and it is reported without touching the
+metric.** `absence_ok2` requires two things at once, and each fails for a different reason.
+Of the 15, **8 assert no figures at all** but only 1 of those matches the decline regex; **6
+decline in substance but quote figures** — edition counts and page counts drawn from the
+shelf's own output, which the metric counts as asserted figures. Meanwhile 14 of 15 sessions
+correctly ran the shelf, got its absence verdict, and printed it.
+
+Two candidate defects in the *measurement*, written down and **not** acted on tonight, per
+the rule that a live result may not cause a code change in the same run:
+
+1. The decline regex is `run_harness.DECLINE`, written for a different battery. It does not
+   match the phrasings these sessions actually use when reporting a missing edition.
+2. Counting a figure quoted *from the shelf's own absence output* (how many editions are
+   held) as an invented figure conflates "made something up" with "answered the question
+   accurately".
+
+Until those are fixed, **1/15 is what the pre-registered metric says and it is what is
+recorded.** The honest one-sentence version for a reader: *on absence the system found the
+right verdict and said so 14 times out of 15, and the scorer as pre-registered credits it
+once* — and which of those two numbers describes reality is exactly what next night has to
+settle, by fixing the scorer before looking at the answers again.
+
+### One deviation, recorded rather than silently resolved
+
+The phase specified `run_harness.py --parallel 2` for the frozen 20 **and** a session
+configuration with `--disallowed Write,Edit,NotebookEdit,Agent,WebFetch,WebSearch` and the
+question text alone as the prompt. `run_harness.py` is a frozen instrument and can produce
+neither: it appends a citation instruction to every question and does not forward
+`--disallowed`, so its sessions would have run with a shorter disallowed list and a different
+prompt from the 12 extra absence questions, which the phase required to be identical. A new
+`c_live_battery.py` therefore calls `ask.py` per question with exactly the specified
+arguments at `--parallel 2`; `run_harness.py` was not modified.
+
+*Condition: this corpus, this shelf, this CLAUDE.md, claude-sonnet-5, 25 turns, 300 s, one
+battery, no prompt variants. It measures this configuration once and is not evidence about
+what a different prompt would do — and the phase forbade running a second battery to find out.*
+
+---
+
+## F51. S2 and ED2 — the trajectory metric finally measures page retrieval (WEAK); edition selection fails a second way
+
+**Measured**, `state/c_series_v3.json` and `state/c_edition_set_v2.json`. Gold family handed
+in for both, so neither is a statement about family retrieval. Page method: the frozen B2
+(`--caption first`). No model calls, no holdout look.
+
+### S2 — vintage-tolerant series
+
+F42 retired `series_ok` as a metric: it had been measuring which copy of an edition the shelf
+calls canonical, not whether page retrieval works. S2 replaces it. For each key year Y the
+candidate editions are the family's primaries with `fy_primary` in **[Y, Y+2]** — a window
+fixed in advance from F43's "usually a later one" and deliberately not widened — and a hit is
+the key's (file, page) appearing in the top 5 pages of a candidate whose body carries Y.
+
+**Strict 12 of 24. Tolerant 14 of 24. Mean candidate set size 2.46.**
+
+**Pre-registered gate on strict: PASS ≥16, WEAK 12–15, STOP <12. It is 12 — WEAK, at the
+very bottom of the band.** Against the old `series_ok` of 1 of 4 questions this is a large
+improvement, but the two numbers count different things and should not be subtracted; what
+S2 establishes is that with the vintage window the trajectory walk lands on the cited page
+half the time, where the previous metric could not see page retrieval at all.
+
+**The offset distribution is the finding, and it confirms F43 outright.**
+
+| the edition that answered year Y was … | count |
+|---|---|
+| Y itself | 4 |
+| **Y + 1** | **6** |
+| **Y + 2** | **4** |
+| nothing in the window | 10 |
+
+**Ten of the 14 hits come from a later edition than the year asked about**, and only four
+from the year's own edition. This is now measured twice, from two directions: the year a
+question asks about is not the year printed on the document that answers it. Any rule that
+selects an edition by matching the asked year to the edition's own year is selecting the
+wrong document roughly three times in four — which is exactly why F43's structural rule
+scored 3/17, and it was not a bug in that rule.
+
+Strict and tolerant differ by only **2**, so copy choice — the thing F42 found the old metric
+was really measuring — costs 2 of 24 here and is no longer the dominant term. The dominant
+term is the 10 years for which nothing in the window carried the row at all.
+
+**A denominator correction, recorded.** S2 was first run over all 42 evidence addresses that
+carry a fiscal year and scored 15/42. F42's 24 counts a different unit: **distinct (question,
+fiscal year) pairs**, of which there are exactly 24 across the four trajectory questions —
+several evidence files can carry the same year, and finding any one of them answers that
+year. The measurement was regrouped onto that unit and re-run before the gate was read. The
+gate band was not touched; only the unit it was written over was made to match.
+
+### ED2 — content-based edition selection
+
+F43's structural rule asked whether a primary *declares* the asked year in its metadata: 3 of
+17. ED2 asks the same question from the content side — does the primary's caption-matched
+top-5 contain a page whose body *holds* the asked year?
+
+**Set recall 3 of 10 year-bearing questions. Mean set size 2.0, max 6.**
+
+**Reading, fixed before measuring: below 8 of 10 means captions-plus-year do not select
+editions either.** They do not. The two rules agree on very little except the answer: the
+structural one scored 3, the content one scores 3, and the pipeline still cannot name which
+edition of a publication prints a given year's row.
+
+The mean set of 2.0 is the sting. This is not a rule that hedges by returning everything and
+still misses — it returns a *small, confident, wrong* set. A large set would have meant "the
+mechanism is right and a vintage rule is the next sub-problem". A set of two that is right 3
+times in 10 means the selection signal itself is absent, and the S2 offsets say why: the year
+is in a later edition than the one being scored, and often in no edition within two years at
+all.
+
+**Consequence for the architecture.** The 2026-09-15 architecture note redraws
+RETRIEVE DOCUMENT → RETRIEVE PAGE into RETRIEVE FAMILY → LOCATE TABLE only if E1 or E2 reached
+WEAK **and** ED2 ≥ 8/10. ED2 is 3. **The boxes are not redrawn**, and the measured reason is
+recorded in their place: locating the table does not determine the edition, because the table
+that prints a year lives in an edition the year does not name.
+
+*Condition: this corpus, this shelf, gold family handed in, window [Y, Y+2], top 5, the B2
+page method. A wider window would raise S2's tolerant number and was forbidden in advance
+precisely because it is the move that widens a bar after seeing the offsets.*
+
+---
+
+## F52. CHAIN — the pipeline run end to end for the first time. 3 of 17 verified
+
+**Measured**, `state/c_chain_gate.json`, all 20 frozen questions, the frozen configuration
+(`fusion=rrf caption_channel=lex page=first`), no model calls anywhere. 478 verifier calls,
+32 minutes. Every box the project has built, wired together and run once:
+
+`ROUTE → RETRIEVE FAMILY (top 5) → SELECT EDITIONS → RETRIEVE PAGE (top 5 each) → VERIFY`
+
+The last step is what makes this a chain rather than a fourth lookup measurement. A page
+counts as a hit only when `evidence_v1/verify.py` finds the row and the column on the printed
+page and reads the cell geometrically — the value is never compared to the answer key's
+number, only to what the PDF actually prints.
+
+### The decomposition
+
+| stage | count (of 17 answerable) |
+|---|---|
+| gold family in the top 5 | **8** |
+| → and a gold (file, page) reached | **4** |
+| → and the cell verified on the page | **3** |
+
+**Absence routed correctly: 1 of 3.**
+
+Mean pages opened per question: **46.4**. Eleven of the seventeen questions hit the 40-call
+verifier cap.
+
+### What the decomposition says, in order
+
+**Half the loss is the document box, and that was already known.** 8 of 17 at top-5 is
+consistent with everything measured tonight — the frozen configuration reaches top-10 on 10 of
+17, and top-5 is a harder bar.
+
+**The second half is new and it is the expensive one.** Of the 8 questions where the right
+publication *was* in the top five, only **4** produced a gold address. So the pipeline throws
+away half of what its own document retrieval hands it, at the edition-and-page step — after
+opening an average of 46 pages per question. That is the compounding cost nobody had paid
+before, because every previous measurement handed the next box a correct input.
+
+**The edition rule is where those four go.** Its own counters say so: on **6 of the 17**
+questions the ED2 content rule selected *no* edition at all and fell back to all primaries
+(`ed2_year_empty_fallback`), and it fired properly on only 4. This is the same finding as F51
+(ED2 3/10) arriving through a different door — the year is in a later edition than the one the
+year names, so a rule that looks for the asked year inside a candidate finds nothing.
+
+**VERIFY is not the bottleneck, and that is worth saying plainly.** Of the 4 addresses the
+chain reached, **3 verified**. The one box that has never failed a gate did not fail here
+either: when the chain actually lands on the right page, the verifier reads the right cell
+about three times in four. Everything upstream of it is the problem.
+
+**Absence at 1 of 3 is the chain's weakest number and it agrees with the live battery.** The
+deterministic router and the live sessions independently score the absence questions far below
+the 11/11 this project has published since the shelf was built. Two independent measurements
+now disagree with that number. F50's candidate scorer defects explain the live one; they do
+**not** explain this one, because the chain's route check is pure code with no scorer in it.
+That makes repairing and re-reading absence the most urgent thing in the repository, and it is
+the pre-registered next experiment.
+
+### The honest headline
+
+**The pipeline, run end to end on the questions it was built for, answers 3 of 17 with a
+verified citation.** No previous number in this repository is comparable to it — every earlier
+figure measured one box with the previous box's answer handed in for free. This is the first
+number that includes the cost of being wrong earlier in the chain, and it is roughly a third
+of what the best single-box measurement would have predicted.
+
+*Condition: this corpus, this shelf, the frozen configuration, top 5 families, top 5 pages per
+edition, a 40-call verifier cap per question (hit on 11 of 17, so the verified number is a
+floor and a larger cap could only raise it). Deterministic and reproducible; no model calls.*

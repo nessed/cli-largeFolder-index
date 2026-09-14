@@ -1264,3 +1264,74 @@ that prints a year lives in an edition the year does not name.
 *Condition: this corpus, this shelf, gold family handed in, window [Y, Y+2], top 5, the B2
 page method. A wider window would raise S2's tolerant number and was forbidden in advance
 precisely because it is the move that widens a bar after seeing the offsets.*
+
+---
+
+## F52. CHAIN — the pipeline run end to end for the first time. 3 of 17 verified
+
+**Measured**, `state/c_chain_gate.json`, all 20 frozen questions, the frozen configuration
+(`fusion=rrf caption_channel=lex page=first`), no model calls anywhere. 478 verifier calls,
+32 minutes. Every box the project has built, wired together and run once:
+
+`ROUTE → RETRIEVE FAMILY (top 5) → SELECT EDITIONS → RETRIEVE PAGE (top 5 each) → VERIFY`
+
+The last step is what makes this a chain rather than a fourth lookup measurement. A page
+counts as a hit only when `evidence_v1/verify.py` finds the row and the column on the printed
+page and reads the cell geometrically — the value is never compared to the answer key's
+number, only to what the PDF actually prints.
+
+### The decomposition
+
+| stage | count (of 17 answerable) |
+|---|---|
+| gold family in the top 5 | **8** |
+| → and a gold (file, page) reached | **4** |
+| → and the cell verified on the page | **3** |
+
+**Absence routed correctly: 1 of 3.**
+
+Mean pages opened per question: **46.4**. Eleven of the seventeen questions hit the 40-call
+verifier cap.
+
+### What the decomposition says, in order
+
+**Half the loss is the document box, and that was already known.** 8 of 17 at top-5 is
+consistent with everything measured tonight — the frozen configuration reaches top-10 on 10 of
+17, and top-5 is a harder bar.
+
+**The second half is new and it is the expensive one.** Of the 8 questions where the right
+publication *was* in the top five, only **4** produced a gold address. So the pipeline throws
+away half of what its own document retrieval hands it, at the edition-and-page step — after
+opening an average of 46 pages per question. That is the compounding cost nobody had paid
+before, because every previous measurement handed the next box a correct input.
+
+**The edition rule is where those four go.** Its own counters say so: on **6 of the 17**
+questions the ED2 content rule selected *no* edition at all and fell back to all primaries
+(`ed2_year_empty_fallback`), and it fired properly on only 4. This is the same finding as F51
+(ED2 3/10) arriving through a different door — the year is in a later edition than the one the
+year names, so a rule that looks for the asked year inside a candidate finds nothing.
+
+**VERIFY is not the bottleneck, and that is worth saying plainly.** Of the 4 addresses the
+chain reached, **3 verified**. The one box that has never failed a gate did not fail here
+either: when the chain actually lands on the right page, the verifier reads the right cell
+about three times in four. Everything upstream of it is the problem.
+
+**Absence at 1 of 3 is the chain's weakest number and it agrees with the live battery.** The
+deterministic router and the live sessions independently score the absence questions far below
+the 11/11 this project has published since the shelf was built. Two independent measurements
+now disagree with that number. F50's candidate scorer defects explain the live one; they do
+**not** explain this one, because the chain's route check is pure code with no scorer in it.
+That makes repairing and re-reading absence the most urgent thing in the repository, and it is
+the pre-registered next experiment.
+
+### The honest headline
+
+**The pipeline, run end to end on the questions it was built for, answers 3 of 17 with a
+verified citation.** No previous number in this repository is comparable to it — every earlier
+figure measured one box with the previous box's answer handed in for free. This is the first
+number that includes the cost of being wrong earlier in the chain, and it is roughly a third
+of what the best single-box measurement would have predicted.
+
+*Condition: this corpus, this shelf, the frozen configuration, top 5 families, top 5 pages per
+edition, a 40-call verifier cap per question (hit on 11 of 17, so the verified number is a
+floor and a larger cap could only raise it). Deterministic and reproducible; no model calls.*
