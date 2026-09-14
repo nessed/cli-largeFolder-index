@@ -226,8 +226,16 @@ def do_setup(corpus, py_exe=None, shelf_cli=None, register=True):
     sp.write_text(json.dumps(state, indent=1), encoding="utf-8")
 
     cdir.mkdir(parents=True, exist_ok=True)
-    sj.write_text(json.dumps({"permissions": {"deny": deny_list()}}, indent=1),
-                  encoding="utf-8")
+    # The citation guard (F61) rides alongside the deny list: a Stop hook that
+    # reads the finished answer and asks once if it cites a page the session
+    # never opened. stack.py's hook entries have this shape.
+    cfg = {
+        "permissions": {"deny": deny_list()},
+        "hooks": {"Stop": [{"matcher": "", "hooks": [
+            {"type": "command",
+             "command": '"{}" "{}"'.format(py_exe, L.BIN / "c_stop_guard.py")}]}]},
+    }
+    sj.write_text(json.dumps(cfg, indent=1), encoding="utf-8")
     md.write_text(claude_md_text(py_exe, shelf_cli), encoding="utf-8")
 
     state["status"] = "installed"
@@ -328,6 +336,9 @@ def do_selftest():
         chk("deny_includes_extra_bash",
             all(d in deny for d in EXTRA_BASH_DENY))
         chk("deny_nonempty", len(deny) > len(STACK.BACKSTOP_DENY))
+        hooks = cfg.get("hooks", {}).get("Stop", [])
+        chk("stop_guard_installed",
+            bool(hooks) and "c_stop_guard.py" in json.dumps(hooks))
     if md.exists():
         text = md.read_text(encoding="utf-8")
         chk("claude_md_has_open_before_you_cite", "## 3. Open before you cite" in text)

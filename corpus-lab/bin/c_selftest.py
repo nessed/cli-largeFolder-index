@@ -191,6 +191,20 @@ def main():
     else:
         results["cli_caption_default_is_b2c"] = {"pass": False, "reason": "no target"}
 
+    # citation guard at the answer boundary (2026-09-16, F61). Behaviour, not
+    # installation: blocked once on a cited-but-unopened path, passes on a
+    # second stop, passes when every citation was opened, passes with none.
+    r = subprocess.run([PY, str(Path(__file__).resolve().parent / "c_stop_guard_selftest.py")],
+                       capture_output=True, text=True, errors="replace")
+    guard = {}
+    try:
+        guard = json.loads((L.STATE / "c_stop_guard_selftest.json").read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    results["stop_guard_behaviour"] = {
+        "pass": r.returncode == 0 and guard.get("all_pass") is True,
+        "n_checks": guard.get("n_checks"), "n_passed": guard.get("n_passed")}
+
     # bogus subcommand -> exit 2 and usage, via the real CLI
     r = subprocess.run([PY, SHELF_PY, "--db", DB, "--shelf", SHELF, "bogus_command_xyz"],
                         capture_output=True, text=True)

@@ -6,7 +6,7 @@
  "find_budget": {
   "pass": true,
   "n_families": 45,
-  "cold_s": 0.7,
+  "cold_s": 1.05,
   "warm_s": 0.02,
   "warm_le_5s": true
  },
@@ -29,7 +29,7 @@
  "inside_contents": {
   "pass": true,
   "n_hits": 2,
-  "wall_s": 0.02
+  "wall_s": 0.01
  },
  "tables": {
   "pass": true,
@@ -64,6 +64,11 @@
   "pass": true,
   "n_cli": 8,
   "n_inprocess": 8
+ },
+ "stop_guard_behaviour": {
+  "pass": true,
+  "n_checks": 9,
+  "n_passed": 9
  },
  "bogus_subcommand": {
   "pass": true,

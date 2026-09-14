@@ -1,7 +1,7 @@
 {
- "generated_utc": "2026-09-14T04:36:16Z",
- "n_checks": 21,
- "n_passed": 21,
+ "generated_utc": "2026-09-14T09:46:13Z",
+ "n_checks": 22,
+ "n_passed": 22,
  "all_pass": true,
  "checks": [
   {
@@ -30,6 +30,10 @@
   },
   {
    "check": "deny_nonempty",
+   "pass": true
+  },
+  {
+   "check": "stop_guard_installed",
    "pass": true
   },
   {
