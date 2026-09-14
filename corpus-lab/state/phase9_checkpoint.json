@@ -1,0 +1,75 @@
+{
+ "run_id": "P9-2026-09-15",
+ "branch": "phase9-production-hardening",
+ "steps": {
+  "0.1": {
+   "status": "done",
+   "started": "2026-09-15T03:23:43",
+   "note": "branch",
+   "finished": "2026-09-15T03:23:44",
+   "kv": {
+    "branch": "phase9-production-hardening"
+   }
+  },
+  "0.2": {
+   "status": "done",
+   "started": "2026-09-15T03:23:44",
+   "finished": "2026-09-15T03:23:44",
+   "kv": {
+    "c_stack": 22,
+    "provenance": 10,
+    "stop_guard": 9,
+    "c_selftest": 16
+   }
+  },
+  "0.3": {
+   "status": "done",
+   "started": "2026-09-15T03:23:44",
+   "finished": "2026-09-15T03:23:44",
+   "kv": {
+    "doc_top10": 10,
+    "doc_pool100": 16,
+    "b2c_pages": 52,
+    "route_doc": 11,
+    "route_ident": 4
+   }
+  },
+  "0.7": {
+   "status": "done",
+   "started": "2026-09-15T03:23:44",
+   "finished": "2026-09-15T03:23:44",
+   "kv": {
+    "built": 1
+   }
+  },
+  "0.4": {
+   "status": "done",
+   "started": "2026-09-15T03:24:31",
+   "note": "timing baseline",
+   "finished": "2026-09-15T03:27:20",
+   "kv": {
+    "find": 12.59,
+    "open": 9.72,
+    "coverage": 9.88,
+    "inside": 4.05,
+    "series": 8.47
+   }
+  },
+  "0.5": {
+   "status": "done",
+   "started": "2026-09-15T03:27:20",
+   "note": "checksum snapshot",
+   "finished": "2026-09-15T03:27:33",
+   "kv": {
+    "files": 18,
+    "missing": 0
+   }
+  },
+  "0.6": {
+   "status": "in_progress",
+   "started": "2026-09-15T03:27:57"
+  }
+ },
+ "last_beat": "2026-09-15T03:27:57",
+ "notes": []
+}

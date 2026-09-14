@@ -1,0 +1,46 @@
+=== PHASE 9 BASELINE CONSOLE 2026-09-15 ===
+--- selftests: c_stack 22/22, c_provenance 10/10, c_stop_guard 9/9, c_selftest 16/16
+=== c_caption_gate.py --channel lex ===
+dev lex      le10=10 curve={'recall_at_10': 10, 'recall_at_20': 12, 'recall_at_50': 14, 'recall_at_100': 16, 'recall_at_200': 16}
+  caption lists empty for every query on 1 question(s)
+  joint: gold (file,page) in top-20 caption union on 1 of 13
+WROTE state/c_caption_family_gate.json [lex]  wall=21.6s
+=== c_offline_gate.py --v2 --page-only --query-mode row --caption-channel dense_first ===
+{
+ "generated_utc": "2026-09-14T22:21:19Z",
+ "n_answerable": 17,
+ "dupe_mapping": {
+  "n_evidence_mapped_via_dupes": 3,
+  "n_questions_rescued": 2,
+  "n_excluded_legacy": 2,
+  "n_excluded_corrected": 0
+ },
+ "wall_s": 42.3
+}
+B2c page-only micro_hits=52 micro_n=57 (row+caption_dense_first, from state/c_page_gate.json)
+=== c_route_gate.py ===
+{
+ "generated_utc": "2026-09-14T22:22:22Z",
+ "document_level": {
+  "routed_absent": 11,
+  "n": 11
+ },
+ "identifier_level": {
+  "routed_absent": 4,
+  "n": 4
+ },
+ "frozen_sample": {
+  "routed_absent": 3,
+  "n": 3
+ },
+ "all_absence": {
+  "routed_absent": 15,
+  "n": 15
+ },
+ "overnight_chain_equivalent_on_frozen": {
+  "routed_absent": 1,
+  "n": 3
+ },
+ "note": "The overnight chain (F52) scored 1 of 3 because 2 of the 3 frozen absence questions are identifier level and its ROUTE had no exact path. That is a chain implementation gap, not a ROUTE failure.",
+ "wall_s": 0.9
+}

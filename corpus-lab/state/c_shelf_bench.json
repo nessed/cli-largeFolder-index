@@ -1,0 +1,167 @@
+{
+ "baseline_v1": {
+  "generated": "2026-09-14T22:27:13Z",
+  "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "repeats": 3,
+  "commands": {
+   "find": {
+    "median_s": 12.588,
+    "min_s": 12.197,
+    "max_s": 13.258,
+    "runs": [
+     13.258,
+     12.197,
+     12.588
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "open": {
+    "median_s": 9.717,
+    "min_s": 9.069,
+    "max_s": 9.762,
+    "runs": [
+     9.717,
+     9.762,
+     9.069
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "coverage": {
+    "median_s": 9.88,
+    "min_s": 9.681,
+    "max_s": 10.106,
+    "runs": [
+     9.681,
+     9.88,
+     10.106
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false,
+    "coverage_line": "COVERAGE indexed=13634 image_only_no_text=1211 failed=32 unsupported=120 pages=1206260"
+   },
+   "inside": {
+    "median_s": 4.046,
+    "min_s": 3.97,
+    "max_s": 4.341,
+    "runs": [
+     4.341,
+     3.97,
+     4.046
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "series": {
+    "median_s": 8.472,
+    "min_s": 8.392,
+    "max_s": 8.524,
+    "runs": [
+     8.524,
+     8.472,
+     8.392
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "have": {
+    "median_s": 0.516,
+    "min_s": 0.494,
+    "max_s": 0.589,
+    "runs": [
+     0.494,
+     0.516,
+     0.589
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "tables": {
+    "median_s": 0.457,
+    "min_s": 0.444,
+    "max_s": 0.481,
+    "runs": [
+     0.481,
+     0.444,
+     0.457
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "exact": {
+    "median_s": 0.527,
+    "min_s": 0.514,
+    "max_s": 0.532,
+    "runs": [
+     0.527,
+     0.514,
+     0.532
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "copies": {
+    "median_s": 0.463,
+    "min_s": 0.451,
+    "max_s": 0.513,
+    "runs": [
+     0.513,
+     0.463,
+     0.451
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "import_floor": {
+    "median_s": 0.419,
+    "min_s": 0.411,
+    "max_s": 0.439,
+    "runs": [
+     0.439,
+     0.411,
+     0.419
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   }
+  }
+ }
+}
