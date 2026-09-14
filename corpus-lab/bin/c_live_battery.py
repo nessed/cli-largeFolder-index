@@ -77,7 +77,7 @@ def result_exists(phase, qid):
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("--group", choices=["frozen20", "extra_abs"])
-    ap.add_argument("--probe", choices=["auth", "iso1", "iso2"])
+    ap.add_argument("--probe", choices=["auth", "iso1", "iso2", "guard"])
     ap.add_argument("--probe-question", default=None)
     ap.add_argument("--model", required=True)
     ap.add_argument("--parallel", type=int, default=2)
@@ -89,7 +89,7 @@ def main(argv):
     if a.probe:
         phase = a.phase_tag + "_probe"
         qid = "probe_" + a.probe
-        mt = 1 if a.probe == "auth" else 4
+        mt = 1 if a.probe == "auth" else (6 if a.probe == "guard" else 4)
         qid_, rc, so, se = run_one(phase, qid, a.probe_question, a.model, max_turns=mt)
         print("PROBE %s rc=%d %s" % (a.probe, rc, so))
         if se.strip():

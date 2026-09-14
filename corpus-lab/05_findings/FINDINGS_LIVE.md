@@ -1935,3 +1935,97 @@ numbers turn out to be broken instruments within a day.
 *Condition: this corpus, top-100 pool in fused order, cards from shelf fields only, one
 single-turn call per question, claude-sonnet-5, one configuration, no prompt variants. Development
 set only.*
+
+---
+
+## F61. The citation guard, and why it is not the S2 hook
+
+**Built 2026-09-16.** `c_stop_guard.py`, a Stop hook installed by `c_stack.py` alongside the
+deny list. On stop it reads the session transcript, collects every `open "<path>" <page>` the
+session issued and every path-like string in the final assistant message, and if a cited path
+was never opened it returns one block with a reason naming the path and offering two remedies:
+open it, or drop the citation.
+
+**Why the boundary moved.** F59 measured the `note` guard doing nothing: it fired correctly,
+recorded nothing it should not have, and `cited_unopened_total` still rose 8 to 10. The reason
+was structural — the session notes the pages it opened, then names extra paths in its final
+message, and **the answer never passes through the note.** So the check moved to where the
+answer actually is.
+
+**The distinction from the S2 hook, recorded because it matters.** S2 denied Grep and Glob
+outright and forced the session down a prescribed route; it was a controller, and it measured
+slightly *worse* than the one-line `CLAUDE.md` instruction asking for the same thing. This hook
+denies nothing, forces no route, and never edits text. It reads one property of a finished
+answer — was every path you cited opened — and asks once. **A second stop passes
+unconditionally**, so a session that disagrees, or that cannot open the page, always terminates.
+The guard can delay an answer; it cannot prevent one.
+
+**Its self-test earned its place immediately.** The first implementation blocked the file the
+session *had* opened. The cited-path regex necessarily swallows the preceding prose word,
+because directory names in this corpus contain spaces, and a literal comparison then marks every
+opened file unopened. Live, that would have blocked nearly every session and produced a
+measurement of nothing. Caught by a behaviour test written before the battery, fixed with the
+filename-exact, parent-by-suffix rule `scoring.py` already uses. **9 of 9 behaviour checks**,
+wired into `c_selftest.py` so installation and behaviour are tested separately — the installer
+round-trip asserts the guard is *present*, the shelf self-test asserts it *works*.
+
+*Condition: this harness, Claude Code's Stop hook contract, one configuration.*
+
+---
+
+## F62. LIVE-4 — the guard takes citations of unopened files from 10 to 0, and the answers get no better
+
+**Measured**, `state/c_live_battery_p8.json` and `state/c_live_forensics_p8.json` against the
+evening battery. 24 live sessions (see the deviation below), `claude-sonnet-5`, 20 of 20
+completed, 1 timeout, $6.81. Isolation 2/2, checksums 18 unchanged and 0 changed, 0 memory
+files, 0 new canary-bearing transcripts, rung torn down clean.
+
+### The three arms, reported separately because they test different changes
+
+| arm | metric | evening | today | verdict |
+|---|---|---|---|---|
+| document selection | L0 | 10 | 11 | **skipped** — 2.1 did not ship, H uncertified |
+| page/edition choice | L2+L3 | 2 | 2 | flat |
+| **citation guard** | **cited_unopened_total** | **10** | **0** | **PASS** |
+| outcome | cited_right_page | 1 | 1 | **STOP** (PASS ≥5, WEAK 3–4) |
+| | absence (frozen 3) | 3/3 | 2/3 | meets the ≥2/3 requirement |
+
+**The guard fired 6 times across 6 distinct sessions of 20, and citations of unopened files went
+to zero.** Every blocked session resolved it. Of the 20 final answers, **9 cite paths and every
+one of those paths was opened**; **10 cite no path at all**. So the honest split of what blocked
+sessions did is: some opened the page, some dropped the citation, and the data cannot cleanly
+separate them — but **at most 10 sessions ended by citing nothing**, and that is the number to
+watch, because a guard satisfied by silence is not obviously an improvement.
+
+### What did not move
+
+`cited_right_page` stays at **1 of 17**. `surfaced` 7 to 6, `opened_right_page` 2 to 1, L0 10 to
+11 — all within the run-to-run variation four batteries have now demonstrated.
+`forbidden_total` rose 2 to 4, the one number that moved the wrong way and is not explained by
+the guard.
+
+**So the guard did exactly what it was built to do and the answers are no better.** Citation
+discipline was a real defect — 5, then 8, then 10 answers naming files nobody opened — and it is
+now fixed at the only boundary that could fix it. It was not what was making the answers wrong.
+The system still puts the right publication in front of the model on 6 of 17 questions, and the
+model still cites the right page on 1.
+
+This is the third mechanism aimed at the model's behaviour — an instruction, a note-level check,
+an answer-level check — and the first to work mechanically. **All three left `cited_right_page`
+between 0 and 2.**
+
+### Deviation: 24 live sessions against a stated cap of 23
+
+The phase caps live sessions at "23 (3 probes plus 20 questions)" and then specifies a procedure
+with **four** probes plus 20 questions. The arithmetic does not close. The frozen 20 cannot be
+cut — every prior phase fixes the denominators at 17 and 3 — so the fourth probe is the overrun,
+recorded here rather than hidden by dropping a question.
+
+**The fourth probe also failed its purpose, which is worth recording.** It asked the model to
+state a citation for a made-up path without opening it, and the model **refused**, quoting the
+folder's own rule back: *"I haven't run any command, so I have no basis for that claim."* The
+guard's block path was therefore never exercised live by the probe — though the hook is confirmed
+firing, logging on all four probe sessions and blocking 6 times during the battery proper.
+
+*Condition: four batteries now, 17 answerable questions each, one configuration change per
+battery, claude-sonnet-5.*
