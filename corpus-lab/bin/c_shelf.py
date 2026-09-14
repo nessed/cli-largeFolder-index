@@ -724,6 +724,61 @@ def _caption_hit_pages_labelled(ctx, rel, query, body_by_page):
     return kept, {pi: captions[pi] for pi in kept if pi in captions}, len(pages) - len(kept)
 
 
+def _caption_hit_pages_dense(ctx, rel, query, body_by_page):
+    """B2c, 2026-09-15 pm. B2/B2b match a caption by requiring every label word
+    to appear in it, and F48 measured what that costs: on every year-asking
+    question NO caption in the correct document contains the question's subject
+    words at all. The words are simply different words -- a tax listed under its
+    statutory name, a series under its official title. That is a vocabulary gap,
+    and a lexical matcher cannot cross it however the match is phrased.
+
+    So rank this document's own captions by cosine against the query's label
+    words instead of testing them for word containment. The cut is the
+    document's OWN median caption score plus a floor of the top 3, so no
+    threshold is tuned against the questions: a document whose captions are all
+    equally unlike the query still yields its three best, and a document with a
+    clear winner yields the half that beats its own middle.
+
+    Returns (pages, {page: caption}, n_dropped_by_year_filter)."""
+    import numpy as np
+    words = _label_words(query)
+    if not words:
+        return set(), {}, 0
+    rows = ctx.shelf.execute(
+        "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)).fetchall()
+    rows = [(pi, c or "") for pi, c in rows if (c or "").strip()]
+    if not rows:
+        return set(), {}, 0
+
+    qv = np.asarray(next(iter(_model().embed([" ".join(words)]))), dtype="float32")
+    n = np.linalg.norm(qv)
+    if n > 0:
+        qv = qv / n
+    cvs = np.asarray(list(_model().embed([c for _pi, c in rows])), dtype="float32")
+    norms = np.linalg.norm(cvs, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    cvs = cvs / norms
+    scores = cvs @ qv
+
+    order = list(np.argsort(-scores))
+    med = float(np.median(scores))
+    keep = [i for i in order if float(scores[i]) >= med]
+    for i in order[:3]:
+        if i not in keep:
+            keep.append(i)
+    pages = {rows[i][0] for i in keep}
+    captions = {rows[i][0]: rows[i][1] for i in keep}
+
+    m = FY_RE.search(query or "")
+    if not m or not pages:
+        return pages, captions, 0
+    fy = m.group(1)
+    kept = {pi for pi in pages if fy in (body_by_page.get(pi) or "")}
+    if not kept:
+        return pages, captions, 0
+    return kept, {pi: captions[pi] for pi in kept if pi in captions}, len(pages) - len(kept)
+
+
 def do_inside(ctx, rel, terms, k=8, caption_channel=None):
     """caption_channel=None is the original behaviour, unchanged.
 
@@ -784,7 +839,11 @@ def do_inside(ctx, rel, terms, k=8, caption_channel=None):
                 "tier": tier if words else "none", "hits": hits}
 
     n_year_dropped = 0
-    if caption_channel == "first_label":
+    if caption_channel == "dense_first":
+        body_by_page = {pi: body for pi, body in pages}
+        cap_pages, cap_text, n_year_dropped = _caption_hit_pages_dense(
+            ctx, rel, terms, body_by_page)
+    elif caption_channel == "first_label":
         body_by_page = {pi: body for pi, body in pages}
         cap_pages, cap_text, n_year_dropped = _caption_hit_pages_labelled(
             ctx, rel, terms, body_by_page)
@@ -794,7 +853,7 @@ def do_inside(ctx, rel, terms, k=8, caption_channel=None):
     for h in hits:
         h["via"] = "caption" if h["page_index"] in cap_pages else "body"
 
-    if caption_channel in ("first", "first_label"):
+    if caption_channel in ("first", "first_label", "dense_first"):
         cap_with_body = [h for h in hits if h["page_index"] in cap_pages]
         cap_only = [{"page_index": pi, "score": None, "via": "caption",
                      "line": " ".join((cap_text.get(pi) or "").split())[:200]}
@@ -1039,13 +1098,13 @@ def main():
 
     p = sub.add_parser("inside"); p.add_argument("rel"); p.add_argument("terms")
     p.add_argument("--k", type=int, default=8)
-    p.add_argument("--caption", choices=["off", "first", "first_label"], default="off")
+    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"], default="off")
 
     p = sub.add_parser("tables"); p.add_argument("rel"); p.add_argument("--grep")
 
     p = sub.add_parser("series"); p.add_argument("row_words"); p.add_argument("--family", required=True)
     p.add_argument("--from", dest="fy_from"); p.add_argument("--to", dest="fy_to"); p.add_argument("--slug")
-    p.add_argument("--caption", choices=["off", "first", "first_label"], default="off")
+    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"], default="off")
 
     p = sub.add_parser("copies"); p.add_argument("rel")
 

@@ -1,0 +1,27 @@
+{
+ "generated_utc": "2026-09-14T03:31:39Z",
+ "n_questions_with_addresses": 25,
+ "n_addresses": 81,
+ "holdout_look": "4 of 5",
+ "methods": {
+  "row": {
+   "micro_hits": 23,
+   "micro_n": 81,
+   "micro_pct": 28.4,
+   "macro_pct": 27.0
+  },
+  "row+caption_first": {
+   "micro_hits": 35,
+   "micro_n": 81,
+   "micro_pct": 43.2,
+   "macro_pct": 40.0
+  },
+  "row+caption_dense_first": {
+   "micro_hits": 67,
+   "micro_n": 81,
+   "micro_pct": 82.7,
+   "macro_pct": 77.7
+  }
+ },
+ "wall_s": 31.2
+}

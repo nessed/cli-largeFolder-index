@@ -1490,3 +1490,68 @@ silently again. The counts above are from the corrected run.
 *Condition: one battery, 17 questions, claude-sonnet-5, the frozen configuration. The classes
 are ordered, so each question contributes to exactly one; a session can fail in more than one
 way and only its earliest failure is counted.*
+
+---
+
+## F55. B2c — dense caption matching crosses the vocabulary gap. PASS, holdout-confirmed
+
+**Measured**, `state/c_page_gate.json` key `row+caption_dense_first` and
+`state/c_page_holdout.json`. Gold document supplied, as in every page gate, so this is a
+statement about page retrieval and not about finding the document. One configuration, no
+threshold sweep. No model calls beyond the embedding of captions already on disk.
+
+F48 established the reason B2 and B2b stall: on every year-asking question **no caption in the
+correct document contains the question's subject words at all**. That is a vocabulary gap — a
+tax listed under its statutory name, a series under its official title — and no lexical
+matching rule can cross it, however it is phrased. B2c stops testing captions for word
+containment and ranks the document's own captions by cosine against the query's label words,
+cutting at that document's **own median** caption score with a floor of its top 3, so no
+threshold is fitted to these questions.
+
+| | B1 (row) | B2 (lexical caption) | **B2c (dense caption)** |
+|---|---|---|---|
+| dev addresses in top 5 | 24/57 (42.1%) | 42/57 (73.7%) | **52/57 (91.2%)** |
+| dev macro | 27.9% | 39.7% | **82.1%** |
+| **holdout** addresses | 23/81 (28.4%) | 35/81 (43.2%) | **67/81 (82.7%)** |
+| **holdout** macro | 27.0% | 40.0% | **77.7%** |
+
+**Pre-registered gate: PASS ≥60% micro and ≥60% macro. It is 91.2% and 82.1%. PASS** — and
+the holdout, the fourth of five looks, confirms it at 82.7% and 77.7%. This is the first gate
+to PASS in two nights of measurement, and the first result in this project whose holdout
+number is of the same size as its development number rather than a disappointment.
+
+**The gain is not trajectory-only, which is what makes it different from B2.** B2's entire
+improvement sat on one question type; every previous page result has had to carry that
+caveat. B2c moves all of them:
+
+| question type | B2 | B2c |
+|---|---|---|
+| point_lookup | 0/3 | **3/3** |
+| multi_branch | 1/9 | **5/9** |
+| reconciliation | 0/2 | **1/2** |
+| relationship | 1/1 | 1/1 |
+| trajectory | 40/42 | **42/42** |
+
+**The decisive diagnostic.** Of the **6** year-asking questions on which no caption matched
+the subject words lexically — F48's group, the ones that proved the failure was coverage
+rather than matching — **5 now have a gold page in the top 5**, and 7 of their 12 evidence
+addresses. The gap F48 identified is real, it was the binding constraint, and an embedding
+crosses it. F48's conclusion that it "cannot be fixed by another matching rule" was right about
+*matching* rules and wrong about the remedy: the fix was to stop matching and start measuring
+similarity.
+
+Note the pleasing symmetry with F49, which is not a contradiction. Dense retrieval over
+captions **hurt** at corpus scale (E2, 9/17 dev and 13/30 holdout, below baseline) and helps
+enormously **inside one document**. Across 89,380 captions an embedding dilutes a precise
+lexical hit with plausible neighbours from every other publication; across the few dozen
+captions of a single document there are no confusable neighbours, and semantic similarity is
+exactly the right instrument for "which of these tables is about what I asked".
+
+**The frozen production page method is NOT changed on this result**, per the phase rule. B2c
+is recorded as an input to the next night's decision, not adopted mid-flight.
+
+**Holdout looks used: 4 of 5.**
+
+*Condition: this corpus, this caption harvest, bge-small, cosine, median-of-document cut with
+a top-3 floor, top-5 address bar, gold document supplied. It says nothing about finding the
+document, which F54 measures as the dominant loss.*
