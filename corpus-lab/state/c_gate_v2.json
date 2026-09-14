@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-09-14T03:30:23Z",
+ "generated_utc": "2026-09-14T04:14:35Z",
  "n_answerable": 17,
  "dupe_mapping": {
   "n_evidence_mapped_via_dupes": 3,
@@ -208,7 +208,7 @@
   "C2_family_le_10": 8,
   "n": 17
  },
- "wall_s": 28.6,
+ "wall_s": 28.2,
  "page": {
   "row+caption_dense_first": {
    "query_mode": "row",

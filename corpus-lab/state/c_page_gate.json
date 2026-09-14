@@ -1132,12 +1132,6 @@
     "n_addresses": 12,
     "hits_le_5": 12
    }
-  },
-  "B2c_diagnostic": {
-   "n_year_questions_with_zero_lexical_caption_match": 6,
-   "of_those_now_gold_page_in_top5_under_dense": 5,
-   "their_addresses_total": 12,
-   "their_addresses_now_in_top5": 7
   }
  }
 }

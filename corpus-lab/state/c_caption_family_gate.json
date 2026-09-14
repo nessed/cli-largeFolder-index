@@ -33,24 +33,7 @@
    "tr_16": 8
   },
   "n": 17,
-  "holdout": {
-   "n_holdout": 30,
-   "n_answerable": 30,
-   "n_measurable": 30,
-   "n_excluded": 0,
-   "n_haiku_calls": 0,
-   "fusion": "rrf",
-   "caption_channel": "lex",
-   "curve": {
-    "recall_at_10": 14,
-    "recall_at_20": 20,
-    "recall_at_50": 28,
-    "recall_at_100": 29,
-    "recall_at_200": 29
-   }
-  },
-  "holdout_look_spent": 1,
-  "wall_s": 57.7
+  "wall_s": 8.4
  },
  "lex+vec": {
   "caption_channel": "lex+vec",

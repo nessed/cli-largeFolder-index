@@ -68,3 +68,4 @@ Thumbs.db
 # only while it is unseen; c_queries.json (the dev set) was already published,
 # this is not. Kept on disk for resumability, never committed.
 corpus-lab/state/c_queries_holdout.json
+corpus-lab/state/c_queries_holdout2.json
