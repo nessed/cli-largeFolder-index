@@ -185,3 +185,129 @@ adding their phrases one at a time; count a non-declining answer as a decline be
 - [`CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](CURRENT_WORKING_ARCHITECTURE_2026-09-14.md) — the document this supersedes.
 - [`ARCHITECTURE_REVIEW_2026-09-13.md`](ARCHITECTURE_REVIEW_2026-09-13.md) — the review that produced the corrected harness.
 - `corpus-lab/05_findings/FINDINGS_LIVE.md` F46–F52.
+
+---
+
+# Addendum — 2026-09-15, afternoon
+
+*Added, not rewritten. Everything above stands as measured this morning; two of its
+conclusions are corrected below and the corrections are labelled. Findings F53–F56.*
+
+## A1. The absence box is not disputed. It is solved, and two instruments were broken
+
+§3's ROUTE row and §6's next-experiment both rested on the overnight `absence_ok2` of 1/15 and
+the chain's 1/3. **Both numbers were artefacts, of two different defects, and the experiment
+§6 pre-registered has now been run and passed.**
+
+| measure | overnight | after repair | label |
+|---|---|---|---|
+| `absence_ok2` (v1 scorer) | 1/15 | — | **SUPERSEDED-BY-SCORER-REPAIR**, retained |
+| `absence_ok3` (v2 scorer) | — | **11/15**, 2/3 frozen | NEW, gate PASS |
+| chain ROUTE, frozen 3 | 1/3 | **3/3** | NEW |
+| ROUTE, document-level absence | — | **11/11** | re-derived |
+| ROUTE, identifier-level absence | — | **4/4** | re-derived |
+
+The scorer's dominant defect was the figure filter: **`figures_asserted3` is zero on all
+fifteen sessions**, so no absence answer contained a number the session had not been shown. The
+v1 rule was scoring accurate quotation of the shelf's own edition lists as fabrication. The
+router's defect was narrower: this corpus has **two kinds of absence** — document level (names
+a fiscal year, answered by `have`) and identifier level (names a literal code, answered by
+`exact`) — and the overnight chain implemented only the first. The 3 frozen absence questions
+are 1 document-level and 2 identifier-level, so it could score at most 1 and scored exactly 1.
+
+**The published 11/11 and 4/4 are re-derived from the chain's own code path**, by a second
+implementation. The README's "Solved" row for honest refusal **stands**, with its
+qualification restored to what it always was: a property of approach C's shelf, not of a
+shipped system.
+
+A residue, recorded and not acted on: the shelf verdict reached a tool result on 15 of 15
+sessions and the final answer on 5, and 4 sessions received it without relaying it.
+
+## A2. CLAUDE ANSWERS — the loss is decomposed, and it is top-heavy
+
+F54 classified all 17 answerable overnight sessions into ordered, mutually exclusive classes:
+
+| | overnight | re-battery |
+|---|---|---|
+| L0 the right publication never appeared | **9** | **10** |
+| L1 it appeared and the session opened another publication | 4 | 2 |
+| L2 right publication, wrong edition | 2 | 2 |
+| L3 right file, wrong page | 1 | 0 |
+| L4 right page open, not cited | 1 | 1 |
+| L5 cited the right page | 0 | **2** |
+
+**More than half the loss is L0, which no instruction can reach.** Everything downstream of
+choosing the right publication — L2, L3, L4 together — accounts for 4 questions. And the tools
+were used as instructed: all 26 `find` calls carried `--q` rewrites, `have` on 14 of 17,
+`tables` on 10 of 17, and on 8 of 17 the session searched using a content word absent from the
+question.
+
+## A3. B2c — the vocabulary gap is real and an embedding crosses it. PASS
+
+§2 stated, on F48's evidence, that the caption channel's failure on year-asking questions was
+a *coverage* fact that "cannot be fixed by another matching rule". **That was right about
+matching rules and wrong about the remedy.** Ranking a document's own captions by cosine
+instead of testing them for word containment (B2c):
+
+| | B1 | B2 | **B2c** |
+|---|---|---|---|
+| dev addresses in top 5 | 24/57 | 42/57 | **52/57 (91.2%)** |
+| dev macro | 27.9% | 39.7% | **82.1%** |
+| holdout addresses | 23/81 | 35/81 | **67/81 (82.7%)** |
+| holdout macro | 27.0% | 40.0% | **77.7%** |
+
+**Gate PASS**, holdout-confirmed — the first gate to pass in two nights, and the first result
+whose holdout number matches its development number. Unlike B2 the gain is not
+trajectory-only: point_lookup 0/3 → 3/3, multi_branch 1/9 → 5/9. Of the 6 year-asking
+questions F48 showed had no lexical caption match at all, **5 now have a gold page in the top
+5**.
+
+No contradiction with F49, which found dense captions *hurt* at corpus scale: across 89,380
+captions an embedding dilutes a precise hit with plausible neighbours; across one document's
+few dozen there are no confusable neighbours. **The frozen production page method is
+deliberately unchanged** — B2c is an input to the next decision, not adopted mid-flight.
+
+## A4. The live re-battery — STOP, with the first cited pages this project has recorded
+
+One sentence from the pre-written decision table's L1 row was added to section 1 and the
+frozen 20 re-run with nothing else changed. L1 halved (4 → 2), L3 went to 0, `opened_right_page`
+1 → 3, and `cited_right_page` **0 → 2** — the first correctly cited pages in any live session
+across four nights. But `cited_unopened_total` rose 5 → 8 and `figures_ungrounded` 1 → 2, so
+the gate's conjunction fails: **STOP**, and the change is kept as measured-and-not-adopted.
+
+**The caveat is as important as the result.** `surfaced` fell 8 → 7 with retrieval unchanged
+and two sessions timed out where none did overnight, so ±2 on a base of 17 is inside this
+battery's own run-to-run variation. The gains are consistent with the instruction working and
+equally consistent with noise, and one battery cannot separate them.
+
+## A5. Where this leaves the boxes
+
+**Keep:** SHELF; VERIFY; session isolation; **ROUTE / absence, restored** (A1).
+**New and strong but not yet adopted:** B2c page retrieval (A3).
+**Weak:** the caption channel at corpus scale; the trajectory walk; ROUTE's presence half.
+**Failed:** RETRIEVE DOCUMENT — and A2 now says this is not one failure among several, it is
+**the** failure, at 9–10 of 17 questions where the right publication is never seen at all.
+**Untested:** the EXTRACT router; the VERIFY → retry edge.
+
+## A6. The next experiment, replacing §6
+
+§6's experiment has been run and it passed; the absence box is restored. The next one follows
+from A2 and A3 together, and for the first time it is aimed at the box that everything else has
+been queueing behind.
+
+**Experiment G — carry B2c's mechanism up to the document channel, as a reranker over the
+existing pool rather than a new retrieval channel.** F41 established the right document is in
+the top 100 on 16 of 17 and 28 of 30; F44 established a cross-encoder over *catalog cards*
+cannot reorder that pool. B2c establishes that embedding a document's *captions* separates the
+right table from its neighbours inside a document. Experiment G scores each of the top-100
+candidate documents by the **maximum cosine between the query's label words and any caption in
+that document**, and fuses that with the existing rank.
+
+**Pre-registered gate, fixed before measuring:** gold family in the top 10, against the frozen
+configuration's 10/17 and 14/30.
+- **PASS** — ≥13/17 **and** holdout ≥17/30.
+- **WEAK** — 11–12/17 **and** holdout ≥16/30.
+- **STOP** — ≤10/17, or the holdout does not improve by at least 2.
+
+This spends the **fifth and last** holdout look. Do not, to get past it: tune the fusion
+weight, change the pool depth, lower the caption cut, or add a seventh rewrite.

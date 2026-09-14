@@ -554,3 +554,105 @@ see F52 and the 2026-09-15 architecture note for its loss decomposition.
 
 *Full detail: [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md)
 and [`08_what_next/HANDOFF_2026-09-15.md`](08_what_next/HANDOFF_2026-09-15.md); findings F46–F52.*
+
+---
+
+## 13. Night 5, afternoon (2026-09-15 pm) — the corrections, and the first gate to pass
+
+Section 12 above ended with the project's one solved box in doubt and every retrieval lever
+exhausted. Four hours of forensics changed both conclusions, and the honest summary is that
+**two of yesterday's headline numbers were broken instruments, not broken systems.**
+
+### Honest refusal is solved after all
+
+The overnight battery scored it **1 of 15** and the deterministic chain **1 of 3**. Both were
+defects, and different ones.
+
+- **The scorer counted the shelf's own output as invention.** Its rule was "declined, and
+  asserted no figures". An honest answer that says *we hold these editions and not the one you
+  asked for* and then lists them emits digits — and the filter read those as fabricated
+  quantities. Repaired so that a number the session was **shown** cannot count as a number it
+  **made up**, the score is **11 of 15**. The decisive statistic: **zero sessions out of
+  fifteen contained a single figure they had not been shown.** Not one absence answer invented
+  anything.
+- **The chain could only see half the question set.** This corpus has two kinds of absence — a
+  missing *edition* (the question names a year) and a missing *identifier* (a code, no year) —
+  and the chain implemented only the first. The three questions it was scored on are one of the
+  first kind and two of the second, so it could score at most 1. With the missing path added:
+  **3 of 3**, and across the whole key **11/11 and 4/4**, re-deriving the published figures
+  from an entirely separate implementation.
+
+Both old numbers stay published, labelled superseded. This is worth dwelling on: for about
+eighteen hours this repository sincerely believed its one success might be a mirage, and said
+so in writing. It wasn't. But the only reason we know that is that both numbers were written
+down and then attacked.
+
+### Where the agent actually goes wrong
+
+Every one of the 17 answerable sessions was classified into one ordered failure class:
+
+| | |
+|---|---|
+| **the right publication never appeared on screen at all** | **9 of 17** |
+| it appeared and the session opened a different publication | 4 |
+| right publication, wrong year's edition | 2 |
+| right document, wrong page | 1 |
+| right page open, not cited | 1 |
+| cited the right page | 0 |
+
+**More than half the loss happens before the agent makes any choice at all.** Everything
+downstream — wrong edition, wrong page, failure to cite — is four questions in total. And the
+agent used its tools exactly as instructed: every single `find` carried hand-written query
+rewrites, and on 8 of 17 questions it searched using vocabulary of its own invention rather
+than the question's words.
+
+### The first gate to pass
+
+Yesterday's finding was that on every year-asking question, *no caption in the correct document
+contains the question's subject words at all* — a tax listed under its statutory name, a series
+under its official title. That was called a coverage problem no matching rule could fix.
+
+It was a **vocabulary** problem, and an embedding crosses it. Ranking a document's own captions
+by meaning rather than testing them for shared words:
+
+| right page in the top five, given the right document | before | after |
+|---|---|---|
+| development set | 42 of 57 (39.7% of questions) | **52 of 57 (82.1%)** |
+| **holdout** | 35 of 81 (40.0%) | **67 of 81 (77.7%)** |
+
+**This is the first pre-registered gate this project has passed, and the first result whose
+holdout number is as good as its development number.** Five of the six questions that had no
+caption match at all now land on the right page. And unlike every previous page result, the
+gain is spread across question types rather than sitting entirely on one.
+
+There is a nice irony in it: the same dense-caption idea *hurt* when applied across all 89,380
+captions in the corpus, and helps enormously inside a single document. Across the whole shelf
+an embedding drowns a precise match in plausible neighbours; inside one document there are no
+neighbours to confuse it with.
+
+### And one thing that did not work
+
+A single sentence was added to the folder's instructions — prefer publications with several
+dated editions over one-off files — and the whole battery re-run with nothing else changed. The
+targeted failure class halved, and the project recorded **its first correctly cited pages in a
+live session, 0 → 2**. But answers naming a file the session never opened rose from 5 to 8, and
+the pre-registered gate required that nothing else worsen. **It stops**, and the change is kept
+on the branch unadopted.
+
+The caveat matters: retrieval did not change, yet the number of sessions that saw the right file
+still moved by one, and two sessions timed out where none had before. A two-question movement on
+a base of seventeen is inside this battery's own noise. The gains may be real or may be luck,
+and one battery cannot tell — which is exactly why the bar was set at three.
+
+### Where the project stands
+
+**The bottleneck is now named precisely: finding the right document, and nothing else is close.**
+Page retrieval given the right document is, as of today, largely solved (82.7% on the holdout).
+Honest refusal is solved. Verification was never the problem. What remains is that on more than
+half the questions the right publication never reaches the agent's screen — and the next
+experiment carries the mechanism that just worked at page level up to document level.
+
+*Detail: [`08_what_next/HANDOFF_2026-09-15_pm.md`](08_what_next/HANDOFF_2026-09-15_pm.md), the
+addendum in
+[`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
+findings F53–F56.*

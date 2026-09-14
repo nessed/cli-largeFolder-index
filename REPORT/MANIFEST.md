@@ -105,8 +105,9 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 | `CURRENT_WORKING_ARCHITECTURE_2026-09-13.md` | *(written here)* — the synthesis the review attacked; superseded 2026-09-14 | 9,374 | `24120b6b5388e248` |
 | `CURRENT_WORKING_ARCHITECTURE_2026-09-14.md` | *(written here)* — corrected architecture after experiments A and B were run; superseded 2026-09-15 | 9,806 | `5b7c92f903a47cae` |
 | `HANDOFF_2026-09-14.md` | *(written here)* — the corrected-continuation phase in twelve answers | 8,924 | `598b0529780064d3` |
-| `CURRENT_WORKING_ARCHITECTURE_2026-09-15.md` | *(written here)* — architecture after the caption experiments, the first live battery and the first end-to-end run | 12,481 | `e496ecf251ef73a6` |
+| `CURRENT_WORKING_ARCHITECTURE_2026-09-15.md` | *(written here)* — architecture after the caption experiments, the first live battery and the first end-to-end run | 19,607 | `376c1dde414784e2` |
 | `HANDOFF_2026-09-15.md` | *(written here)* — the 2026-09-15 phase in thirteen answers | 15,914 | `8489faec6fe93b78` |
+| `HANDOFF_2026-09-15_pm.md` | *(written here)* — the afternoon forensics phase in seven answers | 11,772 | `84443c51113727c5` |
 | `EXECUTE_SHELF_V2.md` | `EXECUTE_SHELF_V2.md` *(notice added)* | 10,923 | `5d89454913c705d5` |
 | `RESEARCH_2026-09-13.md` | `RESEARCH_2026-09-13.md` *(notice added)* | 12,302 | `314fd7ed6cf90162` |
 
@@ -114,9 +115,9 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 
 | file | original | bytes | sha256[:16] |
 |---|---|---|---|
-| `FINDINGS_LIVE.md` | `corpus-lab/05_findings/FINDINGS_LIVE.md` | 77,651 | `24dec6506f1db801` |
+| `FINDINGS_LIVE.md` | `corpus-lab/05_findings/FINDINGS_LIVE.md` | 95,355 | `c8706cf7123604e2` |
 | `RESUME.md` | `corpus-lab/RESUME.md` | 11,283 | `b9fe6c5fbce760f8` |
-| `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 112,726 | `5fb7334aafbedaa5` |
+| `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 114,883 | `7c2d7e3cd6f698e7` |
 
 ---
 

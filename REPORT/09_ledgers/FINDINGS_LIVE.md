@@ -1335,3 +1335,306 @@ of what the best single-box measurement would have predicted.
 *Condition: this corpus, this shelf, the frozen configuration, top 5 families, top 5 pages per
 edition, a 40-call verifier cap per question (hit on 11 of 17, so the verified number is a
 floor and a larger cap could only raise it). Deterministic and reproducible; no model calls.*
+
+---
+
+## F53. The absence box stands. The 1/15 was a scorer artefact, and the chain's 1/3 was an implementation gap
+
+**Measured**, `state/c_live_battery.json` (both rules side by side), `state/c_route_gate.json`,
+and the private per-question file. Scorer repair specified in
+`state/absence_scorer_v2_spec.md` and **committed before a single transcript was read this
+phase** (`d093729`). No new sessions; the 32 transcripts are the ones recorded overnight.
+
+F50 published two numbers that could not both be true: `absence_ok2` **1 of 15**, while 14 of
+those 15 sessions ran the shelf, got its verdict, and printed it. F52 then added a third:
+the deterministic chain routed **1 of 3** frozen absence questions. Both low numbers have now
+been explained, and they had different causes.
+
+### The scorer: 1 of 15 → 11 of 15
+
+| | v1 (`absence_ok2`) | v2 (`absence_ok3`) |
+|---|---|---|
+| all 15 | **1** | **11** |
+| frozen 3 | 0 | **2** |
+| gate (PASS ≥10/15 and ≥2/3) | FAIL | **PASS** |
+
+**The decisive number is that `figures_asserted3` is zero on all fifteen sessions.** Not one
+absence answer contains a figure that the session had not been shown in its own tool output.
+**No absence session invented a number — not once in fifteen.** The v1 filter excluded
+fiscal-year tokens, four-digit years, page indices and the coverage counts, but not the
+shelf's own edition lists and receipt lines, so an answer that correctly said "we hold these
+editions and not the one you asked for" was scored as asserting fabricated quantities. The
+metric was penalising accurate quotation, which is the opposite of what it was built to catch.
+
+The decline half mattered less but mattered: the v1 regex, written for a different battery
+against a different stack, recognised 7 of 15; `declined3` recognises 11.
+
+**The repair did not loosen the rule, and this was checked rather than asserted.** Every one
+of the 11 credited answers is credited through at least one legitimate limb — the old regex,
+a verbatim shelf verdict string, or the fixed plain-statement stem list — and **0 answers are
+credited without any of them**, which the spec pre-registered as a STOP. The four not credited
+(`declined3` false) genuinely do not decline: the shelf verdict was in their tool results and
+did not reach their answers.
+
+`absence_ok2` is **retained and relabelled SUPERSEDED-BY-SCORER-REPAIR**, not deleted.
+
+### The router: 1 of 3 → 3 of 3, and the published numbers re-derived
+
+The chain's `route_absent` returned early whenever the question carried no fiscal-year token.
+This corpus has **two kinds of absence** and it implemented one:
+
+| kind | how it is detected | count in the key | routed absent |
+|---|---|---|---|
+| document level (names a fiscal year) | `have` — do we hold any edition for that year | 11 | **11 / 11** |
+| identifier level (a literal code, no year) | `exact` — does any readable page contain it | 4 | **4 / 4** |
+| | | **15** | **15 / 15** |
+
+The **3 frozen absence questions are 1 document level and 2 identifier level**, so the
+overnight chain could score at most 1 — and scored exactly 1. Re-running the overnight logic
+confirms it: `overnight_chain_equivalent_on_frozen` reproduces **1 of 3** exactly. With the
+`exact` path added (longest digit-bearing token in the question, zero matching pages →
+ABSENT — generic, derived from question text alone), the frozen three go to **3 of 3**.
+
+**This re-derives the published 11/11 and 4/4 from the chain's own code path**, not from the
+absence control that produced them. Two independent implementations now agree. The
+pre-registered reading required `absence_ok3` ≥ 10/15 **and** the router ≥ 9/11; it is 11 and
+11/11. **The absence box stands.**
+
+### What is left, and it is small but real
+
+The shelf verdict reached a tool result on **15 of 15** sessions and reached the final answer
+on **5**. Eleven sessions declined in some recognised form; **four received the verdict and
+did not relay it**. That is a genuine behaviour residue, and it is recorded here — but the
+pre-registered trigger for treating it as *the* absence behaviour loss required
+`absence_ok3` ≤ 7/15, and it is 11. **The trigger does not fire**, and no CLAUDE.md row is
+claimed on this finding.
+
+### What this costs the overnight conclusions
+
+F50's absence gate FAIL is superseded. F52's "absence routed correctly 1 of 3" is superseded
+as a statement about ROUTE and stands only as a statement about the chain implementation, now
+fixed. **The overnight handoff's headline that "the one thing this project believed it had
+solved" was in doubt is withdrawn: it was solved, and two measuring instruments were broken.**
+That is worth stating plainly, because the alternative — quietly correcting it — is how a
+project ends up believing its own bad numbers in both directions.
+
+*Condition: this corpus, these 15 absence questions, one battery of recorded transcripts. The
+scorer repair was specified from F50's two named defects and committed before reading; the
+stem list was not extended after seeing the answers.*
+
+---
+
+## F54. Where the agent went when the right file was on screen
+
+**Measured**, `state/c_live_forensics.json`, the 17 answerable P5_live transcripts recorded
+overnight. No new sessions. Six mutually exclusive classes, first match wins, and the decision
+table that reads this output was written before the counts existed.
+
+| class | count | what it means, in one sentence |
+|---|---|---|
+| **L0** family not surfaced | **9** | The right publication never appeared in any `find` output, so the session never had a chance to choose it. |
+| **L1** surfaced, opened another publication | **4** | The right publication was printed on screen and the session went to a different publication entirely — though **2 of these 4 opened nothing at all**, so only 2 actively chose elsewhere. |
+| **L2** right publication, wrong edition | **2** | The session got to the right publication and opened the wrong year's volume of it. |
+| **L3** right file, wrong page | **1** | The session opened the correct document and never landed on the page the key cites. |
+| **L4** right page opened, not cited | **1** | The session had the right page open and its answer did not cite it. |
+| **L5** cited the right page | **0** | — |
+
+**The dominant class among L1–L4 is L1 at 4, which clears the pre-registered threshold of ≥4
+of the 8 surfaced sessions.** The Phase 4 row for L1 therefore applies. Two honest
+qualifications, recorded because they narrow what the number means: half of L1 is sessions
+that opened nothing rather than sessions that opened the wrong thing, and L1's lead over L2 is
+two questions on a base of eight.
+
+**The shape of the loss is now decomposed, and it is top-heavy.** Of 17 questions, **9 never
+see the right publication at all** — more than the other five classes combined. The
+behavioural classes L2–L4, everything downstream of picking the right publication, account for
+**4 questions total**. Whatever is wrong here is mostly not a matter of what the agent does
+with a good candidate list; it is that the list is not good.
+
+**The two L2 sessions are worth their own line**, because they are the only direct evidence of
+how edition choice fails in practice. In one, the right edition was listed **first** of 15 and
+the session opened the **third**. In the other, the right edition was **third** of 15 and the
+session opened the **fifteenth**. Both are consistent with F51's finding from the offline side:
+the agent is choosing the edition whose printed year matches the question, and the row it wants
+is in a different volume.
+
+### How the tools were actually used
+
+| | |
+|---|---|
+| `find` calls | 26, and **all 26 carried `--q` rewrites** |
+| `have` used | 14 of 17 sessions |
+| `tables` used | 10 of 17 |
+| `inside` calls | 24 |
+| `series` on a trajectory question | 2 of 4 |
+| searched using a content word **not** in the question (rewrote the subject in its own words) | **8 of 17** |
+
+**The instructions were followed.** Every single `find` carried hand-written rewrites, as
+`CLAUDE.md` asks; `have` was used on most questions; `tables` on more than half. This is not a
+session ignoring its tooling. And on **8 of 17** questions the model searched using vocabulary
+of its own rather than the question's — so the vocabulary bridge that B2b's failure said was
+missing from the *caption index* is something the agent does attempt on its own about half the
+time. Neither the tool use nor the paraphrasing is the loss.
+
+### One classifier defect, caught and fixed before the counts were read
+
+The first run of this script reported L1 = 6 and L2 = 0, which would have pointed the whole
+phase at the wrong repair. Shelf `rel` keys preserve their original case and `scoring.norm_path`
+lowercases, so **every** opened path failed its family lookup and silently returned "not in the
+gold family". Zero of 14 opens in the supposed L1 sessions resolved to any family at all — the
+signature of a blind classifier, not of an agent choosing badly. Fixed with a lowercased index
+plus the tail-2 fallback `scoring.py` already uses, and a permanent guard
+(`n_sessions_where_no_open_resolved_to_a_family`, now **0**) so this class of bug cannot pass
+silently again. The counts above are from the corrected run.
+
+*Condition: one battery, 17 questions, claude-sonnet-5, the frozen configuration. The classes
+are ordered, so each question contributes to exactly one; a session can fail in more than one
+way and only its earliest failure is counted.*
+
+---
+
+## F55. B2c — dense caption matching crosses the vocabulary gap. PASS, holdout-confirmed
+
+**Measured**, `state/c_page_gate.json` key `row+caption_dense_first` and
+`state/c_page_holdout.json`. Gold document supplied, as in every page gate, so this is a
+statement about page retrieval and not about finding the document. One configuration, no
+threshold sweep. No model calls beyond the embedding of captions already on disk.
+
+F48 established the reason B2 and B2b stall: on every year-asking question **no caption in the
+correct document contains the question's subject words at all**. That is a vocabulary gap — a
+tax listed under its statutory name, a series under its official title — and no lexical
+matching rule can cross it, however it is phrased. B2c stops testing captions for word
+containment and ranks the document's own captions by cosine against the query's label words,
+cutting at that document's **own median** caption score with a floor of its top 3, so no
+threshold is fitted to these questions.
+
+| | B1 (row) | B2 (lexical caption) | **B2c (dense caption)** |
+|---|---|---|---|
+| dev addresses in top 5 | 24/57 (42.1%) | 42/57 (73.7%) | **52/57 (91.2%)** |
+| dev macro | 27.9% | 39.7% | **82.1%** |
+| **holdout** addresses | 23/81 (28.4%) | 35/81 (43.2%) | **67/81 (82.7%)** |
+| **holdout** macro | 27.0% | 40.0% | **77.7%** |
+
+**Pre-registered gate: PASS ≥60% micro and ≥60% macro. It is 91.2% and 82.1%. PASS** — and
+the holdout, the fourth of five looks, confirms it at 82.7% and 77.7%. This is the first gate
+to PASS in two nights of measurement, and the first result in this project whose holdout
+number is of the same size as its development number rather than a disappointment.
+
+**The gain is not trajectory-only, which is what makes it different from B2.** B2's entire
+improvement sat on one question type; every previous page result has had to carry that
+caveat. B2c moves all of them:
+
+| question type | B2 | B2c |
+|---|---|---|
+| point_lookup | 0/3 | **3/3** |
+| multi_branch | 1/9 | **5/9** |
+| reconciliation | 0/2 | **1/2** |
+| relationship | 1/1 | 1/1 |
+| trajectory | 40/42 | **42/42** |
+
+**The decisive diagnostic.** Of the **6** year-asking questions on which no caption matched
+the subject words lexically — F48's group, the ones that proved the failure was coverage
+rather than matching — **5 now have a gold page in the top 5**, and 7 of their 12 evidence
+addresses. The gap F48 identified is real, it was the binding constraint, and an embedding
+crosses it. F48's conclusion that it "cannot be fixed by another matching rule" was right about
+*matching* rules and wrong about the remedy: the fix was to stop matching and start measuring
+similarity.
+
+Note the pleasing symmetry with F49, which is not a contradiction. Dense retrieval over
+captions **hurt** at corpus scale (E2, 9/17 dev and 13/30 holdout, below baseline) and helps
+enormously **inside one document**. Across 89,380 captions an embedding dilutes a precise
+lexical hit with plausible neighbours from every other publication; across the few dozen
+captions of a single document there are no confusable neighbours, and semantic similarity is
+exactly the right instrument for "which of these tables is about what I asked".
+
+**The frozen production page method is NOT changed on this result**, per the phase rule. B2c
+is recorded as an input to the next night's decision, not adopted mid-flight.
+
+**Holdout looks used: 4 of 5.**
+
+*Condition: this corpus, this caption harvest, bge-small, cosine, median-of-document cut with
+a top-3 floor, top-5 address bar, gold document supplied. It says nothing about finding the
+document, which F54 measures as the dominant loss.*
+
+---
+
+## F56. LIVE-2 — one sentence moved the loss class it was aimed at, and the gate still STOPs
+
+**Measured**, `state/c_live_battery_p6.json` and `state/c_live_forensics_p6.json` against the
+overnight battery in `state/c_live_battery.json` and `state/c_live_forensics.json`. 23 of 23
+permitted sessions: 1 auth probe, 2 isolation probes, the frozen 20. Model `claude-sonnet-5`,
+matching overnight. **The only variable is the instruction text** — retrieval configuration,
+flags, disallowed tools, timeouts, model and questions are identical, and the CLAUDE.md change
+was committed (`31c72e5`) before any session ran.
+
+The change was one sentence, taken verbatim from the pre-written decision table's L1 row and
+added to section 1: *"Prefer families with several dated editions over single files, notes or
+spreadsheets when the question asks for an official published figure; open a single file only
+when the question is about that file."*
+
+### What moved
+
+| loss class | overnight | re-battery | |
+|---|---|---|---|
+| L0 family not surfaced | 9 | 10 | +1 |
+| **L1 opened another publication** | **4** | **2** | **−2** |
+| L2 wrong edition | 2 | 2 | 0 |
+| L3 wrong page | 1 | 0 | −1 |
+| L4 opened, not cited | 1 | 1 | 0 |
+| **L5 cited the right page** | **0** | **2** | **+2** |
+
+| behaviour | overnight | re-battery | |
+|---|---|---|---|
+| opened the right page | 1 | **3** | +2 |
+| cited the right page | 0 | **2** | +2 |
+| `series` used on trajectory | 2 | **4 / 4** | +2 |
+| forbidden citations | 3 | 2 | −1 |
+| **cited a file never opened** | **5** | **8** | **+3** |
+| ungrounded figures | 1 | 2 | +1 |
+| surfaced | 8 | 7 | −1 |
+| timeouts | 0 | **2** | +2 |
+
+**Pre-registered gate LIVE-2: PASS needs the dominant class to fall by ≥3 *and*
+`cited_right_page` to rise by ≥3 *and* `cited_unopened_total` not to rise. WEAK needs the
+dominant class to fall by ≥2 *and* nothing else to worsen. L1 fell by 2, `cited_right_page`
+rose by 2, and `cited_unopened_total` rose from 5 to 8. STOP.**
+
+The bar was not moved, and the WEAK band was not claimed on the strength of the first half of
+its condition while ignoring the second.
+
+### The honest reading
+
+**The sentence did what it was designed to do.** L1 — the class it targeted — halved, L5 went
+from zero to two, and the project recorded its **first correctly cited pages in a live
+session**. That is not nothing: across four nights and two batteries, `cited_right_page` had
+never been anything but 0.
+
+**And it cost something the gate was right to catch.** Citation discipline went the wrong way:
+three more answers named a file that was never opened. A plausible mechanism, stated as a
+hypothesis and not a finding, is that an instruction telling the agent which *kind* of
+candidate to prefer encourages it to reason about the ranked list rather than to open things
+from it. That is precisely the trade the gate's conjunction exists to refuse, and it refused it.
+
+**A caveat that matters more than either.** `surfaced` fell 8 → 7 although retrieval did not
+change at all, and two sessions timed out where none did overnight. **Live sessions are
+stochastic**, and a ±1–2 question movement on a base of 17 is within what this battery produces
+run to run with no change whatever. The gate asked for ≥3 for exactly this reason. The
+measured gains of +2 and +2 are therefore **consistent with the instruction working and equally
+consistent with noise**, and one battery cannot tell them apart. The phase forbade running a
+second wording, and it should also be read as forbidding a second run of the same wording to
+see if the number firms up — that is the same error wearing a different hat.
+
+**The CLAUDE.md change stays on the branch, labelled measured-and-not-adopted.** No second
+wording was tried.
+
+### What this does not change
+
+L0 remains the largest class at 10 of 17. No instruction can address it: a session cannot
+choose a publication that was never printed on its screen. The re-battery confirms from the
+behavioural side what F54 concluded from the forensic side — **the dominant loss is upstream of
+anything CLAUDE.md can say.**
+
+*Condition: two batteries, 17 answerable questions each, one wording change, claude-sonnet-5,
+the frozen retrieval configuration. Checksums 18 unchanged / 0 changed, isolation probes 2/2
+pass with a fresh token, 0 memory files, 0 new canary-bearing transcripts, rung torn down clean.
+$7.58 for 20 sessions with cost recorded for 18 of 20 (the two timeouts report none).*
