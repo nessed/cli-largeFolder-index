@@ -2029,3 +2029,80 @@ firing, logging on all four probe sessions and blocking 6 times during the batte
 
 *Condition: four batteries now, 17 answerable questions each, one configuration change per
 battery, claude-sonnet-5.*
+
+---
+
+## F63. Experiment H confirmed — WEAK, and the confirmation is worth less than what it revealed about variance
+
+**Measured**, `state/c_llm_select_gate.json` (run 3). The full pre-registered run at last: 17
+development questions then 30 holdout-2 questions, on the repaired instrument, with **no change
+to the prompt, the card construction, the model, the pool, the ranking procedure or the gate**.
+50 calls.
+
+| | run 2 (dev only) | **run 3, dev** | **run 3, holdout-2** |
+|---|---|---|---|
+| top 10 | 14 / 17 | **11 / 17** | **17 / 30** |
+| top 3 | 8 / 17 | **9 / 17** | 12 / 30 |
+| top 1 | 8 / 17 | **7 / 17** | — |
+| parse failures | 0 | **0** | 2 |
+
+**Pre-registered gate: PASS ≥13/17 and holdout-2 ≥17/30; WEAK 11–12/17 and ≥16/30; STOP ≤10/17.
+Development 11, holdout-2 17. Verdict: WEAK.** The bands were not touched, and holdout-2 was
+looked at once — **look 1 of 2**.
+
+Against the frozen configuration's 10/17 and 14/30, H is **+1 on development and +3 on a
+confirmation set**. It is a real but modest improvement, and it is the first document-channel
+mechanism in this project to clear anything at all on a holdout.
+
+**Not adopted.** The task that commissioned this run forbade production changes and a live
+battery, so `find --compact` still does not ship and the frozen configuration is unchanged.
+
+### The finding that matters more than the gate
+
+**Run 2 and run 3 differ by three questions on the development set with nothing changed between
+them.** Same instrument, same prompt, same 100 cards in the same fused order, same model, same
+pool, same scoring — the only difference is sampling.
+
+| | dev top 10 |
+|---|---|
+| run 2 | 14 / 17 |
+| run 3 | 11 / 17 |
+| **spread** | **3** |
+
+**That spread is larger than the gap between this mechanism and the baseline it beats.** The
+frozen configuration scores 10; run 3 scores 11; the run-to-run noise on the same configuration
+is 3. Every single-battery conclusion in this repository — including yesterday's "+4, the largest
+movement in six nights" — sits inside that band.
+
+Yesterday's handoff reported 14/17 as "the largest document-channel movement in the project" and
+named confirming it as the single most valuable thing available. The confirmation says the honest
+number is **11/17 on development and 17/30 on the holdout**: a WEAK pass rather than a
+breakthrough. **The 14 was not wrong; it was one sample of a distribution nobody had measured.**
+
+This closes the first of the two standing items from the last three handoffs — *establish the
+live variance* — from an unexpected direction. It was raised about the live batteries, where four
+runs had shown ±2 on every metric except L0. It turns out the offline headless measurement has
+the same problem, and worse: **±3 on 17 questions.** Any future gate band written over 17
+development questions is measuring something with a standard error comparable to the effect it is
+testing.
+
+### Two defects in this run, both counted against the result rather than excused
+
+- **One holdout question was never called.** The 50-call budget reached zero at question 30 of 30
+  (33 calls for 30 questions, because 4 needed a retry). It is scored as a miss against the
+  pre-registered denominator of 30. Had it been a hit, holdout-2 would read 18/30 — still WEAK,
+  because PASS additionally requires ≥13/17 on development and this run has 11.
+- **Two holdout responses failed to parse** after their retry. Also scored as misses. Development
+  had zero.
+
+### Contamination
+
+**None.** `assert_clean_cwd()` passed before the run and the calls executed from a temp-tree
+directory whose project key has no memory. A post-hoc sweep of all 47 cached responses for
+project-memory markers (`retrieval-lab`, `evidence_v1`, `architecture review`, `plans_fable`,
+`memory entry`) returns **0**. The contaminated run-1 cache remains quarantined separately, and
+run 2's clean dev cache is preserved beside it.
+
+*Condition: this corpus, top-100 pool in fused order, cards from shelf fields only, one
+single-turn call per question, claude-sonnet-5, one configuration, no prompt variants. Two
+development samples and one holdout sample.*

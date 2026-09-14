@@ -1,47 +1,74 @@
 {
-  "generated_utc": "2026-09-14T09:10:39Z",
-  "dev": {
-    "n": 17,
-    "top_1": 8,
-    "top_3": 8,
-    "top_10": 14,
-    "per_question_rank": {
-      "cd_04": null,
-      "mb_04": 1,
-      "mb_05": 1,
-      "mb_07": 4,
-      "nm_09": null,
-      "pl_01": 8,
-      "pl_14": 6,
-      "pl_21": 6,
-      "rc_05": 1,
-      "rc_07": 1,
-      "rl_05": 1,
-      "sd_03": 7,
-      "sd_05": null,
-      "tr_04": 1,
-      "tr_07": 7,
-      "tr_10": 1,
-      "tr_16": 1
-    },
-    "publication_guess_have_top3": 1,
-    "n_guesses": 17,
-    "n_gold_not_in_picks": 3,
-    "n_parse_failures": 0,
-    "note_on_labels": "n_gold_not_in_picks was first written as n_no_answer, which conflated a parse failure with the model simply not picking the gold family. All 17 responses parsed; the 3 are genuine misses."
+ "run": "run 3 -- full re-run on the repaired instrument, dev then holdout-2",
+ "prior_runs": {
+  "run1_contaminated": {
+   "calls": 25,
+   "dev_top10": 11,
+   "void": true,
+   "reason": "cwd inside the repository tree; project auto-memory was loaded"
   },
-  "total_calls": 43,
-  "run": "clean instrument (out-of-tree cwd, max-turns 2)",
-  "contaminated_run_1": {
-    "calls": 25,
-    "dev_top10": 11,
-    "n_parse_failures": 6,
-    "defect": "cwd was inside the repository tree, so the headless calls loaded this project's own auto-memory; one response quoted it back. Results discarded to _private/results/h_cache_CONTAMINATED_run1, calls still counted against the cap."
+  "run2_clean_dev_only": {
+   "calls": 18,
+   "dev_top10": 14,
+   "dev_top3": 8,
+   "dev_top1": 8,
+   "holdout2": "not bought -- budget exhausted at 43/50"
+  }
+ },
+ "budget_note": "fresh 50-call allowance for this run; the spec's full run is 47 (17 dev + 30 holdout-2)",
+ "total_calls": 50,
+ "generated_utc": "2026-09-14T14:37:04Z",
+ "dev": {
+  "n": 17,
+  "top_1": 7,
+  "top_3": 9,
+  "top_10": 11,
+  "n_no_answer": 6,
+  "per_question_rank": {
+   "cd_04": null,
+   "mb_04": 1,
+   "mb_05": 1,
+   "mb_07": 2,
+   "nm_09": null,
+   "pl_01": 6,
+   "pl_14": null,
+   "pl_21": null,
+   "rc_05": 3,
+   "rc_07": 1,
+   "rl_05": 1,
+   "sd_03": null,
+   "sd_05": null,
+   "tr_04": 1,
+   "tr_07": 7,
+   "tr_10": 1,
+   "tr_16": 1
   },
-  "holdout2": {
-    "status": "NOT MEASURED -- headless budget exhausted at 43 of 50 by the contaminated first run; 30 calls needed, 7 available",
-    "looks_spent": 0,
-    "looks_remaining": 2
-  },
-  "gate": "CANNOT BE CERTIFIED: dev 14/17 is in the PASS band but PASS and WEAK both require a holdout-2 number, which the budget could not buy. Not adopted."
+  "publication_guess_have_top3": 0,
+  "n_guesses": 17
+ },
+ "holdout2": {
+  "n_measurable": 30,
+  "top_3": 12,
+  "top_10": 17,
+  "n_no_answer": 13,
+  "look": "1 of 2",
+  "n_never_called_budget_exhausted": 1,
+  "n_parse_failures": 2,
+  "calls": 33,
+  "note": "one question was never called because the 50-call budget hit zero, and 2 responses failed to parse after a retry; all three count as misses against the pre-registered denominator of 30"
+ },
+ "gate": {
+  "verdict": "WEAK",
+  "bands": "PASS >=13/17 and holdout-2 >=17/30; WEAK 11-12/17 and >=16/30; STOP <=10/17",
+  "dev_top_10": 11,
+  "holdout2_top_10": 17,
+  "adopted": false,
+  "adoption_note": "this task explicitly forbade production changes and a live battery"
+ },
+ "variance": {
+  "dev_top_10_run2": 14,
+  "dev_top_10_run3": 11,
+  "spread": 3,
+  "note": "identical instrument, prompt, cards, model and pool; the only difference is sampling. The spread exceeds the gap between the frozen configuration (10) and this run (11)."
+ }
 }
