@@ -64,8 +64,10 @@ the question and they matter more than anything else you do here. Write them as:
   question word and conversational filler dropped.
 
 Read the families it returns: each is a publication with the editions (fiscal years)
-held. Decide which publication and which year(s) answer the question. If the question
-names a publication or a year, confirm it is held:
+held. Decide which publication and which year(s) answer the question. Prefer families with
+several dated editions over single files, notes or spreadsheets when the question asks for an
+official published figure; open a single file only when the question is about that file. If
+the question names a publication or a year, confirm it is held:
 
     "{PY}" "{SHELF}" have "<publication words>" --fy <year like 2012-13>
 
