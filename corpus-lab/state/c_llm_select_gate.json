@@ -1,0 +1,47 @@
+{
+  "generated_utc": "2026-09-14T09:10:39Z",
+  "dev": {
+    "n": 17,
+    "top_1": 8,
+    "top_3": 8,
+    "top_10": 14,
+    "per_question_rank": {
+      "cd_04": null,
+      "mb_04": 1,
+      "mb_05": 1,
+      "mb_07": 4,
+      "nm_09": null,
+      "pl_01": 8,
+      "pl_14": 6,
+      "pl_21": 6,
+      "rc_05": 1,
+      "rc_07": 1,
+      "rl_05": 1,
+      "sd_03": 7,
+      "sd_05": null,
+      "tr_04": 1,
+      "tr_07": 7,
+      "tr_10": 1,
+      "tr_16": 1
+    },
+    "publication_guess_have_top3": 1,
+    "n_guesses": 17,
+    "n_gold_not_in_picks": 3,
+    "n_parse_failures": 0,
+    "note_on_labels": "n_gold_not_in_picks was first written as n_no_answer, which conflated a parse failure with the model simply not picking the gold family. All 17 responses parsed; the 3 are genuine misses."
+  },
+  "total_calls": 43,
+  "run": "clean instrument (out-of-tree cwd, max-turns 2)",
+  "contaminated_run_1": {
+    "calls": 25,
+    "dev_top10": 11,
+    "n_parse_failures": 6,
+    "defect": "cwd was inside the repository tree, so the headless calls loaded this project's own auto-memory; one response quoted it back. Results discarded to _private/results/h_cache_CONTAMINATED_run1, calls still counted against the cap."
+  },
+  "holdout2": {
+    "status": "NOT MEASURED -- headless budget exhausted at 43 of 50 by the contaminated first run; 30 calls needed, 7 available",
+    "looks_spent": 0,
+    "looks_remaining": 2
+  },
+  "gate": "CANNOT BE CERTIFIED: dev 14/17 is in the PASS band but PASS and WEAK both require a holdout-2 number, which the budget could not buy. Not adopted."
+}

@@ -1850,3 +1850,88 @@ configurations.
 *Condition: this corpus, 17 answerable questions, one battery per configuration,
 claude-sonnet-5. Three batteries now agree on the shape: L0 is 9–10 of 17 in every one, and
 every downstream class is small and noisy.*
+
+---
+
+## F60. Experiment H — the model picks the right publication on 14 of 17, and it cannot be certified
+
+**Measured**, `state/c_llm_select_gate.json`. Mechanism and gate in
+`state/experiment_h_spec.md`, committed (`044c906`) before any call. Same top-100 pool, same
+fused order, no new index and no new embedding — the only new thing is that a language model
+reads the list.
+
+| | frozen configuration | **Experiment H** |
+|---|---|---|
+| gold family in the top 10 | **10 / 17** | **14 / 17** |
+| in the top 3 | — | 8 / 17 |
+| ranked first | — | 8 / 17 |
+| gold not among the picks | — | 3 / 17 |
+| parse failures | — | 0 / 17 |
+
+**+4 questions is the largest movement the document channel has seen in six nights**, against
+five statistical rankers that between them moved it from 9 to 10. And 8 of 17 at rank 1 is a
+number no previous mechanism came close to: the model is not merely including the right
+publication, it is leading with it.
+
+**And it cannot be certified, because the holdout was never bought.** PASS and WEAK both require
+a holdout-2 number. The headless budget stood at **43 of 50** when the development set finished;
+holdout-2 needs 30 calls and 7 were left. **Gate: not certifiable. H is NOT adopted**, the
+`find --compact` change of Phase 2.1 does **not** ship, and the live battery runs without a
+selector arm.
+
+**Holdout-2 was not looked at at all.** A 7-question partial cannot be compared to a bar of
+≥17/30 and would have burned one of its two looks for nothing. It keeps **both** looks, which is
+the single most valuable thing this finding leaves behind.
+
+### Why the budget was gone: a contamination defect in my own instrument
+
+The first run scored 11/17 with **6 parse failures** and consumed **25 calls**. Both were
+symptoms of the same thing, and it is worth stating precisely because it is the second
+instrument defect in three phases.
+
+The headless calls were made with `cwd` inside the repository tree. Claude Code resolves a cwd to
+a project key and loads that project's **auto-memory** — and this project has one, holding the
+architecture review, the project goal and the plans. **The selector model was reading this
+project's own notes while judging which publication to pick.** It was not theorised: one response
+quoted the memory back, declining to answer and explaining what "the retrieval-lab memory I have"
+covered.
+
+That run's 25 calls are counted against the cap regardless, its 17 results are quarantined under
+`_private/results/h_cache_CONTAMINATED_run1`, and its 11/17 is void — not a weaker version of the
+14, a different measurement of a contaminated system.
+
+Repaired three ways, all now permanent: the cwd moved outside the tree to a temp directory whose
+project key has no memory directory; `--max-turns` raised from 1 to 2, which removed every
+`Error: Reached max turns (1)`; and a guard, `assert_clean_cwd()`, that walks up from the cwd
+for any `CLAUDE.md` and refuses to run if the resolved project key has a non-empty memory
+directory. The clean run shows **zero** occurrences of any project-memory marker across all 17
+cached responses.
+
+**One reporting defect corrected with it:** the aggregate field `n_no_answer` conflated a parse
+failure with the model simply not picking the gold family. All 17 clean responses parsed; the 3
+are genuine misses. Renamed `n_gold_not_in_picks`, with `n_parse_failures` reported separately at 0.
+
+### The secondary diagnostic, and it is a clean negative
+
+`do_have(publication_guess)` — ask the model to *name* the publication it would look in, then
+look that name up on the shelf — puts the gold family in `have`'s top 3 on **1 of 17**. The model
+produced a guess on all 17.
+
+**Selecting from a list works; generating a name does not.** The same model, in the same call,
+picks correctly 14 times and names correctly once. What it has is the ability to *recognise*
+which of these publications is the right kind, not the ability to reproduce an institution's
+exact title from memory. That is worth knowing because "just ask the model what publication to
+look in" is the obvious cheap version of this idea, and it is measured here at 1 of 17.
+
+### What this licenses and what it does not
+
+It licenses re-running H tomorrow with a clean budget — and that run is now cheap and
+fully specified, because the instrument, the prompt and the gate all exist and only the calls are
+missing. It does **not** license shipping the `find --compact` change or reading the 14 as a
+result about the system: **a development number with no confirmation set behind it is exactly
+what the holdout discipline exists to distrust**, and this project has already had two headline
+numbers turn out to be broken instruments within a day.
+
+*Condition: this corpus, top-100 pool in fused order, cards from shelf fields only, one
+single-turn call per question, claude-sonnet-5, one configuration, no prompt variants. Development
+set only.*
