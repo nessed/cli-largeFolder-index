@@ -69,3 +69,10 @@ Thumbs.db
 # this is not. Kept on disk for resumability, never committed.
 corpus-lab/state/c_queries_holdout.json
 corpus-lab/state/c_queries_holdout2.json
+
+# Checksum snapshots list PLANTED-FILE PATHS, and some of those are gold
+# addresses for holdout/unused evaluation questions. They are local
+# verification artefacts, regenerable with `checksums.py snapshot`, and
+# publishing them leaks benchmark answers. 2026-09-14.
+corpus-lab/state/checksums/s7_live*.json
+corpus-lab/state/checksums/verify__*.json

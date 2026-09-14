@@ -5,11 +5,17 @@ vague question in ordinary language, and get back the actual number with the fil
 it came from — and an honest "not in here" when the answer genuinely isn't?
 
 **Answer so far: the honest-refusal half works. The find-the-right-page half does not,
-and we now know fairly precisely why.** Four nights, five approaches measured end to end,
-three more ruled out on measurements rather than opinion, about $31 spent. This repository
+and we now know fairly precisely why.** Six nights, fourteen approaches measured end to end, twelve pre-registered gates read
+(one passed), five live Claude Code batteries, about $71 spent. This repository
 is the full record — code, measurements, failures, and the diagnosis.
 
-> ### 👉 Start at [`REPORT/README.md`](REPORT/README.md)
+> ### 👉 New here? Start at [`REPORT/README.md`](REPORT/README.md)
+>
+> ### 👉 Picking up the work? Start at [`REPORT/08_what_next/SESSION_LOG_2026-09-13_to_09-14.md`](REPORT/08_what_next/SESSION_LOG_2026-09-13_to_09-14.md)
+>
+> That file is the full handover: six execution phases, twelve pre-registered gates, the
+> Claude session transcripts verbatim with timings and accuracy, the current state of every
+> box, and an operating manual (Appendix C) with a runnable command for every number below.
 >
 > It walks the whole project start to finish in plain English, written for someone who has
 > never seen this repo. Everything else here is supporting evidence.
