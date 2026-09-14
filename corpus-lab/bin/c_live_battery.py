@@ -81,10 +81,13 @@ def main(argv):
     ap.add_argument("--probe-question", default=None)
     ap.add_argument("--model", required=True)
     ap.add_argument("--parallel", type=int, default=2)
+    ap.add_argument("--phase-tag", dest="phase_tag", default="P5",
+                    help="phase prefix; a re-battery uses a NEW tag so ask.py's "
+                         "stale-result guard is respected instead of forced")
     a = ap.parse_args(argv)
 
     if a.probe:
-        phase = "P5_probe"
+        phase = a.phase_tag + "_probe"
         qid = "probe_" + a.probe
         mt = 1 if a.probe == "auth" else 4
         qid_, rc, so, se = run_one(phase, qid, a.probe_question, a.model, max_turns=mt)
@@ -95,9 +98,9 @@ def main(argv):
 
     qs_by_id, frozen, extra_abs = load_questions()
     if a.group == "frozen20":
-        phase, ids = "P5_live", frozen
+        phase, ids = a.phase_tag + "_live", frozen
     else:
-        phase, ids = "P5_live_abs", extra_abs
+        phase, ids = a.phase_tag + "_live_abs", extra_abs
 
     todo = [i for i in ids if not result_exists(phase, i)]
     print("group=%s phase=%s total=%d todo=%d" % (a.group, phase, len(ids), len(todo)),

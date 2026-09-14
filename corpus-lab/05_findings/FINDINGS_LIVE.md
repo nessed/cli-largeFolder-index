@@ -1555,3 +1555,86 @@ is recorded as an input to the next night's decision, not adopted mid-flight.
 *Condition: this corpus, this caption harvest, bge-small, cosine, median-of-document cut with
 a top-3 floor, top-5 address bar, gold document supplied. It says nothing about finding the
 document, which F54 measures as the dominant loss.*
+
+---
+
+## F56. LIVE-2 — one sentence moved the loss class it was aimed at, and the gate still STOPs
+
+**Measured**, `state/c_live_battery_p6.json` and `state/c_live_forensics_p6.json` against the
+overnight battery in `state/c_live_battery.json` and `state/c_live_forensics.json`. 23 of 23
+permitted sessions: 1 auth probe, 2 isolation probes, the frozen 20. Model `claude-sonnet-5`,
+matching overnight. **The only variable is the instruction text** — retrieval configuration,
+flags, disallowed tools, timeouts, model and questions are identical, and the CLAUDE.md change
+was committed (`31c72e5`) before any session ran.
+
+The change was one sentence, taken verbatim from the pre-written decision table's L1 row and
+added to section 1: *"Prefer families with several dated editions over single files, notes or
+spreadsheets when the question asks for an official published figure; open a single file only
+when the question is about that file."*
+
+### What moved
+
+| loss class | overnight | re-battery | |
+|---|---|---|---|
+| L0 family not surfaced | 9 | 10 | +1 |
+| **L1 opened another publication** | **4** | **2** | **−2** |
+| L2 wrong edition | 2 | 2 | 0 |
+| L3 wrong page | 1 | 0 | −1 |
+| L4 opened, not cited | 1 | 1 | 0 |
+| **L5 cited the right page** | **0** | **2** | **+2** |
+
+| behaviour | overnight | re-battery | |
+|---|---|---|---|
+| opened the right page | 1 | **3** | +2 |
+| cited the right page | 0 | **2** | +2 |
+| `series` used on trajectory | 2 | **4 / 4** | +2 |
+| forbidden citations | 3 | 2 | −1 |
+| **cited a file never opened** | **5** | **8** | **+3** |
+| ungrounded figures | 1 | 2 | +1 |
+| surfaced | 8 | 7 | −1 |
+| timeouts | 0 | **2** | +2 |
+
+**Pre-registered gate LIVE-2: PASS needs the dominant class to fall by ≥3 *and*
+`cited_right_page` to rise by ≥3 *and* `cited_unopened_total` not to rise. WEAK needs the
+dominant class to fall by ≥2 *and* nothing else to worsen. L1 fell by 2, `cited_right_page`
+rose by 2, and `cited_unopened_total` rose from 5 to 8. STOP.**
+
+The bar was not moved, and the WEAK band was not claimed on the strength of the first half of
+its condition while ignoring the second.
+
+### The honest reading
+
+**The sentence did what it was designed to do.** L1 — the class it targeted — halved, L5 went
+from zero to two, and the project recorded its **first correctly cited pages in a live
+session**. That is not nothing: across four nights and two batteries, `cited_right_page` had
+never been anything but 0.
+
+**And it cost something the gate was right to catch.** Citation discipline went the wrong way:
+three more answers named a file that was never opened. A plausible mechanism, stated as a
+hypothesis and not a finding, is that an instruction telling the agent which *kind* of
+candidate to prefer encourages it to reason about the ranked list rather than to open things
+from it. That is precisely the trade the gate's conjunction exists to refuse, and it refused it.
+
+**A caveat that matters more than either.** `surfaced` fell 8 → 7 although retrieval did not
+change at all, and two sessions timed out where none did overnight. **Live sessions are
+stochastic**, and a ±1–2 question movement on a base of 17 is within what this battery produces
+run to run with no change whatever. The gate asked for ≥3 for exactly this reason. The
+measured gains of +2 and +2 are therefore **consistent with the instruction working and equally
+consistent with noise**, and one battery cannot tell them apart. The phase forbade running a
+second wording, and it should also be read as forbidding a second run of the same wording to
+see if the number firms up — that is the same error wearing a different hat.
+
+**The CLAUDE.md change stays on the branch, labelled measured-and-not-adopted.** No second
+wording was tried.
+
+### What this does not change
+
+L0 remains the largest class at 10 of 17. No instruction can address it: a session cannot
+choose a publication that was never printed on its screen. The re-battery confirms from the
+behavioural side what F54 concluded from the forensic side — **the dominant loss is upstream of
+anything CLAUDE.md can say.**
+
+*Condition: two batteries, 17 answerable questions each, one wording change, claude-sonnet-5,
+the frozen retrieval configuration. Checksums 18 unchanged / 0 changed, isolation probes 2/2
+pass with a fresh token, 0 memory files, 0 new canary-bearing transcripts, rung torn down clean.
+$7.58 for 20 sessions with cost recorded for 18 of 20 (the two timeouts report none).*

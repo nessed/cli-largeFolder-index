@@ -32,5 +32,6 @@
  "gate_behaviour": "FAIL",
  "gate_absence": "FAIL",
  "gate_absence_v1_label": "SUPERSEDED-BY-SCORER-REPAIR (see F53); retained, not deleted",
- "gate_absence_v2": "PASS"
+ "gate_absence_v2": "PASS",
+ "battery": "P5_live (overnight, baseline CLAUDE.md)"
 }
