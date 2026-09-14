@@ -738,3 +738,102 @@ configuration scores 10 of 17 on that measure while the live agent surfaces 7 an
 the evening addendum in
 [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
 findings F57–F59.*
+
+---
+
+## 15. Night 6 (2026-09-16) — the model turns out to be the best ranker, and we could not prove it
+
+Two things were tested: whether the answering model, shown the hundred candidate publications the
+shelf already produces, can pick the right one — and whether checking citations *at the answer*
+rather than in the instructions would stop the model naming files it never opened.
+
+### The model picks the right publication on 14 of 17
+
+For five nights the project has tried to reorder the candidate list by measuring similarity:
+query rewrites, a cross-encoder, a different fusion rule, captions as a search channel, captions
+as a reranker. Between them they moved the score from 9 of 17 to 10.
+
+This time the list was simply shown to the model — one line per publication, the years it holds,
+two lines from its contents — and it was asked which would print this sort of table, explicitly
+*not* by word overlap.
+
+**14 of 17, and the right publication ranked first on 8.**
+
+That is the largest movement the document channel has seen, and it points at something the five
+earlier attempts could not have found. Picking the right publication is not a similarity
+judgement. It needs to know what a statistical yearbook is, that a tax may be listed under its
+statutory name, which sort of institution publishes which sort of table. A language model has
+that; a cosine does not.
+
+**And it cannot be trusted yet, because we never got to check it.** Every number in this project
+is confirmed against a set of questions it has never seen, and this one was not — a mistake in
+how the experiment was run ate the budget before the confirmation could be bought. The
+development number stands at 14 of 17 with nothing behind it, which is precisely the kind of
+number this project has twice caught itself being wrong about.
+
+**The mistake is worth describing, because it is the third measurement defect caught in four
+days and the most embarrassing.** The calls were made from inside the project folder. Claude Code
+loads a folder's own notes as context — so the model being asked "which publication answers this
+question" was also reading this project's architecture review, its goals and its plans. One
+response quoted them back. The run was discarded, the calls it had spent could not be, and the
+budget ran out four questions short of a confirmed result. The fix is permanent: the calls now
+run from outside the project, behind a guard that refuses to start if any notes are reachable.
+
+There was a clean negative alongside it. Asking the model to *name* the publication it would
+look in, and then looking that name up, scores **1 of 17**. Recognising the right publication in
+a list and recalling its exact title are different abilities, and only the first one is there.
+
+### Citations of files nobody opened: 10 → 0
+
+The folder's instructions have said "open the page before you cite it" since night three. Answers
+naming files the session never opened went 5, then 8, then 10 — *rising* while two separate
+mechanisms tried to stop it. An instruction did nothing. A check on the note-taking command did
+nothing, and the reason turned out to be structural: the model dutifully notes the pages it
+opened, and then writes an answer mentioning two others. **The answer never passes through the
+note.**
+
+So the check moved to the answer itself. When a session finishes, a hook reads what it wrote,
+compares the paths it cited against the pages it actually opened, and if there is a mismatch it
+says so once — open it, or drop it — and then never interferes again.
+
+**It fired six times in twenty sessions, and citations of unopened files went to zero.**
+
+With one honest caveat recorded in the findings: of the twenty answers, nine cite pages that were
+all genuinely opened, and ten cite nothing at all. A guard that can be satisfied by saying less
+is not unambiguously an improvement, and that number is now tracked.
+
+**And the answers are no better.** The right page is still cited on 1 of 17 questions — the same
+as before the guard, and the same as before the instruction. Citation discipline was a real
+defect, it is now fixed at the only boundary where it could be, and it was never what was making
+the answers wrong.
+
+### Four live batteries now say the same thing
+
+| | night 5 (×3) | night 6 |
+|---|---|---|
+| the right publication never reaches the model | 9, 10, 10 of 17 | **11 of 17** |
+| the right page is cited | 0, 2, 1 | **1** |
+| a file is cited that nobody opened | 5, 8, 10 | **0** |
+| honest refusal (3 absence questions) | 2/3, 3/3, 3/3 | **2/3** |
+
+Across four configurations, **the one stable number is that on more than half the questions the
+right publication never reaches the model at all.** Everything else moves by one or two between
+runs, including between runs where nothing relevant changed — which is itself a finding: on
+seventeen questions, this measurement's noise is about ±2, and no single battery should be read
+more finely than that.
+
+### Where this leaves the project
+
+Two sub-problems are now genuinely solved and neither moved the outcome: finding the right *page*
+inside a document you already have right (83% on a held-out set), and citing only what you opened
+(10 to 0). The outcome did not move because the loss is upstream of both.
+
+The one promising lead is the one that could not be confirmed: **the model itself is a better
+document selector than any ranking function tried, by four questions.** Confirming that costs 47
+calls and nothing else — the experiment is written, the instrument is repaired, and the
+confirmation set is untouched.
+
+*Detail: [`08_what_next/HANDOFF_2026-09-16.md`](08_what_next/HANDOFF_2026-09-16.md), the 2026-09-16
+addendum in
+[`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
+findings F60–F62.*

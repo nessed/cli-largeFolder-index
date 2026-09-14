@@ -1850,3 +1850,182 @@ configurations.
 *Condition: this corpus, 17 answerable questions, one battery per configuration,
 claude-sonnet-5. Three batteries now agree on the shape: L0 is 9–10 of 17 in every one, and
 every downstream class is small and noisy.*
+
+---
+
+## F60. Experiment H — the model picks the right publication on 14 of 17, and it cannot be certified
+
+**Measured**, `state/c_llm_select_gate.json`. Mechanism and gate in
+`state/experiment_h_spec.md`, committed (`044c906`) before any call. Same top-100 pool, same
+fused order, no new index and no new embedding — the only new thing is that a language model
+reads the list.
+
+| | frozen configuration | **Experiment H** |
+|---|---|---|
+| gold family in the top 10 | **10 / 17** | **14 / 17** |
+| in the top 3 | — | 8 / 17 |
+| ranked first | — | 8 / 17 |
+| gold not among the picks | — | 3 / 17 |
+| parse failures | — | 0 / 17 |
+
+**+4 questions is the largest movement the document channel has seen in six nights**, against
+five statistical rankers that between them moved it from 9 to 10. And 8 of 17 at rank 1 is a
+number no previous mechanism came close to: the model is not merely including the right
+publication, it is leading with it.
+
+**And it cannot be certified, because the holdout was never bought.** PASS and WEAK both require
+a holdout-2 number. The headless budget stood at **43 of 50** when the development set finished;
+holdout-2 needs 30 calls and 7 were left. **Gate: not certifiable. H is NOT adopted**, the
+`find --compact` change of Phase 2.1 does **not** ship, and the live battery runs without a
+selector arm.
+
+**Holdout-2 was not looked at at all.** A 7-question partial cannot be compared to a bar of
+≥17/30 and would have burned one of its two looks for nothing. It keeps **both** looks, which is
+the single most valuable thing this finding leaves behind.
+
+### Why the budget was gone: a contamination defect in my own instrument
+
+The first run scored 11/17 with **6 parse failures** and consumed **25 calls**. Both were
+symptoms of the same thing, and it is worth stating precisely because it is the second
+instrument defect in three phases.
+
+The headless calls were made with `cwd` inside the repository tree. Claude Code resolves a cwd to
+a project key and loads that project's **auto-memory** — and this project has one, holding the
+architecture review, the project goal and the plans. **The selector model was reading this
+project's own notes while judging which publication to pick.** It was not theorised: one response
+quoted the memory back, declining to answer and explaining what "the retrieval-lab memory I have"
+covered.
+
+That run's 25 calls are counted against the cap regardless, its 17 results are quarantined under
+`_private/results/h_cache_CONTAMINATED_run1`, and its 11/17 is void — not a weaker version of the
+14, a different measurement of a contaminated system.
+
+Repaired three ways, all now permanent: the cwd moved outside the tree to a temp directory whose
+project key has no memory directory; `--max-turns` raised from 1 to 2, which removed every
+`Error: Reached max turns (1)`; and a guard, `assert_clean_cwd()`, that walks up from the cwd
+for any `CLAUDE.md` and refuses to run if the resolved project key has a non-empty memory
+directory. The clean run shows **zero** occurrences of any project-memory marker across all 17
+cached responses.
+
+**One reporting defect corrected with it:** the aggregate field `n_no_answer` conflated a parse
+failure with the model simply not picking the gold family. All 17 clean responses parsed; the 3
+are genuine misses. Renamed `n_gold_not_in_picks`, with `n_parse_failures` reported separately at 0.
+
+### The secondary diagnostic, and it is a clean negative
+
+`do_have(publication_guess)` — ask the model to *name* the publication it would look in, then
+look that name up on the shelf — puts the gold family in `have`'s top 3 on **1 of 17**. The model
+produced a guess on all 17.
+
+**Selecting from a list works; generating a name does not.** The same model, in the same call,
+picks correctly 14 times and names correctly once. What it has is the ability to *recognise*
+which of these publications is the right kind, not the ability to reproduce an institution's
+exact title from memory. That is worth knowing because "just ask the model what publication to
+look in" is the obvious cheap version of this idea, and it is measured here at 1 of 17.
+
+### What this licenses and what it does not
+
+It licenses re-running H tomorrow with a clean budget — and that run is now cheap and
+fully specified, because the instrument, the prompt and the gate all exist and only the calls are
+missing. It does **not** license shipping the `find --compact` change or reading the 14 as a
+result about the system: **a development number with no confirmation set behind it is exactly
+what the holdout discipline exists to distrust**, and this project has already had two headline
+numbers turn out to be broken instruments within a day.
+
+*Condition: this corpus, top-100 pool in fused order, cards from shelf fields only, one
+single-turn call per question, claude-sonnet-5, one configuration, no prompt variants. Development
+set only.*
+
+---
+
+## F61. The citation guard, and why it is not the S2 hook
+
+**Built 2026-09-16.** `c_stop_guard.py`, a Stop hook installed by `c_stack.py` alongside the
+deny list. On stop it reads the session transcript, collects every `open "<path>" <page>` the
+session issued and every path-like string in the final assistant message, and if a cited path
+was never opened it returns one block with a reason naming the path and offering two remedies:
+open it, or drop the citation.
+
+**Why the boundary moved.** F59 measured the `note` guard doing nothing: it fired correctly,
+recorded nothing it should not have, and `cited_unopened_total` still rose 8 to 10. The reason
+was structural — the session notes the pages it opened, then names extra paths in its final
+message, and **the answer never passes through the note.** So the check moved to where the
+answer actually is.
+
+**The distinction from the S2 hook, recorded because it matters.** S2 denied Grep and Glob
+outright and forced the session down a prescribed route; it was a controller, and it measured
+slightly *worse* than the one-line `CLAUDE.md` instruction asking for the same thing. This hook
+denies nothing, forces no route, and never edits text. It reads one property of a finished
+answer — was every path you cited opened — and asks once. **A second stop passes
+unconditionally**, so a session that disagrees, or that cannot open the page, always terminates.
+The guard can delay an answer; it cannot prevent one.
+
+**Its self-test earned its place immediately.** The first implementation blocked the file the
+session *had* opened. The cited-path regex necessarily swallows the preceding prose word,
+because directory names in this corpus contain spaces, and a literal comparison then marks every
+opened file unopened. Live, that would have blocked nearly every session and produced a
+measurement of nothing. Caught by a behaviour test written before the battery, fixed with the
+filename-exact, parent-by-suffix rule `scoring.py` already uses. **9 of 9 behaviour checks**,
+wired into `c_selftest.py` so installation and behaviour are tested separately — the installer
+round-trip asserts the guard is *present*, the shelf self-test asserts it *works*.
+
+*Condition: this harness, Claude Code's Stop hook contract, one configuration.*
+
+---
+
+## F62. LIVE-4 — the guard takes citations of unopened files from 10 to 0, and the answers get no better
+
+**Measured**, `state/c_live_battery_p8.json` and `state/c_live_forensics_p8.json` against the
+evening battery. 24 live sessions (see the deviation below), `claude-sonnet-5`, 20 of 20
+completed, 1 timeout, $6.81. Isolation 2/2, checksums 18 unchanged and 0 changed, 0 memory
+files, 0 new canary-bearing transcripts, rung torn down clean.
+
+### The three arms, reported separately because they test different changes
+
+| arm | metric | evening | today | verdict |
+|---|---|---|---|---|
+| document selection | L0 | 10 | 11 | **skipped** — 2.1 did not ship, H uncertified |
+| page/edition choice | L2+L3 | 2 | 2 | flat |
+| **citation guard** | **cited_unopened_total** | **10** | **0** | **PASS** |
+| outcome | cited_right_page | 1 | 1 | **STOP** (PASS ≥5, WEAK 3–4) |
+| | absence (frozen 3) | 3/3 | 2/3 | meets the ≥2/3 requirement |
+
+**The guard fired 6 times across 6 distinct sessions of 20, and citations of unopened files went
+to zero.** Every blocked session resolved it. Of the 20 final answers, **9 cite paths and every
+one of those paths was opened**; **10 cite no path at all**. So the honest split of what blocked
+sessions did is: some opened the page, some dropped the citation, and the data cannot cleanly
+separate them — but **at most 10 sessions ended by citing nothing**, and that is the number to
+watch, because a guard satisfied by silence is not obviously an improvement.
+
+### What did not move
+
+`cited_right_page` stays at **1 of 17**. `surfaced` 7 to 6, `opened_right_page` 2 to 1, L0 10 to
+11 — all within the run-to-run variation four batteries have now demonstrated.
+`forbidden_total` rose 2 to 4, the one number that moved the wrong way and is not explained by
+the guard.
+
+**So the guard did exactly what it was built to do and the answers are no better.** Citation
+discipline was a real defect — 5, then 8, then 10 answers naming files nobody opened — and it is
+now fixed at the only boundary that could fix it. It was not what was making the answers wrong.
+The system still puts the right publication in front of the model on 6 of 17 questions, and the
+model still cites the right page on 1.
+
+This is the third mechanism aimed at the model's behaviour — an instruction, a note-level check,
+an answer-level check — and the first to work mechanically. **All three left `cited_right_page`
+between 0 and 2.**
+
+### Deviation: 24 live sessions against a stated cap of 23
+
+The phase caps live sessions at "23 (3 probes plus 20 questions)" and then specifies a procedure
+with **four** probes plus 20 questions. The arithmetic does not close. The frozen 20 cannot be
+cut — every prior phase fixes the denominators at 17 and 3 — so the fourth probe is the overrun,
+recorded here rather than hidden by dropping a question.
+
+**The fourth probe also failed its purpose, which is worth recording.** It asked the model to
+state a citation for a made-up path without opening it, and the model **refused**, quoting the
+folder's own rule back: *"I haven't run any command, so I have no basis for that claim."* The
+guard's block path was therefore never exercised live by the probe — though the hook is confirmed
+firing, logging on all four probe sessions and blocking 6 times during the battery proper.
+
+*Condition: four batteries now, 17 answerable questions each, one configuration change per
+battery, claude-sonnet-5.*

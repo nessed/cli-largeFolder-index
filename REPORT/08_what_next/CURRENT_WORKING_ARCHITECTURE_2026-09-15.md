@@ -411,3 +411,103 @@ opposite of everything tried so far: not reranking documents, but **retrieving p
 and letting the document follow** — B2c works at page level, and the 1.2M-page index already
 exists. Pre-registered gate for that, fixed now: gold **page** in the top 20 over the whole
 corpus on ≥6/17 dev and ≥10/30 on holdout-2, which has **2 unspent looks**. Below that, stop.
+
+---
+
+# Addendum — 2026-09-16
+
+*Added, not a rewrite. Findings F60–F62.*
+
+## G1. RETRIEVE DOCUMENT was NOT redrawn, and for once that is a budget failure rather than a measurement
+
+The condition for redrawing RETRIEVE DOCUMENT as **CANDIDATES (shelf, top-100) → SELECT (the
+answering model reads the list)** was that Experiment H be adopted. It was not adopted, and the
+reason is not that it failed.
+
+| | frozen configuration | **Experiment H** |
+|---|---|---|
+| gold family in the top 10 | 10 / 17 | **14 / 17** |
+| in the top 3 | — | 8 / 17 |
+| ranked first | — | **8 / 17** |
+
+**+4 is the largest movement the document channel has seen in six nights**, against five
+statistical rankers that between them moved it from 9 to 10 — and 8 of 17 at rank 1 is something
+no previous mechanism approached. The pool was never the problem; the ranking was, and the
+judgement it needed turns out to be the kind a language model has and a similarity measure does
+not.
+
+**It cannot be certified because the holdout was never bought.** A contamination defect in the
+first run — headless calls made from inside the repository tree, which loads this project's own
+auto-memory, one response quoting the architecture review back — consumed 25 of the 50-call
+budget before it was caught. The clean re-run left 43 of 50 spent, and holdout-2 needs 30 calls.
+**Holdout-2 was not looked at at all**, and keeps both of its looks.
+
+So the box stays as it is, `find --compact` did not ship, and **the single most valuable thing in
+the repository right now is a fully specified, instrument-repaired experiment that needs 47
+calls and has never been confirmed.**
+
+A clean secondary negative from the same calls: asking the model to **name** the publication and
+looking that name up scores **1 of 17**. Selecting from a list works; generating a title does not.
+
+## G2. CLAUDE ANSWERS — the citation guard works, at the third attempt, and changes no outcome
+
+| mechanism | boundary | cited_unopened | outcome |
+|---|---|---|---|
+| an instruction in CLAUDE.md (pm) | prose | 5 → 8 | STOP |
+| a check on `note` (evening) | the note | 8 → 10 | STOP |
+| **a Stop hook on the answer (today)** | **the answer** | **10 → 0** | **PASS on the guard** |
+
+**Six blocks across six of twenty sessions, and citations of unopened files went to zero.** The
+boundary was the entire problem: the answer never passed through the note, so a note-level check
+could not see the violation.
+
+**And `cited_right_page` stayed at 1 of 17.** Of the twenty answers, nine cite paths that were
+all opened and ten cite no path at all — a guard satisfied by silence is not obviously an
+improvement, and that number is recorded so the next phase can watch it. Citation discipline was
+a real defect, it is fixed, and it was not what was making the answers wrong.
+
+## G3. Four live batteries, one shape
+
+| | overnight | pm | evening | today |
+|---|---|---|---|---|
+| L0 right publication never surfaced | 9 | 10 | 10 | **11** |
+| cited the right page | 0 | 2 | 1 | **1** |
+| cited an unopened file | 5 | 8 | 10 | **0** |
+| absence (frozen 3, repaired scorer) | 2/3 | 3/3 | 3/3 | **2/3** |
+
+**L0 is 9–11 of 17 in all four.** Every other number moves by one or two between configurations,
+including between configurations that changed nothing relevant to it. This is now the strongest
+empirical statement the project has: **the loss is document retrieval, everything else is small,
+and the measurement noise on 17 questions is ±2.**
+
+## G4. Boxes
+
+**Keep:** SHELF; VERIFY; session isolation; ROUTE/absence. **Adopted and working:** B2c page
+retrieval; the citation guard.
+**Weak:** the trajectory walk; ROUTE's presence half.
+**Failed:** RETRIEVE DOCUMENT by five statistical mechanisms; edition selection by three;
+behaviour instructions by two of three.
+**Uncertified but the most promising result in the project:** Experiment H, 14/17 on development,
+no holdout.
+**Untested:** the EXTRACT router; the VERIFY → retry edge.
+
+## G5. The next experiment
+
+**Re-run Experiment H properly.** It needs 47 headless calls, the instrument is repaired and
+guarded, the prompt and card builder are written, the gate is already pre-registered, and
+holdout-2 has both looks unspent. Nothing else in the repository has a better ratio of expected
+information to cost.
+
+**Gate, unchanged from `state/experiment_h_spec.md`:** PASS ≥13/17 **and** holdout-2 ≥17/30;
+WEAK 11–12 **and** ≥16/30; STOP ≤10/17.
+
+Two standing items from the evening addendum remain, and the second is now sharper:
+
+1. **Establish the live variance.** Four batteries have shown ±2 on every metric that is not L0.
+   Run one configuration three times and report the spread before trusting any live band.
+2. **The intermediate objective is decoupling, and today quantified it.** The frozen
+   configuration scores 10/17 offline; H scores 14/17 offline; the live agent surfaces 6/17 and
+   cites 1. Offline document recall has moved by five questions across the project while the live
+   outcome has not moved at all. Either the live harness is losing what retrieval gains, or
+   top-10 recall is the wrong target — and **that question is now worth more than another
+   retrieval mechanism.**
