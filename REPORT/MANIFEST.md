@@ -116,7 +116,7 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 |---|---|---|---|
 | `FINDINGS_LIVE.md` | `corpus-lab/05_findings/FINDINGS_LIVE.md` | 77,651 | `24dec6506f1db801` |
 | `RESUME.md` | `corpus-lab/RESUME.md` | 11,283 | `b9fe6c5fbce760f8` |
-| `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 112,090 | `b4d1d8f967897099` |
+| `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 112,726 | `5fb7334aafbedaa5` |
 
 ---
 
