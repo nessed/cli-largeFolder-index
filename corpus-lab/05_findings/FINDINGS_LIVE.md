@@ -1727,3 +1727,54 @@ k=60, no weights or thresholds. It does not show that no document-level use of c
 work — an aggregate less extreme than the maximum, or a per-caption reranker over candidate
 pages rather than families, remains untried — but it does show this form fails, and the
 remaining variants are all "tune the aggregate", which the spec forbade.*
+
+---
+
+## F58. Chain v2 — a page fix worth +10 of 57 in isolation is worth +1 of 17 in the chain
+
+**Measured**, `state/c_chain_gate_v2.json` against `state/c_chain_gate.json`. Same 20 frozen
+questions, same frozen document configuration (E1 — Experiment G stopped, so it stands), the
+**production** page method B2c, and the identifier-level ROUTE path added in the pm run. 488
+verifier calls, 33 minutes, no model calls.
+
+| stage | v1 (B2 pages) | **v2 (B2c pages)** |
+|---|---|---|
+| gold family in the top 5 | 8 | **8** |
+| → a gold (file, page) reached | 4 | **5** |
+| → the cell verified on the page | 3 | **3** |
+| absence routed correctly | 1 / 3 | **3 / 3** |
+| mean pages opened per question | 46.4 | 50.2 |
+| questions hitting the 40-call verifier cap | 11 | 12 |
+
+**Neither pre-registered reading fires.** Address hits rose to 5, not the ≥6 that would have
+confirmed page selection as live-independent; verified hits lag address hits by 2, not the ≥3
+that would have made EXTRACT/VERIFY the next box. Both are reported as measured and no third
+reading is invented after the fact.
+
+**The headline is the size of the transfer, and it is the most useful number here.** B2c is
+worth **+10 of 57 addresses** when the right document is handed to it (42 → 52, F55). Inside
+the chain, where the document has to be found first, it is worth **+1 of 17 questions**. Same
+mechanism, same corpus, same questions — a factor of roughly ten lost to everything upstream.
+
+That is not a criticism of B2c; it is the arithmetic of a pipeline. The chain reaches a page
+only on the 8 questions whose family is in the top 5, and of those it must also pick the right
+edition. Better page *ranking within a document* cannot help on the 9 questions that never
+reach the right document, and it is diluted again by the edition step. The count that shows
+this directly: **family-in-top-5 but no address reached falls only from 4 to 3.**
+
+**Absence is now 3 of 3**, up from 1, entirely from the identifier-level `exact` path added in
+the pm run (F53) — the chain's earlier 1/3 was that implementation gap and nothing else.
+
+**Verified hits did not move, and the verifier is still not the bottleneck.** It converted 3 of
+the 4 addresses it was given in v1 and 3 of 5 in v2. The one address gained was a page whose row
+and column the verifier could not resolve, so the count of "reached but not verified" rose from
+1 to 2 — a small number and the only sign in the whole run that extraction may eventually
+matter. It is not yet worth a box.
+
+**The edition rule is still failing in the way ED3 measured this afternoon.** Its own counters:
+the year-based rule selected no edition at all and fell back to all primaries on **5 of 17**
+questions, and fired properly on 5. That is ED3's 3/10 arriving through a different door for the
+second time today.
+
+*Condition: this corpus, top-5 families, top-5 pages per edition, a 40-call verifier cap hit on
+12 of 17 questions — so the verified count is a floor. Deterministic, no model calls.*

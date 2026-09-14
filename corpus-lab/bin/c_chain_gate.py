@@ -41,9 +41,12 @@ import c_offline_gate as G  # noqa: E402
 # PARENT and import it as a package instead.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+# The frozen document configuration is unchanged: Experiment G stopped (F57),
+# so E1 (rrf + lexical caption channel) still stands. The PAGE method is now
+# B2c, adopted in production after F55 passed its gate and its holdout.
 FROZEN_FUSION = "rrf"
 FROZEN_CAPTION_CHANNEL = "lex"
-FROZEN_PAGE_CAPTION = "first"
+FROZEN_PAGE_CAPTION = "dense_first"
 TOP_FAMILIES = 5
 TOP_PAGES = 5
 MAX_EDITIONS = 15
@@ -275,7 +278,7 @@ def main():
         "wall_s": round(time.time() - t0, 1),
         "per_question": per_question,
     }
-    (L.STATE / "c_chain_gate.json").write_text(json.dumps(report, indent=1),
+    (L.STATE / "c_chain_gate_v2.json").write_text(json.dumps(report, indent=1),
                                                encoding="utf-8")
     print(json.dumps({k: v for k, v in report.items() if k != "per_question"}, indent=1))
     return 0
