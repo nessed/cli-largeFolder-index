@@ -4,10 +4,12 @@
 vague question in ordinary language, and get back the actual number with the file and page
 it came from — and an honest "not in here" when the answer genuinely isn't?
 
-**Answer so far: the honest-refusal half works. The find-the-right-page half does not,
-and we now know fairly precisely why.** Six nights, fourteen approaches measured end to end, twelve pre-registered gates read
-(one passed), five live Claude Code batteries, about $71 spent. This repository
-is the full record — code, measurements, failures, and the diagnosis.
+**Answer so far: structural honest refusal works, and B2c can find the right page once the
+right document is known. The unresolved end-to-end problem is selecting that document from a
+vague question.** Six nights, twelve pre-registered gates, and five live Claude Code batteries
+produced one full holdout-confirmed pass (B2c), a passing citation-guard sub-arm, and a WEAK
+Experiment H result; timeout, evaluator, and variance findings qualify the live headline metrics.
+This repository is the full record — code, measurements, failures, and the diagnosis.
 
 > ### 👉 New here? Start at [`REPORT/README.md`](REPORT/README.md)
 >
