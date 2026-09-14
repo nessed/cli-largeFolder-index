@@ -1,7 +1,0 @@
-{
- "db": "corpus-lab/02_stacks/s2_fts5/harness_15000.db",
- "out": "corpus-lab\\02_stacks\\s7_shelf_v2",
- "built_at": "2026-09-15T04:06:42",
- "n_docs": 12809,
- "n_families": 1512
-}

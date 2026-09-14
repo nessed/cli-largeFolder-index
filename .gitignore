@@ -39,7 +39,10 @@ corpus-lab/02_stacks/s2_fts5/*.db-shm
 corpus-lab/02_stacks/s2_fts5/*.db-wal
 corpus-lab/02_stacks/s6_hybrid/
 corpus-lab/02_stacks/s7_shelf/
+corpus-lab/02_stacks/s7_shelf_v2/
 corpus-lab/02_stacks/shelf_v2/
+# Phase 9.6: every portable folder's index lives here, same reasoning.
+corpus-lab/02_stacks/portable/
 corpus-lab/02_stacks/evidence_v1/
 corpus-lab/state/shelf_v2/
 *.db
