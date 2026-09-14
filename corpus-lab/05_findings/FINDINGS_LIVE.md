@@ -1421,3 +1421,72 @@ project ends up believing its own bad numbers in both directions.
 *Condition: this corpus, these 15 absence questions, one battery of recorded transcripts. The
 scorer repair was specified from F50's two named defects and committed before reading; the
 stem list was not extended after seeing the answers.*
+
+---
+
+## F54. Where the agent went when the right file was on screen
+
+**Measured**, `state/c_live_forensics.json`, the 17 answerable P5_live transcripts recorded
+overnight. No new sessions. Six mutually exclusive classes, first match wins, and the decision
+table that reads this output was written before the counts existed.
+
+| class | count | what it means, in one sentence |
+|---|---|---|
+| **L0** family not surfaced | **9** | The right publication never appeared in any `find` output, so the session never had a chance to choose it. |
+| **L1** surfaced, opened another publication | **4** | The right publication was printed on screen and the session went to a different publication entirely — though **2 of these 4 opened nothing at all**, so only 2 actively chose elsewhere. |
+| **L2** right publication, wrong edition | **2** | The session got to the right publication and opened the wrong year's volume of it. |
+| **L3** right file, wrong page | **1** | The session opened the correct document and never landed on the page the key cites. |
+| **L4** right page opened, not cited | **1** | The session had the right page open and its answer did not cite it. |
+| **L5** cited the right page | **0** | — |
+
+**The dominant class among L1–L4 is L1 at 4, which clears the pre-registered threshold of ≥4
+of the 8 surfaced sessions.** The Phase 4 row for L1 therefore applies. Two honest
+qualifications, recorded because they narrow what the number means: half of L1 is sessions
+that opened nothing rather than sessions that opened the wrong thing, and L1's lead over L2 is
+two questions on a base of eight.
+
+**The shape of the loss is now decomposed, and it is top-heavy.** Of 17 questions, **9 never
+see the right publication at all** — more than the other five classes combined. The
+behavioural classes L2–L4, everything downstream of picking the right publication, account for
+**4 questions total**. Whatever is wrong here is mostly not a matter of what the agent does
+with a good candidate list; it is that the list is not good.
+
+**The two L2 sessions are worth their own line**, because they are the only direct evidence of
+how edition choice fails in practice. In one, the right edition was listed **first** of 15 and
+the session opened the **third**. In the other, the right edition was **third** of 15 and the
+session opened the **fifteenth**. Both are consistent with F51's finding from the offline side:
+the agent is choosing the edition whose printed year matches the question, and the row it wants
+is in a different volume.
+
+### How the tools were actually used
+
+| | |
+|---|---|
+| `find` calls | 26, and **all 26 carried `--q` rewrites** |
+| `have` used | 14 of 17 sessions |
+| `tables` used | 10 of 17 |
+| `inside` calls | 24 |
+| `series` on a trajectory question | 2 of 4 |
+| searched using a content word **not** in the question (rewrote the subject in its own words) | **8 of 17** |
+
+**The instructions were followed.** Every single `find` carried hand-written rewrites, as
+`CLAUDE.md` asks; `have` was used on most questions; `tables` on more than half. This is not a
+session ignoring its tooling. And on **8 of 17** questions the model searched using vocabulary
+of its own rather than the question's — so the vocabulary bridge that B2b's failure said was
+missing from the *caption index* is something the agent does attempt on its own about half the
+time. Neither the tool use nor the paraphrasing is the loss.
+
+### One classifier defect, caught and fixed before the counts were read
+
+The first run of this script reported L1 = 6 and L2 = 0, which would have pointed the whole
+phase at the wrong repair. Shelf `rel` keys preserve their original case and `scoring.norm_path`
+lowercases, so **every** opened path failed its family lookup and silently returned "not in the
+gold family". Zero of 14 opens in the supposed L1 sessions resolved to any family at all — the
+signature of a blind classifier, not of an agent choosing badly. Fixed with a lowercased index
+plus the tail-2 fallback `scoring.py` already uses, and a permanent guard
+(`n_sessions_where_no_open_resolved_to_a_family`, now **0**) so this class of bug cannot pass
+silently again. The counts above are from the corrected run.
+
+*Condition: one battery, 17 questions, claude-sonnet-5, the frozen configuration. The classes
+are ordered, so each question contributes to exactly one; a session can fail in more than one
+way and only its earliest failure is counted.*

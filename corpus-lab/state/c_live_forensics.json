@@ -1,0 +1,214 @@
+{
+ "phase": "P5_live",
+ "n_answerable_scored": 17,
+ "n_surfaced": 8,
+ "class_totals": {
+  "L0_family_not_surfaced": 9,
+  "L1_surfaced_opened_other_family": 4,
+  "L2_opened_same_family_other_edition": 2,
+  "L3_opened_gold_file_wrong_page": 1,
+  "L4_opened_right_page_not_cited": 1,
+  "L5_cited_right_page": 0
+ },
+ "dominant_class_L1_L4": "L1_surfaced_opened_other_family",
+ "dominant_class_count": 4,
+ "dominant_qualifies_ge4_of_surfaced": true,
+ "counters": {
+  "find_calls": 26,
+  "find_with_q": 26,
+  "have_called": 14,
+  "tables_called": 10,
+  "inside_calls": 24,
+  "series_on_trajectory": 2,
+  "n_trajectory": 4
+ },
+ "n_sessions_rewrote_subject_in_own_words": 8,
+ "n_L1_sessions_that_opened_nothing_at_all": 2,
+ "n_sessions_where_no_open_resolved_to_a_family": 0,
+ "l2_edition_ranks": [
+  {
+   "q_id": "rc_05",
+   "gold_edition_rank": 1,
+   "opened_edition_rank": 3,
+   "n_editions": 15
+  },
+  {
+   "q_id": "tr_10",
+   "gold_edition_rank": 3,
+   "opened_edition_rank": 15,
+   "n_editions": 15
+  }
+ ],
+ "per_question": {
+  "cd_04": {
+   "type": "canonical_duplicate",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 1,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 1
+  },
+  "mb_04": {
+   "type": "multi_branch",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 2,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 7
+  },
+  "mb_05": {
+   "type": "multi_branch",
+   "class": "L1_surfaced_opened_other_family",
+   "surfaced": true,
+   "n_find": 2,
+   "n_find_with_q": 2,
+   "n_inside": 1,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 5
+  },
+  "mb_07": {
+   "type": "multi_branch",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 4,
+   "n_find_with_q": 4,
+   "n_inside": 3,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 6
+  },
+  "nm_09": {
+   "type": "name_content_mismatch",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 1,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 2
+  },
+  "pl_01": {
+   "type": "point_lookup",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 1,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 1
+  },
+  "pl_14": {
+   "type": "point_lookup",
+   "class": "L1_surfaced_opened_other_family",
+   "surfaced": true,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 2,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 4
+  },
+  "pl_21": {
+   "type": "point_lookup",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 1,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 1
+  },
+  "rc_05": {
+   "type": "reconciliation",
+   "class": "L2_opened_same_family_other_edition",
+   "surfaced": true,
+   "n_find": 2,
+   "n_find_with_q": 2,
+   "n_inside": 2,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 3
+  },
+  "rc_07": {
+   "type": "reconciliation",
+   "class": "L3_opened_gold_file_wrong_page",
+   "surfaced": true,
+   "n_find": 2,
+   "n_find_with_q": 2,
+   "n_inside": 4,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 5
+  },
+  "rl_05": {
+   "type": "relationship",
+   "class": "L1_surfaced_opened_other_family",
+   "surfaced": true,
+   "n_find": 3,
+   "n_find_with_q": 3,
+   "n_inside": 0,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 0
+  },
+  "sd_03": {
+   "type": "stale_doc",
+   "class": "L1_surfaced_opened_other_family",
+   "surfaced": true,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 0,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 0
+  },
+  "sd_05": {
+   "type": "stale_doc",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 0,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 0
+  },
+  "tr_04": {
+   "type": "trajectory",
+   "class": "L4_opened_right_page_not_cited",
+   "surfaced": true,
+   "n_find": 2,
+   "n_find_with_q": 2,
+   "n_inside": 0,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 8
+  },
+  "tr_07": {
+   "type": "trajectory",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 3,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 5
+  },
+  "tr_10": {
+   "type": "trajectory",
+   "class": "L2_opened_same_family_other_edition",
+   "surfaced": true,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 1,
+   "rewrote_subject_in_own_words": false,
+   "n_opens": 2
+  },
+  "tr_16": {
+   "type": "trajectory",
+   "class": "L0_family_not_surfaced",
+   "surfaced": false,
+   "n_find": 1,
+   "n_find_with_q": 1,
+   "n_inside": 2,
+   "rewrote_subject_in_own_words": true,
+   "n_opens": 3
+  }
+ }
+}
