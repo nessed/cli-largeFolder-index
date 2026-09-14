@@ -34,9 +34,9 @@ is the full record — code, measurements, failures, and the diagnosis.
 | ✅ **Solved** | Getting the model to *use* a tool you give it. One line in `CLAUDE.md` moved index adoption from 0 of 38 sessions to 38 of 38. A hook that *forced* the same thing scored slightly worse. |
 | ✅ **Solved** (disputed 2026-09-15 am, **restored the same day** — see F53) | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. **2026-09-15, and this is the useful part of the story:** an overnight live battery scored this 1 of 15 and the deterministic chain 1 of 3, putting the whole claim in doubt. Both were measurement defects. The scorer counted the shelf's own quoted edition lists as invented figures — no absence session invented a number, not once in fifteen — and the chain had no path for identifier-level absence, which is 2 of the 3 questions it scored. Repaired: **11 of 15 live**, and ROUTE re-derives **11/11 and 4/4** from a second implementation. Both numbers are published; the old one is labelled SUPERSEDED-BY-SCORER-REPAIR, not deleted (F53). |
 | 🟡 **Built, trustworthy, retrieval-independent** | Coverage accounting over 15,010 files, content hashing, provenance records, geometry-aware table-cell verification, a typed evidence compiler, safe install/teardown, and test suites. None of it depends on which retrieval idea eventually wins. |
-| ❌ **Not solved** | Putting the right page in front of the model for a vague question. **Every approach has failed this.** Measured across four live batteries: on **9 to 11 of 17** questions the right publication never reaches the model at all, and it cites the right page on **0 to 2**. Two sub-problems are now solved — the right *page* inside a known-right document (82.7% on a holdout) and citing only what was opened (10 → 0) — and neither moved the outcome. The one promising lead is that the model itself picks the right publication from the candidate list on **14 of 17**, which is measured but not yet confirmed on a holdout. |
+| ❌ **Not solved** | Putting the right page in front of the model for a vague question. The primary retrieval loss is still document selection: across four Sonnet live batteries, the right publication did not surface on **9 to 11 of 17** questions and the right page was cited on **0 to 2**. Those live headline metrics need qualification: the 300-second harness cap can turn a found answer into a miss, strict single-gold-address scoring can reject credible official alternatives, and direct Sonnet/Opus probes were qualitatively stronger. Two sub-problems are solved — the right *page* inside a known-right document (82.7% on a holdout) and preventing citations of unopened **file paths** (10 → 0) — and neither has yet moved the measured live outcome. Experiment H's clean confirmation is a **WEAK** document-selection gain: **11/17** dev and **17/30** holdout-2, against frozen **10/17** and **14/30**; it is not adopted. |
 
-### The one open problem
+### The primary open retrieval problem
 
 This corpus republishes the same fiscal tables every year across dozens of near-identical
 editions, *and* restates each year's figure in prose on many pages inside each edition. A
@@ -48,6 +48,10 @@ is why better word matching, query rewrites, wider aliases and deeper candidate 
 measured out to approximately zero. It shows up at both scales: across the corpus (the right
 page sits at rank ~500–3,000 of 1.2 million) and *within* a single correct document (the
 canonical table ranks 6th behind five prose restatements of its own subject).
+
+It is not the only open problem in the project. Evaluator completeness for alternate official
+sources, the 300-second live timeout, citation validation for prose title/page citations, and
+run-to-run variance all now limit how confidently the measured live numbers can be read.
 
 | approach | best measured result | bar |
 |---|---|---|
@@ -74,9 +78,9 @@ canonical table ranks 6th behind five prose restatements of its own subject).
 | approach C, edition selection using the better pages (ED3) | **3 of 10**, mean set 2.0 — identical to the previous rule despite page retrieval going 42 → 52 of 57; the pages found are the right kind in the wrong edition | 8/10 |
 | approach C, whole pipeline end to end (chain v2) | **8 → 5 → 3 of 17 verified**, absence **3/3** — NEW 2026-09-15 evening; a page fix worth +10 of 57 in isolation is worth +1 of 17 in the chain | — |
 | approach C, third live battery (tool-enforced citation) | `note` now refuses a page you did not open — and **answers citing an unopened file rose 8 → 10**, because the gate guards the note and the answer does not pass through it. Gate STOP | see F59 |
-| **approach C, the model picks the publication from the top-100 pool (H)** | **14 of 17** against 10 for the best statistical ranker, with **8 of 17 ranked first** — NEW 2026-09-16, the largest document-channel movement in the project. **Not certified**: a contamination defect in the first run ate the call budget, so the holdout was never measured | 13/17 + holdout |
+| **approach C, the model picks the publication from the top-100 pool (H)** | clean confirmation: **11/17** dev, **17/30** holdout-2 against frozen **10/17**, **14/30** — **WEAK**, not adopted. The earlier clean dev sample was 14/17, so identical runs spread by 3/17; this is a modest gain, not a breakthrough | 13/17 + holdout |
 | approach C, asking the model to *name* the publication instead | **1 of 17** — selecting from a list works, generating a title does not | — |
-| approach C, fourth live battery (citation guard on the answer) | **answers citing a file nobody opened: 10 → 0**, six blocks in six of twenty sessions — the third attempt at this and the first to work. **Right page still cited on 1 of 17** | see F62 |
+| approach C, fourth live battery (citation guard on the answer) | citations of **unopened file paths**: **10 → 0**, six blocks in six of twenty sessions — the third attempt and first mechanical pass. Title/page-style citations can bypass the path matcher. **Right page still cited on 1 of 17** | see F62 + session-log Appendix A |
 
 > **Extended 2026-09-15 — the first live battery, and the first end-to-end run.**
 > Six more pre-registered gates were read and **all six STOPped or FAILED**; no bar was moved.
@@ -106,31 +110,32 @@ If you are here to suggest improvements, these are the live questions, in rough 
 how much they matter. **Arguments that the framing itself is wrong are as welcome as
 arguments within it.**
 
-**1. The disambiguation problem above.** Given hundreds of near-identical yearly editions
+**1. Establish whether the measurements can be trusted.** The next work should first measure
+run-to-run variance, inspect all timed-out sessions, audit strict-gold scoring against credible
+alternate official sources, and run one comparable longer-cap battery on Opus. The current
+headline live metrics partly measure the harness and an incomplete evaluator, not just retrieval.
+
+**2. The disambiguation problem above.** Given hundreds of near-identical yearly editions
 and a question that doesn't name a year, how do you pick the right one? Every lexical idea
 tried has failed, each with a traced reason rather than a shrug. See
 [`REPORT/README.md`](REPORT/README.md) §6–7.
 
-**2. Telling "this IS the table" apart from "this mentions the table's subject."** This is
-the most concrete lead in the repo and it is *not* yet built. Stage 1 of approach C already
-harvested **89,380 explicit `Table N.N:` caption lines**, and caption coverage is **100% of
-every PDF ≥100 pages (1,895 of 1,895)** — i.e. essentially complete over the large
-statistical publications, and legitimately absent only on short notes and non-PDF formats.
-A caption is a *label*, not a restatement, so it is exactly the signal that should separate
-a canonical table from prose that happens to share its words. The in-document search does
-not use that channel yet. See
-[`REPORT/06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md`](REPORT/06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md) §4.
+**3. Transfer the solved page signal to document selection.** B2c now uses dense caption ranking
+inside a known-right document, passed its holdout gate (**52/57** dev; **67/81**, 82.7%, holdout),
+and is adopted. The unresolved question is why captions distinguish the right table *within* a
+document but dilute across the corpus: Experiment G's document-level caption reranker stopped at
+9/17. Stage 1 harvested **89,380 explicit `Table N.N:` caption lines**, with 100% coverage of
+PDFs ≥100 pages (1,895/1,895).
 
-**3. A second failure that no retrieval fix addresses.** On 5 of 17 questions the right
-document *was* handed to the agent and it opened **none** of them — three were cited without
-ever being opened. A "quote the line before you cite it" rule was written for this and has
-**never been run**, because it was deliberately held behind a retrieval gate that never
-passed. That hold may itself be the wrong call; it is arguable.
+**4. Grounding and citation validation.** The live `note`-requires-`open` check stopped because
+the answer bypassed the note; the later answer-boundary guard eliminated citations of unopened
+*file paths* (10 → 0). Quote-before-cite validation and coverage of prose title/page citations
+remain untested.
 
-**4. Is the table-card framing wrong at the root?** Honest self-assessment at the end of
+**5. Is the table-card framing wrong at the root?** Honest self-assessment at the end of
 [`REPORT/05_evidence_v1_tuning/TUNING_SUMMARY.md`](REPORT/05_evidence_v1_tuning/TUNING_SUMMARY.md).
 
-**5. Coverage nobody has measured.** 1,211 files (8% of the fixture) are image-only PDFs
+**6. Coverage nobody has measured.** 1,211 files (8% of the fixture) are image-only PDFs
 unreachable without OCR. Nobody has checked the equivalent share in the real target folder,
 and bulk OCR over numeric tables is unmeasured here.
 
