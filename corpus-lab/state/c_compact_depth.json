@@ -1,0 +1,13 @@
+{
+ "n_questions": 17,
+ "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+ "fusion": "rrf",
+ "caption_channel": "lex",
+ "gold_in_top10_dev": 10,
+ "gold_in_top12_dev": 11,
+ "gold_in_top20_dev": 12,
+ "gold_in_top40_dev": 14,
+ "gold_in_top50_dev": 14,
+ "gold_in_top100_dev": 16,
+ "n_not_ranked_at_all": 1
+}

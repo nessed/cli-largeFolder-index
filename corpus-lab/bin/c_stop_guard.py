@@ -49,6 +49,76 @@ REASON = ("You cited {path} without opening it. Either open that page and quote 
           "supporting line, or remove the citation. Do not add any figure you have "
           "not opened.")
 
+# --------------------------------------------------------------------- #
+# Guard v2 (Phase 9.3.3), behind STOP_GUARD_V2=1 so every recorded P5-P8 number
+# still reproduces from the v1 path. c_stack.py setup sets the flag in the hook
+# command it installs.
+#
+# Session Log A.2.1: the v1 guard passes a citation written as prose -- "Title,
+# p.239" -- because it only matches path-like strings, and F62 recorded the
+# other half of the same hole, an answer full of figures that cites nothing at
+# all and so satisfies a guard that only inspects citations it can see. v2 adds
+# three checks at the same boundary, with the same manners: it asks once, never
+# edits text, and always lets a second stop through.
+# --------------------------------------------------------------------- #
+# Either the env var or a `--v2` argument turns it on. The argument is what
+# c_stack.py installs: a hook command is run by whichever shell the host picks,
+# and a `set VAR=1 &&` prefix means different things to cmd.exe and to bash, so
+# a shell-independent switch is the only one that cannot fail silently.
+V2_ON = (os.environ.get("STOP_GUARD_V2") == "1") or ("--v2" in sys.argv)
+
+# A page reference in prose. The leading literal `p` is what keeps a fiscal year
+# (2012-13) or a bare year (2019) from being read as a page number.
+PAGE_REF_RE = re.compile(r"(?<![A-Za-z0-9])p\.?\s?(\d{1,4})(?![0-9-])", re.I)
+PAGE_WORD_RE = re.compile(r"(?<![A-Za-z0-9])page\s+(\d{1,4})(?![0-9-])", re.I)
+SOURCES_HEAD_RE = re.compile(r"^\s*#{0,6}\s*\**\s*sources\s*\**\s*:?\s*$", re.I | re.M)
+# a Sources line: `... | <path> | p<n> | ...`
+SOURCES_LINE_RE = re.compile(
+    r"\|\s*(?P<path>[^|]*?\.(?:pdf|xlsx|xls|docx|doc|csv|txt|md|pptx|ppt))\s*\|\s*p\.?\s?(?P<page>\d{1,4})\b",
+    re.I)
+UNIT_RE = re.compile(
+    r"(?<![A-Za-z])(billion|million|percent|%|rs|rupees|tonnes|thousand)(?![A-Za-z])", re.I)
+NUMBER_RE = re.compile(r"(?<![A-Za-z0-9.,])\d[\d,]*(?:\.\d+)?(?![A-Za-z])")
+
+REASON_PAGE = ("You cited page {n} but never opened a page with that index. Open it and "
+               "quote the line, or remove the citation.")
+REASON_NO_CITE = ("Your answer gives figures but cites no opened page. Add a Sources "
+                  "block, or state that no supporting page was opened.")
+
+
+def page_refs(text):
+    """Every page number the answer claims, as ints."""
+    out = []
+    for rx in (PAGE_REF_RE, PAGE_WORD_RE):
+        for m in rx.finditer(text or ""):
+            try:
+                out.append(int(m.group(1)))
+            except ValueError:
+                pass
+    return out
+
+
+def has_sources_block(text):
+    return bool(SOURCES_HEAD_RE.search(text or "")) or bool(
+        re.search(r"(?<![A-Za-z])sources\s*:", text or "", re.I))
+
+
+def figures_without_citation(text):
+    """True if the answer states a figure -- a number with a unit word within
+    three tokens -- and carries no page reference and no Sources block anywhere.
+    That is F62's 'guard satisfied by silence'."""
+    t = text or ""
+    if page_refs(t) or has_sources_block(t):
+        return False
+    toks = re.findall(r"\S+", t)
+    for i, tok in enumerate(toks):
+        if not NUMBER_RE.search(tok):
+            continue
+        window = toks[max(0, i - 3):i + 4]
+        if any(UNIT_RE.search(w) for w in window):
+            return True
+    return False
+
 
 def segs_of(s):
     return [x for x in str(s or "").replace("\\", "/").lower().split("/") if x]
@@ -73,12 +143,15 @@ def same_path(cited, opened):
     return True
 
 
-def read_transcript(path):
-    """Returns (opened_paths, final_assistant_text)."""
+def read_transcript(path, with_pages=False):
+    """Returns (opened_paths, final_assistant_text), or with_pages=True
+    (opened_paths, final_text, {(path, page_index)}) -- guard v2 needs the page
+    a path was opened at, not only that it was opened."""
     opened, texts = set(), []
+    pairs = set()
     p = Path(path) if path else None
     if not p or not p.exists():
-        return opened, ""
+        return (opened, "", pairs) if with_pages else (opened, "")
     for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
         line = line.strip()
         if not line:
@@ -99,13 +172,18 @@ def read_transcript(path):
                         for rx in (OPEN_RE, OPEN_BARE_RE):
                             for m in rx.finditer(cmd):
                                 opened.add(m.group("rel"))
+                                try:
+                                    pairs.add((m.group("rel"), int(m.group("page"))))
+                                except (ValueError, IndexError):
+                                    pass
                     elif c.get("type") == "text":
                         chunk.append(c.get("text") or "")
                 if chunk:
                     texts.append("\n".join(chunk))
             elif isinstance(content, str):
                 texts.append(content)
-    return opened, (texts[-1] if texts else "")
+    final = texts[-1] if texts else ""
+    return (opened, final, pairs) if with_pages else (opened, final)
 
 
 def cited_paths(text):
@@ -135,15 +213,40 @@ def main():
     reason = None
     unopened = []
 
+    v2_hit = None
     # Ask at most once per session, and never on a re-entry the hook caused.
     if not stop_hook_active and not marker.exists():
-        opened, final = read_transcript(transcript)
+        opened, final, pairs = read_transcript(transcript, with_pages=True)
         for c in cited_paths(final):
             if not any(same_path(c, o) for o in opened):
                 unopened.append(c)
         if unopened:
-            marker.write_text(time.strftime("%Y-%m-%dT%H:%M:%S"), encoding="utf-8")
             reason = REASON.format(path=tail2(unopened[0]))
+        elif V2_ON:
+            opened_pages = {pg for _rel, pg in pairs}
+            # (1) every Sources line must name a page that was opened from that
+            # file, under the same filename-exact/parent-by-suffix rule as v1.
+            for m in SOURCES_LINE_RE.finditer(final):
+                path, pg = m.group("path").strip(), int(m.group("page"))
+                if not any(same_path(path, rel) and pg == opened_pg
+                           for rel, opened_pg in pairs):
+                    v2_hit = "sources_line_not_opened"
+                    reason = REASON_PAGE.format(n=pg)
+                    break
+            # (2) a page number in prose that no opened page carries. This is the
+            # A.2.1 hole: "Title, p.239" names no path, so v1 never saw it.
+            if reason is None:
+                for n in page_refs(final):
+                    if n not in opened_pages:
+                        v2_hit = "page_ref_not_opened"
+                        reason = REASON_PAGE.format(n=n)
+                        break
+            # (3) figures and no citation at all -- F62's guard satisfied by silence.
+            if reason is None and figures_without_citation(final):
+                v2_hit = "figures_no_citation"
+                reason = REASON_NO_CITE
+        if reason:
+            marker.write_text(time.strftime("%Y-%m-%dT%H:%M:%S"), encoding="utf-8")
             decision = {"decision": "block", "reason": reason}
 
     try:
@@ -155,6 +258,8 @@ def main():
                 "stop_hook_active": stop_hook_active,
                 "n_cited_unopened": len(unopened),
                 "blocked": bool(reason),
+                "v2": V2_ON,
+                "v2_rule": v2_hit,
             }) + "\n")
     except Exception:
         pass

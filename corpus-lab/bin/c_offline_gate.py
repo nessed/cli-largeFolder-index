@@ -43,6 +43,34 @@ _TRAJECTORY_FILLER = set("""
 """.split())
 
 
+# --------------------------------------------------------------------- #
+# Phase 9.2.3. Every gate in this family hardcoded the s7_shelf path, so Gate S
+# had no way to run the same measurements against the v2 shelf. This reads an
+# optional `--shelf-dir <path>` out of sys.argv and REMOVES it, so each script's
+# own hand-rolled argv parsing sees exactly what it saw before. Absent, the
+# default is today's shelf and behaviour is unchanged.
+# --------------------------------------------------------------------- #
+def shelf_db_from_argv(argv=None):
+    av = sys.argv if argv is None else argv
+    out = str(L.STACKS / "s7_shelf" / "shelf.db")
+    i = 0
+    while i < len(av):
+        if av[i] == "--shelf-dir" and i + 1 < len(av):
+            out = str(Path(av[i + 1]) / "shelf.db")
+            del av[i:i + 2]
+            continue
+        if av[i].startswith("--shelf-dir="):
+            out = str(Path(av[i].split("=", 1)[1]) / "shelf.db")
+            del av[i]
+            continue
+        i += 1
+    return out
+
+
+def default_db():
+    return str(L.STACKS / "s2_fts5" / "harness_15000.db")
+
+
 def row_words_from_question(question):
     m = _ROW_SEP_RE.search(question)
     candidate = m.group(1) if m else question
@@ -217,8 +245,7 @@ def run_series_only():
     frozen_ids = sample["q_ids"]
     trajectory_ids = [qid for qid in frozen_ids if qs_by_id[qid]["type"] == "trajectory"]
 
-    ctx = CSH.get_ctx(str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                       str(L.STACKS / "s7_shelf" / "shelf.db"))
+    ctx = CSH.get_ctx(default_db(), shelf_db_from_argv())
     series_results = run_series_measurement(ctx, qs_by_id, trajectory_ids)
     hits = sum(1 for v in series_results.values() if v.get("ok"))
     n = len(trajectory_ids)
@@ -241,8 +268,7 @@ def main():
     all_absence = [q for q in ak["questions"] if q["type"] == "absence"]
     assert len(answerable_ids) == 17, f"expected 17 answerable, got {len(answerable_ids)}"
 
-    ctx = CSH.get_ctx(str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                       str(L.STACKS / "s7_shelf" / "shelf.db"))
+    ctx = CSH.get_ctx(default_db(), shelf_db_from_argv())
 
     rewrites, n_calls = build_rewrites(answerable_ids, qs_by_id, L.STATE)
 
@@ -817,8 +843,7 @@ def legacy_reproduction(ctx, answerable_ids, per_q, rewrites):
 
 def run_gate_v2(argv):
     t0 = time.time()
-    ctx = CSH.get_ctx(str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                      str(L.STACKS / "s7_shelf" / "shelf.db"))
+    ctx = CSH.get_ctx(default_db(), shelf_db_from_argv())
     qs_by_id, answerable_ids, per_q, dupe_counts = load_frozen(ctx)
     rewrites, _ = build_rewrites(answerable_ids, qs_by_id, L.STATE)
 

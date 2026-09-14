@@ -35,8 +35,7 @@ import c_chain_gate as CH  # noqa: E402
 
 def main():
     t0 = time.time()
-    ctx = CSH.get_ctx(str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                      str(L.STACKS / "s7_shelf" / "shelf.db"))
+    ctx = CSH.get_ctx(G.default_db(), G.shelf_db_from_argv())
     key = json.loads(L.ANSWER_KEY.read_text(encoding="utf-8"))
     sample = json.loads(L.QUESTION_SAMPLE.read_text(encoding="utf-8"))
     frozen = set(sample["q_ids"])

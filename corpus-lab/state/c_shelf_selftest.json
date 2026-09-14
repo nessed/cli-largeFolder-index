@@ -6,8 +6,8 @@
  "find_budget": {
   "pass": true,
   "n_families": 45,
-  "cold_s": 2.65,
-  "warm_s": 0.03,
+  "cold_s": 1.64,
+  "warm_s": 0.02,
   "warm_le_5s": true
  },
  "have_economic_survey": {
@@ -29,7 +29,7 @@
  "inside_contents": {
   "pass": true,
   "n_hits": 2,
-  "wall_s": 0.05
+  "wall_s": 0.03
  },
  "tables": {
   "pass": true,
@@ -69,6 +69,14 @@
   "pass": true,
   "n_checks": 9,
   "n_passed": 9
+ },
+ "find_compact_prints_n_lines": {
+  "pass": true,
+  "n_card_lines": 10
+ },
+ "find_show_matches_compact_rank": {
+  "pass": true,
+  "matched": true
  },
  "bogus_subcommand": {
   "pass": true,

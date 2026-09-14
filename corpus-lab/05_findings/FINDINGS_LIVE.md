@@ -2106,3 +2106,188 @@ run 2's clean dev cache is preserved beside it.
 *Condition: this corpus, top-100 pool in fused order, cards from shelf fields only, one
 single-turn call per question, claude-sonnet-5, one configuration, no prompt variants. Two
 development samples and one holdout sample.*
+
+---
+
+## F64. Latency — `open` is 16x faster, `coverage` 17x, and not one rank moved
+
+NEW, 2026-09-15 night, Phase 9.1. Source: `state/c_shelf_bench.json` (labels
+`baseline_v1_warm` and `after_phase1`, the like-for-like pair; `baseline_v1` is the cold
+first run), `state/c_open_equiv.json`, `state/c_caption_align.json`,
+`state/c_inside_equiv.json`, `state/phase9_baseline_console.txt`.
+
+Every shelf command the model runs is a **fresh process**, so the benchmark runs each one as a
+fresh subprocess, three times, and reports the median. That is how the professor's session pays
+for them.
+
+| command | old code | new code | what was actually wrong |
+|---|---|---|---|
+| `find` (question + 3 rewrites, lex) | 4.14 s | **1.15 s** | it prints the COVERAGE line, and coverage counted 1.2 M rows |
+| `open` | 2.95 s | **0.18 s** | `rel` is UNINDEXED in the FTS5 page table, so every open was a full scan |
+| `coverage` | 2.89 s | **0.17 s** | `SELECT COUNT(*)` over 1.2 M rows, on every call |
+| `inside` (dense captions, the shipped default) | 1.69 s | **1.14 s** | it re-embedded a document's captions although a vector for every one was already on disk |
+| `series` over 5 editions | 4.52 s | **1.22 s** | five `inside` calls, each re-embedding |
+| `have`, `tables`, `exact`, `copies`, `note`, `notes` | 0.17–0.20 s | 0.17–0.20 s | already fine; confirmed never to load the embedding model |
+| *(bare import + context build, the floor)* | 0.16 s | 0.16 s | unchanged, as it must be |
+
+**Both columns were measured on the same machine in the same warm-cache state, with the old
+code restored from git to take the left column.** An earlier attempt compared a cold-cache
+baseline against a warm after-run and made every row look two to three times better than it
+is; that reading is kept in `c_shelf_bench.json` as `baseline_v1` (cold) and
+`after_phase1_under_load_INVALID` (taken while the Phase 2 embedding job held the CPU) rather
+than deleted. The honest speedups are **16x on `open`, 17x on `coverage`, 3.6x on `find`,
+3.7x on `series`, 1.5x on `inside`.**
+
+Worth stating plainly because it cuts the other way: on a warm cache `inside` already met its
+2.5 s bar before this work, so the caption-vector change is the smallest of the four. It is
+kept because it is free and because it is the one that helps most on a **cold** machine — the
+first question after a reboot, which is the one the professor will actually type. Cold, the
+same commands measured 12.59 s (`find`), 9.72 s (`open`), 9.88 s (`coverage`), 4.05 s
+(`inside`) and 8.47 s (`series`) before the change.
+
+A trajectory session issues roughly `find x1, series x3, inside x6, tables x3, open x13`
+(Session Log A.3.1). Warm, that is **about 52 seconds of tool latency before, about 18 after**;
+cold it was over two minutes. The Session Log's "roughly ten seconds a page" was the `open`
+scan, and it is gone.
+
+**None of it touches ranking, and that is proved rather than asserted.**
+
+- `open`: 300 (rel, page_index) pairs sampled from the page-range cache, fetched by the old query
+  and the new rowid-range lookup — **byte-identical on all 300**, zero mismatches.
+- `coverage`: the printed line is character-for-character the recorded one
+  (`indexed=13634 image_only_no_text=1211 failed=32 unsupported=120 pages=1206260`). It caches a
+  count, keyed on the index file's size and mtime.
+- `inside`: the stored caption vectors were first proved to line up with the captions table —
+  200 captions re-embedded and compared against their stored rows, **200 of 200 at cosine 1.0**,
+  with the row counts and every (rel, page_index) position matching. Then old-vs-new `inside` was
+  run on all 57 dev addresses' documents: the top-5 page set was identical on **57 of 57**, and so
+  was the top-5 **order**. The gate allowed 3 to move for float16 rounding; none did.
+- And the three offline baselines reproduce **exactly**: document top-10 10/17 and pool@100 16/17;
+  B2c pages 52/57 in every one of the six configurations the page gate reports; ROUTE absence
+  11/11 and 4/4. All four self-tests still pass at their counts.
+
+Gate 1, pre-registered before any of these numbers existed, reads **PASS on every row**.
+
+*Condition: this machine, warm disk, the 15,000-file rung, three repeats per command, medians,
+fresh subprocess per measurement. Cold figures from the session's first run, stated as cold.*
+
+---
+
+## F65. The harness has been ending sessions before they answer, and every one was scored a miss
+
+NEW, 2026-09-15 night, Phase 9.4. Source: `state/c_live_battery_v2__P5_live.json` and the P6, P7,
+P8 files beside it.
+
+`c_live_battery.py` ran every session with `--max-turns 25` and a 300-second timeout. **The
+professor has neither.** Scorer v2 adds a per-session `no_answer_cause`, and reading it back over
+the four recorded batteries:
+
+| battery | sessions of 20 that produced **no answer text at all** | cause |
+|---|---|---|
+| P5 | 2 | turn cap |
+| P6 | **5** | 3 turn cap, 2 timeout |
+| P7 | 1 | turn cap |
+| P8 | 4 | 3 turn cap, 1 timeout |
+
+These are the multi-branch and trajectory questions — the multi-document ones, which is to say the
+ones the whole shelf design exists for. Every one of them was scored as a retrieval or answering
+failure. **Some material part of every live loss this project has recorded was the harness, not
+the system.** A.3 of the Session Log had already shown the same question dead at 300 s under the
+harness and 3-of-5 correct at 4m00s without it; this puts a count on it across every battery.
+
+The fix is not a new idea, it is removing a measurement artefact: `c_live_battery.py` gained
+`--max-turns` and `--timeout` flags, defaulting to the frozen 25 and 300 so every recorded number
+still reproduces, and Phase 5 runs at 60 and 900.
+
+*Condition: recorded result files only; no session was re-run to produce this.*
+
+---
+
+## F67. Showing the model forty candidates instead of twelve, in the session it is already in
+
+NEW, 2026-09-15 night, Phase 9.3. Source: `state/c_compact_depth.json`,
+`state/c_shelf_selftest.json`, `state/c_stop_guard_selftest.json`, `state/c_stack_roundtrip.json`.
+
+`find` printed `--k 12` verbose entries. Measured on the 17 dev questions, under the frozen E1
+configuration with the cached Haiku rewrites, where the gold publication actually sits:
+
+| depth shown | gold publication is in it |
+|---|---|
+| 10 | 10 / 17 |
+| **12 — what the model used to see** | **11 / 17** |
+| 20 | 12 / 17 |
+| **40 — what it now sees** | **14 / 17** |
+| 50 | 14 / 17 |
+| 100 | 16 / 17 |
+
+So the old display capped the whole downstream chain at 11 of 17 before the model read a word.
+Experiment H (F60, F63) had already measured that a model shown 100 one-line cards ranks the gold
+in its own top 10 on 11–14 of 17 — better than any statistical reranker tried here — but H was a
+separate headless call and never shipped. `find --compact 40` is the same mechanism at **zero
+extra model calls**: the same cards, in the same fused order, inside the session that is already
+running. `--show i,j,k` prints the full entries for the ones it picks.
+
+Three things shipped alongside it, all with their own behaviour tests:
+
+- **CLAUDE.md v2** — the `find` line now carries `--compact 40` with a paragraph telling the model
+  to read the whole list and choose by *which kind of publication would print this table*; a
+  paragraph on vintages (a year's figure is reprinted, revised, in the next one or two editions);
+  and a rule that every answer ends in a `Sources` block naming the page each figure came from.
+  Round-trip self-test 22 → **25 of 25**.
+- **Guard v2**, behind a `--v2` flag the installer passes — v1 only matched path-like strings, so
+  Session Log A.2.1's *"Title, p.239"* sailed through, and F62's answer-of-bare-figures satisfied
+  it by citing nothing at all. v2 checks prose page numbers against pages actually opened, checks
+  every `Sources` line, and blocks an answer that states figures with no citation anywhere. It
+  still asks at most once, never edits text, and always lets a second stop through. Self-test
+  9 → **24 checks**, including that a fiscal year and a bare year are *not* read as page numbers,
+  and that with the flag off every v2-only case passes so P5–P8 reproduce.
+- **`find --compact/--show` self-tests** — `c_selftest.py` 16 → **18 of 18**.
+
+The flag is passed as an argument rather than an environment prefix on purpose: a hook command is
+run by whichever shell the host picks, and `set VAR=1 &&` means different things to cmd.exe and to
+bash, so an env prefix could have switched the guard off without saying so.
+
+*Condition: offline, dev set of 17, one configuration. RECORDED, NOT CLAIMED — one dev set carries
+±3 noise (F63), and none of this has yet been measured live.*
+
+---
+
+## F68. The scorer was stricter than the answer key, and it cost four to nine questions a battery
+
+NEW, 2026-09-15 night, Phase 9.4. Source: `state/c_score_live_v2_selftest.json` and the four
+`state/c_live_battery_v2__*.json` files.
+
+The strict rule marks an answer right only if it cites **the one address the key names**. The
+answer key does not agree with its own scorer: it carries `acceptable_alternates` on **45 of 135**
+questions and a `series_id`/`vintage_id`/`fy` on every evidence address. Session Log A.2.4 had the
+consequence — two models, four sessions, the same figure taken from four different official
+publications, every one scored 0.
+
+Scorer v2 reports the strict column unchanged beside an equivalence column: a cited page also
+counts if it prints the **same cell** — same series, same vintage, same fiscal year — as a gold
+address, according to the generator's own per-document table records. That registry was validated
+before it was used: it reproduces **322 of 332** gold evidence addresses (0.970, against a bar of
+0.95 written before it was measured). The regression check reproduces P8's recorded 1 / 0 /
+2-of-3 exactly.
+
+| battery | cited_right_page **strict** | **equiv** | of which via another publication | value_correct |
+|---|---|---|---|---|
+| P5 | 0 / 17 | **6 / 17** | 6 | 3 / 17 |
+| P6 | 2 / 17 | **4 / 17** | 2 | 4 / 17 |
+| P7 | 1 / 17 | **9 / 17** | 8 | 4 / 17 |
+| P8 | 1 / 17 | **4 / 17** | 3 | 4 / 17 |
+
+`cited_right_page` has never been above 2 of 17 in this project's history. On the same recorded
+transcripts, with no session re-run, the equivalence reading is 4 to 9. **The system was finding
+the figure and being marked wrong for finding it somewhere else official.**
+
+`value_correct` — did the answer contain the right number, within 0.5% — is the professor's actual
+question, and it sits at 3–4 of 17 across all four batteries, notably flatter than either citation
+column. `value_wrong_confident` is 0 on three batteries and 1 on P7: when this system is wrong it
+is mostly silent, not confidently wrong.
+
+Both columns are reported forever; the strict one is never deleted. The frozen `c_score_live.py`
+is untouched and remains the reference.
+
+*Condition: recorded P5–P8 result files, the frozen 20, scorer v2 with the equivalence registry
+validated at 0.970. No holdout look was spent.*

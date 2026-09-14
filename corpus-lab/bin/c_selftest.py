@@ -20,13 +20,30 @@ SHELF_PY = str(Path(__file__).resolve().parent / "c_shelf.py")
 
 
 def main():
+    # Phase 9: --db/--shelf default to today's values, so every recorded run of
+    # this file reproduces exactly; Phase 2.3 points them at the v2 shelf and
+    # Phase 6.2 at a portable folder's own artefacts. --expect-pages likewise
+    # keeps the 15,000-rung coverage assertion as the default.
+    global DB, SHELF
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--db", default=DB)
+    ap.add_argument("--shelf", default=SHELF)
+    ap.add_argument("--expect-pages", dest="expect_pages", type=int, default=1206260,
+                    help="0 = do not assert a page count (a folder other than the 15,000 rung)")
+    ap.add_argument("--out", default=str(L.STATE / "c_shelf_selftest.json"))
+    a = ap.parse_args()
+    DB, SHELF = a.db, a.shelf
+
     results = {}
     ctx = CSH.get_ctx(DB, SHELF)
 
     # coverage
     cov = CSH.do_coverage(ctx)
-    results["coverage"] = {"pass": cov["addressable_pages"] == 1206260,
-                            "pages": cov["addressable_pages"]}
+    results["coverage"] = {
+        "pass": (cov["addressable_pages"] == a.expect_pages if a.expect_pages
+                 else cov["addressable_pages"] > 0),
+        "pages": cov["addressable_pages"]}
 
     # find "budget" -- cold then warm
     t0 = time.time()
@@ -205,6 +222,35 @@ def main():
         "pass": r.returncode == 0 and guard.get("all_pass") is True,
         "n_checks": guard.get("n_checks"), "n_passed": guard.get("n_passed")}
 
+    # Phase 9.3.1: `find --compact N` prints exactly N one-line cards, and
+    # `--show 1` prints the same family the compact list put first. This is the
+    # Experiment H mechanism shipped in-session, so its shape is worth a test.
+    r = subprocess.run([PY, SHELF_PY, "--db", DB, "--shelf", SHELF,
+                        "find", "budget", "--compact", "10"],
+                       capture_output=True, text=True, errors="replace")
+    card_lines = [l for l in (r.stdout or "").splitlines() if l.startswith("#")]
+    first_compact_family = ""
+    if card_lines:
+        parts = card_lines[0].split("|")
+        first_compact_family = parts[0].split("  ", 1)[-1].strip() if parts else ""
+    results["find_compact_prints_n_lines"] = {
+        "pass": r.returncode == 0 and len(card_lines) == 10
+                and "expand:" in (r.stdout or "") and "COVERAGE" in (r.stdout or ""),
+        "n_card_lines": len(card_lines)}
+
+    r2 = subprocess.run([PY, SHELF_PY, "--db", DB, "--shelf", SHELF,
+                         "find", "budget", "--show", "1"],
+                        capture_output=True, text=True, errors="replace")
+    show_fam = ""
+    for line in (r2.stdout or "").splitlines():
+        if line.startswith("#1  family:"):
+            show_fam = line.split("family:", 1)[1].strip()
+            break
+    results["find_show_matches_compact_rank"] = {
+        "pass": (r2.returncode == 0 and bool(show_fam) and bool(first_compact_family)
+                 and CSH._family_words(show_fam) == first_compact_family),
+        "matched": bool(show_fam) and CSH._family_words(show_fam) == first_compact_family}
+
     # bogus subcommand -> exit 2 and usage, via the real CLI
     r = subprocess.run([PY, SHELF_PY, "--db", DB, "--shelf", SHELF, "bogus_command_xyz"],
                         capture_output=True, text=True)
@@ -212,7 +258,7 @@ def main():
 
     all_pass = all(v.get("pass") for v in results.values())
     results["_overall"] = {"pass": all_pass}
-    out = L.STATE / "c_shelf_selftest.json"
+    out = Path(a.out)
     out.write_text(json.dumps(results, indent=1), encoding="utf-8")
     print(json.dumps(results, indent=1))
 

@@ -11,6 +11,7 @@ instrument and the caption index is a separate artefact beside it.
 """
 import json
 import sqlite3
+import pathlib
 import sys
 import time
 from pathlib import Path
@@ -21,7 +22,13 @@ import labpaths as L  # noqa: E402
 
 def main():
     t0 = time.time()
-    out_dir = L.STACKS / "s7_shelf"
+    # Phase 9.2.2: --out-dir so the v2 shelf (and a portable folder's shelf) can
+    # have its own caption artefacts. Default preserves behaviour exactly.
+    import argparse
+    _ap = argparse.ArgumentParser()
+    _ap.add_argument("--out-dir", dest="out_dir", default=str(L.STACKS / "s7_shelf"))
+    _a = _ap.parse_args()
+    out_dir = pathlib.Path(_a.out_dir)
     src = sqlite3.connect(f"file:{out_dir / 'shelf.db'}?mode=ro", uri=True)
     dest_path = out_dir / "captions_fts.db"
     if dest_path.exists():

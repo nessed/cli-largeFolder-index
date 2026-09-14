@@ -81,8 +81,7 @@ def main(argv):
     if channel not in ("lex", "lex+vec"):
         raise SystemExit("--channel must be lex or lex+vec")
 
-    ctx = CSH.get_ctx(str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                      str(L.STACKS / "s7_shelf" / "shelf.db"))
+    ctx = CSH.get_ctx(G.default_db(), G.shelf_db_from_argv())
     qs_by_id, answerable_ids, per_q, _ = G.load_frozen(ctx)
     rewrites, _ = G.build_rewrites(answerable_ids, qs_by_id, L.STATE)
     c2q = {q: rewrites.get(q, {}).get("queries") or [per_q[q]["question"]]

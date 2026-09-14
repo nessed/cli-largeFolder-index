@@ -41,21 +41,21 @@ def rung():
     return (L.HARNESS / "corpus_15000").resolve()
 
 
-def ask_cmd(phase, qid, question, model, max_turns=MAX_TURNS):
+def ask_cmd(phase, qid, question, model, max_turns=MAX_TURNS, timeout=TIMEOUT):
     return [sys.executable, str(L.ASK),
             "--phase", phase, "--stack", STACK,
             "--corpus", str(rung()), "--corpus-label", CORPUS_LABEL,
             "--qid", qid, "--question", question,
             "--model", model,
-            "--max-turns", str(max_turns), "--timeout", str(TIMEOUT),
+            "--max-turns", str(max_turns), "--timeout", str(timeout),
             "--permission-mode", PERMISSION_MODE,
             "--disallowed", DISALLOWED]
 
 
-def run_one(phase, qid, question, model, max_turns=MAX_TURNS):
+def run_one(phase, qid, question, model, max_turns=MAX_TURNS, timeout=TIMEOUT):
     env = dict(os.environ)
     env.pop("CANARY_MANIFEST", None)
-    p = subprocess.run(ask_cmd(phase, qid, question, model, max_turns),
+    p = subprocess.run(ask_cmd(phase, qid, question, model, max_turns, timeout),
                        capture_output=True, text=True, errors="replace", env=env)
     return qid, p.returncode, (p.stdout or "").strip()[-300:], (p.stderr or "")[-300:]
 
@@ -81,6 +81,12 @@ def main(argv):
     ap.add_argument("--probe-question", default=None)
     ap.add_argument("--model", required=True)
     ap.add_argument("--parallel", type=int, default=2)
+    # Phase 9.3.4. The professor has neither a turn cap nor a 300s clock; 1-5 of
+    # every 17 sessions in P5-P8 ended with no answer text at all because one of
+    # these fired, and every one of those was scored a miss. Defaults are the
+    # frozen values, so every recorded battery still reproduces.
+    ap.add_argument("--max-turns", dest="max_turns", type=int, default=MAX_TURNS)
+    ap.add_argument("--timeout", type=int, default=TIMEOUT)
     ap.add_argument("--phase-tag", dest="phase_tag", default="P5",
                     help="phase prefix; a re-battery uses a NEW tag so ask.py's "
                          "stale-result guard is respected instead of forced")
@@ -90,7 +96,8 @@ def main(argv):
         phase = a.phase_tag + "_probe"
         qid = "probe_" + a.probe
         mt = 1 if a.probe == "auth" else (6 if a.probe == "guard" else 4)
-        qid_, rc, so, se = run_one(phase, qid, a.probe_question, a.model, max_turns=mt)
+        qid_, rc, so, se = run_one(phase, qid, a.probe_question, a.model,
+                                   max_turns=mt, timeout=a.timeout)
         print("PROBE %s rc=%d %s" % (a.probe, rc, so))
         if se.strip():
             print("stderr: %s" % se.strip()[:200], file=sys.stderr)
@@ -109,7 +116,8 @@ def main(argv):
     t0 = time.monotonic()
     done = 0
     with ThreadPoolExecutor(max_workers=a.parallel) as ex:
-        futs = [ex.submit(run_one, phase, qid, qs_by_id[qid]["question"], a.model)
+        futs = [ex.submit(run_one, phase, qid, qs_by_id[qid]["question"], a.model,
+                          a.max_turns, a.timeout)
                 for qid in todo]
         for f in futs:
             qid, rc, so, se = f.result()

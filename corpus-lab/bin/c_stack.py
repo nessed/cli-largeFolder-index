@@ -53,7 +53,13 @@ once.
 
 ## 1. Find the publication on the shelf
 
-    "{PY}" "{SHELF}" find "<the question as asked>" --fusion {FUSION} --caption-channel {CAPCHAN} --q "<rewrite>" --q "<rewrite>" --q "<rewrite>"
+    "{PY}" "{SHELF}" find "<the question as asked>" --fusion {FUSION} --caption-channel {CAPCHAN} --compact 40 --q "<rewrite>" --q "<rewrite>" --q "<rewrite>"
+
+The list is forty publications, one per line, best-guess first. Read the whole list before
+choosing. Pick up to three by asking *which kind of publication would print this table* --
+a statistical yearbook, a budget document, a survey -- not by how many of your words appear
+in the line. Then print their full cards with `--show i,j,k` and confirm the editions with
+`have`.
 
 Add three to five `--q "<rewrite>"` arguments of your own. They are searched alongside
 the question and they matter more than anything else you do here. Write them as:
@@ -84,6 +90,11 @@ For a question about how something changed over years, walk the editions in one 
 
 series shows you the matching line per edition. It does not open pages; you still must
 open the page in each edition you use.
+
+The figure for a fiscal year is usually printed again, revised, in the next one or two
+editions. When a question names a year, check the edition for that year and the one or
+two after it; report which edition and vintage (provisional, revised, final) each figure
+comes from, and if they disagree show both.
 
 ## 3. Open before you cite
 
@@ -118,6 +129,11 @@ two editions or two copies disagree, show both with citations. If the notes are 
 after you have looked, say no supporting evidence was found, list the families and
 pages you checked, and quote the COVERAGE line so the reader knows how many files could
 not be read. Never supply a figure from memory or from a listing.
+
+End every answer with a `Sources` block: one line per figure you used, in the form
+`<figure> | <path> | p<page_index> | "<the verbatim line>"`. If you found nothing, the
+`Sources` block says `none -- no supporting page was opened` and the answer says so.
+A number without a Sources line does not go in the answer.
 
 ## 5. Copies
 
@@ -198,7 +214,7 @@ def _sha(path):
 # --------------------------------------------------------------------- #
 # commands
 # --------------------------------------------------------------------- #
-def do_setup(corpus, py_exe=None, shelf_cli=None, register=True):
+def do_setup(corpus, py_exe=None, shelf_cli=None, register=True, shelf_dir=None):
     root = Path(corpus).resolve()
     if not root.is_dir():
         print("NO_SUCH_CORPUS %s" % root, file=sys.stderr)
@@ -231,9 +247,16 @@ def do_setup(corpus, py_exe=None, shelf_cli=None, register=True):
     # never opened. stack.py's hook entries have this shape.
     cfg = {
         "permissions": {"deny": deny_list()},
+        # Phase 9.3.3: `--v2` turns on guard v2 (prose page numbers, the Sources
+        # block, and figures with no citation at all). Passed as an argument, not
+        # an env prefix: a hook command is run by whichever shell the host picks,
+        # and `set VAR=1 &&` means different things to cmd.exe and to bash, so an
+        # env prefix could switch the guard off without saying so. The guard
+        # still defaults to v1, so every recorded P5-P8 number reproduces by
+        # running it without the flag.
         "hooks": {"Stop": [{"matcher": "", "hooks": [
             {"type": "command",
-             "command": '"{}" "{}"'.format(py_exe, L.BIN / "c_stop_guard.py")}]}]},
+             "command": '"{}" "{}" --v2'.format(py_exe, L.BIN / "c_stop_guard.py")}]}]},
     }
     sj.write_text(json.dumps(cfg, indent=1), encoding="utf-8")
     md.write_text(claude_md_text(py_exe, shelf_cli), encoding="utf-8")
@@ -243,10 +266,16 @@ def do_setup(corpus, py_exe=None, shelf_cli=None, register=True):
     sp.write_text(json.dumps(state, indent=1), encoding="utf-8")
 
     if register:
+        # Phase 9.2.3: --shelf-dir, default unchanged. The registry entry for a
+        # rung is only ever rewritten HERE, never by hand, so what the model
+        # resolves is always what the installer was told to install.
         import c_shelf as CSH
+        sd = Path(shelf_dir) if shelf_dir else (L.STACKS / "s7_shelf")
         CSH.do_register(str(root),
                         str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                        str(L.STACKS / "s7_shelf" / "shelf.db"))
+                        str(sd / "shelf.db"))
+        state["shelf_dir"] = str(sd)
+        sp.write_text(json.dumps(state, indent=1), encoding="utf-8")
     print("INSTALLED %s" % root)
     return 0
 
@@ -353,6 +382,15 @@ def do_selftest():
             "note will refuse a line whose page you have not opened" in text)
         chk("claude_md_no_placeholders",
             "{PY}" not in text and "{SHELF}" not in text)
+        # Phase 9.3.2. The three CLAUDE.md v2 additions: the model is shown forty
+        # candidates instead of twelve (the Experiment H mechanism, F60/F63), it
+        # is told that a year's figure is revised in later editions, and every
+        # answer must end in a Sources block naming the page each figure came from.
+        chk("claude_md_find_has_compact_40", "--compact 40" in text)
+        chk("claude_md_has_vintage_rule",
+            "revised, in the next one or two" in text)
+        chk("claude_md_has_sources_block_rule",
+            "End every answer with a `Sources` block" in text)
 
     rc2 = do_setup(str(base), register=False)
     chk("second_setup_refuses_exit_3", rc2 == 3)
@@ -398,13 +436,16 @@ def main():
     for name in ("setup", "status", "teardown"):
         p = sub.add_parser(name)
         p.add_argument("--corpus", required=True)
+        if name == "setup":
+            p.add_argument("--shelf-dir", dest="shelf_dir", default=None,
+                           help="shelf directory to register (default: s7_shelf)")
     sub.add_parser("selftest")
     a = ap.parse_args()
     if not a.cmd:
         ap.print_usage()
         return 2
     if a.cmd == "setup":
-        return do_setup(a.corpus)
+        return do_setup(a.corpus, shelf_dir=a.shelf_dir)
     if a.cmd == "status":
         return do_status(a.corpus)
     if a.cmd == "teardown":

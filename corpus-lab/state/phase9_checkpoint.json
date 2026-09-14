@@ -143,9 +143,43 @@
     "find_before": 4.14,
     "find_after": 1.15
    }
+  },
+  "3.1": {
+   "status": "done",
+   "started": "2026-09-15T04:35:24",
+   "finished": "2026-09-15T04:35:24",
+   "kv": {
+    "selftest": 18,
+    "gold_in_top40": 14,
+    "gold_in_top12": 11
+   }
+  },
+  "3.2": {
+   "status": "done",
+   "started": "2026-09-15T04:35:24",
+   "finished": "2026-09-15T04:35:24",
+   "kv": {
+    "roundtrip": 25
+   }
+  },
+  "3.3": {
+   "status": "done",
+   "started": "2026-09-15T04:35:24",
+   "finished": "2026-09-15T04:35:24",
+   "kv": {
+    "guard_checks": 24
+   }
+  },
+  "3.4": {
+   "status": "done",
+   "started": "2026-09-15T04:35:24",
+   "finished": "2026-09-15T04:35:24",
+   "kv": {
+    "flags": 2
+   }
   }
  },
- "last_beat": "2026-09-15T04:34:55",
+ "last_beat": "2026-09-15T04:35:24",
  "notes": [
   "2026-09-15T04:14:12  after_phase1 bench re-run needed: the first attempt ran under the Phase 2 embedding load and every row was inflated; kept as after_phase1_under_load_INVALID"
  ]
