@@ -1778,3 +1778,75 @@ second time today.
 
 *Condition: this corpus, top-5 families, top-5 pages per edition, a 40-call verifier cap hit on
 12 of 17 questions — so the verified count is a floor. Deterministic, no model calls.*
+
+---
+
+## F59. LIVE-3 — tool-enforced provenance guards the wrong surface. STOP
+
+**Measured**, `state/c_live_battery_p7.json` and `state/c_live_forensics_p7.json` against the
+pm battery. 23 of 23 permitted sessions, `claude-sonnet-5` (probe init event confirms),
+**20 of 20 completed, 0 timeouts, $6.65**. Isolation 2/2 with a fresh token, checksums 18
+unchanged / 0 changed, 0 memory files, 0 new canary-bearing transcripts, rung torn down clean.
+
+Two production changes were under test, and the gate separates them on purpose.
+
+| the three separated metrics | pm | evening | tests |
+|---|---|---|---|
+| **L0** — right publication never surfaced | 10 | **10** | document retrieval (G not adopted, so flat is expected) |
+| **L2+L3** — edition and page choice | 2 | **2** | B2c in production |
+| **cited a file never opened** | 8 | **10** | the `note` enforcement |
+
+| | pm | evening |
+|---|---|---|
+| cited the right page | 2 | **1** |
+| opened the right page | 3 | 2 |
+| opened any evidence file | 3 | 4 |
+| wrote a note | 11 | 13 |
+| absence (frozen 3, v2 rule) | 3/3 | **3/3** |
+| timeouts | 2 | **0** |
+
+**Pre-registered gate LIVE-3: PASS needs `cited_right_page` ≥5/17, `cited_unopened_total` ≤3
+and absence ≥2/3. WEAK needs ≥4/17 and ≤5. It is 1, 10 and 3/3. STOP.**
+
+### The finding: the enforcement works and does not matter
+
+The tool change does exactly what its self-tests say. In the live battery it fired **4 times**
+— 1 `NOTE_REFUSED_PAGE_NOT_OPENED` and 3 `NOTE_REFUSED_NO_CITATION` — across **19** note
+commands in **2 of 20** sessions. Nothing was recorded that should not have been.
+
+And `cited_unopened_total` went **up**, 8 → 10.
+
+**Because the note gate guards the note, and the answer does not go through the note.** The
+agent writes notes about pages it did open — that was never the failure — and then writes an
+answer that names additional paths it saw in a `find` listing and never opened. Enforcement at
+the `note` boundary has no jurisdiction over the text of the final answer. The instruction and
+the tool check agree with each other and both sit upstream of the place the violation happens.
+
+This is a clean negative result about **where** to enforce, not about **whether** to. The
+surfaces that could actually bind are: refusing to emit an answer naming an unopened path
+(there is no hook for that in this harness), or scoring the answer against the notes after the
+fact (which is what the scorer already does, and which is measurement, not enforcement). It is
+worth saying plainly that **two nights of work have now gone into the citation-discipline
+problem — one instruction, one tool check — and neither moved the number**, while the
+measurement that says the number matters has never been in doubt.
+
+### B2c in production moved nothing live, and that was predictable
+
+L2+L3 is flat at 2. F58 had already measured why: B2c is worth +10 of 57 addresses with the
+document handed over and +1 of 17 inside the chain, because it only acts on questions that
+reach the right document, and 10 of 17 do not. The live battery reaches the right document even
+less often than the chain does. **A page fix cannot show up in a system whose loss is upstream
+of the page**, and this battery is the direct confirmation.
+
+### On the movements that are not findings
+
+`cited_right_page` 2 → 1 and `opened_right_page` 3 → 2 are, on a base of 17, inside the
+run-to-run variation this battery demonstrated in the pm run (where `surfaced` moved by one
+with retrieval untouched). The one movement plausibly outside noise is **timeouts 2 → 0**, and
+no change this phase targeted timeouts. **Absence holds at 3/3 across two batteries under the
+repaired scorer**, which is the one number that has now been stable through three system
+configurations.
+
+*Condition: this corpus, 17 answerable questions, one battery per configuration,
+claude-sonnet-5. Three batteries now agree on the shape: L0 is 9–10 of 17 in every one, and
+every downstream class is small and noisy.*
