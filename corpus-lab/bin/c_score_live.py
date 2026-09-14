@@ -46,6 +46,19 @@ PAGE_COUNT = re.compile(r"\(\d+p\)")
 COVERAGE_COUNTS = {"13634", "1211", "1206260", "13,634", "1,211", "1,206,260"}
 NUMTOK = re.compile(r"\d[\d,]*\.?\d*")
 
+# --- absence scorer v2 (2026-09-15 pm), specified in
+# state/absence_scorer_v2_spec.md BEFORE any transcript was read this phase.
+# The shelf's own structural verdicts. A session that prints one of these has
+# relayed the shelf's answer verbatim; the v1 decline regex did not know them.
+SHELF_VERDICTS = ("NO_EDITION_FOR", "NO_FAMILY_MATCHES", "TOTAL_PAGES_MATCHING=0",
+                  "NO_PAGE_IN_THE_INDEX_CONTAINS_THIS_STRING")
+# One short generic regex over ways of saying "the folder does not hold it".
+# Fixed in the spec; deliberately NOT extended by reading this battery.
+DECLINE_PLAIN = re.compile(
+    r"(do(es)?\s+not\s+hold|don'?t\s+hold|not\s+held|not\s+in\s+this\s+folder"
+    r"|no\s+edition|not\s+on\s+the\s+shelf|no\s+readable\s+page\s+contains)", re.I)
+
+
 # A path-ish token in free answer text: something with a corpus file extension.
 ANSWER_PATH = re.compile(
     r"[A-Za-z0-9_\-./\\()\[\] ]{0,180}?\.(?:pdf|xlsx|xls|docx|doc|csv|txt|md)\b",
@@ -248,23 +261,44 @@ def score_answerable(q, rec, raw_path, notes_texts):
     }
 
 
-def score_absence(q, rec):
+def score_absence(q, rec, raw_path=None):
+    """Both rules at once. v1 (`absence_ok2`) is computed exactly as it was
+    overnight and is never removed; v2 (`absence_ok3`) applies the repair
+    pre-registered in state/absence_scorer_v2_spec.md."""
     answer = (rec or {}).get("answer_text") or ""
+    results, _bash, _t = read_transcript(raw_path) if raw_path else ([], [], [])
+    tool_blob = "\n".join(results)
+
+    # ---- v1, unchanged ---------------------------------------------------
     declined = bool(RH.DECLINE.search(answer))
-    figs = [f for f in answer_figures(answer) if not re.match(r"^\d{1,2}$", f) or True]
-    # identifier-internal digits are already excluded: answer_figures runs over
-    # text with FY tokens, four-digit years, p<n> and (<n>p) removed.
-    figures_asserted = len(figs)
+    figures_asserted = len(answer_figures(answer))
     edition_list = bool(
         "NO_EDITION_FOR" in answer or "NO_FAMILY_MATCHES" in answer
         or "TOTAL_PAGES_MATCHING=0" in answer
         or len(set(FY_TOKEN.findall(answer))) >= 3)
+
+    # ---- v2 --------------------------------------------------------------
+    verdict_in_answer = any(v in answer for v in SHELF_VERDICTS)
+    verdict_in_tool_result = any(v in tool_blob for v in SHELF_VERDICTS)
+    declined3 = bool(declined or verdict_in_answer or DECLINE_PLAIN.search(answer))
+
+    # A number the session was SHOWN is a number it copied, not one it invented.
+    tool_digits = tool_blob.replace(",", "")
+    figs3 = [f for f in answer_figures(answer)
+             if f not in tool_blob and f.replace(",", "") not in tool_digits]
+    figures_asserted3 = len(figs3)
+
     return {
         "q_id": q["q_id"], "type": q["type"],
         "declined": declined,
         "figures_asserted": figures_asserted,
         "absence_ok2": bool(declined and figures_asserted == 0),
         "edition_list_quoted": edition_list,
+        "declined3": declined3,
+        "figures_asserted3": figures_asserted3,
+        "absence_ok3": bool(declined3 and figures_asserted3 == 0),
+        "shelf_verdict_in_tool_result": verdict_in_tool_result,
+        "shelf_verdict_in_answer": verdict_in_answer,
         "timed_out": bool((rec or {}).get("timed_out")),
         "cost_usd": (rec or {}).get("cost_usd"),
         "wall_s": (rec or {}).get("wall_s"),
@@ -325,11 +359,11 @@ def main(argv):
             continue
         per_q.append(score_answerable(qs_by_id[qid], rec, raw, ntexts))
     for qid, ph in [(i, a.phase) for i in frozen_abs] + [(i, a.abs_phase) for i in extra_abs]:
-        rec, _ = load_rec(ph, qid)
+        rec, raw = load_rec(ph, qid)
         if rec is None:
             per_abs.append({"q_id": qid, "type": "absence", "status": "no_result"})
             continue
-        per_abs.append(score_absence(qs_by_id[qid], rec))
+        per_abs.append(score_absence(qs_by_id[qid], rec, raw))
 
     done = [r for r in per_q if "status" not in r]
     absdone = [r for r in per_abs if "status" not in r]
@@ -357,6 +391,13 @@ def main(argv):
         "forbidden_total": sum(r["forbidden"] for r in done),
         "absence_ok2_frozen3": sum(1 for r in frozen_abs_done if r["absence_ok2"]),
         "absence_ok2_all15": sum(1 for r in absdone if r["absence_ok2"]),
+        "absence_ok3_frozen3": sum(1 for r in frozen_abs_done if r.get("absence_ok3")),
+        "absence_ok3_all15": sum(1 for r in absdone if r.get("absence_ok3")),
+        "declined3": sum(1 for r in absdone if r.get("declined3")),
+        "shelf_verdict_in_tool_result": sum(1 for r in absdone
+                                            if r.get("shelf_verdict_in_tool_result")),
+        "shelf_verdict_in_answer": sum(1 for r in absdone
+                                       if r.get("shelf_verdict_in_answer")),
         "edition_list_quoted": sum(1 for r in absdone if r["edition_list_quoted"]),
         "total_cost_usd": round(sum(costs), 4) if costs else None,
         "cost_n_of_m": "%d/%d" % (len(costs), len(per_q) + len(per_abs)),
@@ -371,6 +412,11 @@ def main(argv):
     agg["gate_absence"] = (
         "PASS" if (agg["absence_ok2_all15"] >= 10 and agg["absence_ok2_frozen3"] >= 2)
         else "WEAK" if 8 <= agg["absence_ok2_all15"] <= 9
+        else "FAIL")
+    agg["gate_absence_v1_label"] = "SUPERSEDED-BY-SCORER-REPAIR (see F53); retained, not deleted"
+    agg["gate_absence_v2"] = (
+        "PASS" if (agg["absence_ok3_all15"] >= 10 and agg["absence_ok3_frozen3"] >= 2)
+        else "WEAK" if 8 <= agg["absence_ok3_all15"] <= 9
         else "FAIL")
 
     L.SCORES.mkdir(parents=True, exist_ok=True)

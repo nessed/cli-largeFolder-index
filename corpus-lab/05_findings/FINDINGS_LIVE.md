@@ -1335,3 +1335,89 @@ of what the best single-box measurement would have predicted.
 *Condition: this corpus, this shelf, the frozen configuration, top 5 families, top 5 pages per
 edition, a 40-call verifier cap per question (hit on 11 of 17, so the verified number is a
 floor and a larger cap could only raise it). Deterministic and reproducible; no model calls.*
+
+---
+
+## F53. The absence box stands. The 1/15 was a scorer artefact, and the chain's 1/3 was an implementation gap
+
+**Measured**, `state/c_live_battery.json` (both rules side by side), `state/c_route_gate.json`,
+and the private per-question file. Scorer repair specified in
+`state/absence_scorer_v2_spec.md` and **committed before a single transcript was read this
+phase** (`d093729`). No new sessions; the 32 transcripts are the ones recorded overnight.
+
+F50 published two numbers that could not both be true: `absence_ok2` **1 of 15**, while 14 of
+those 15 sessions ran the shelf, got its verdict, and printed it. F52 then added a third:
+the deterministic chain routed **1 of 3** frozen absence questions. Both low numbers have now
+been explained, and they had different causes.
+
+### The scorer: 1 of 15 → 11 of 15
+
+| | v1 (`absence_ok2`) | v2 (`absence_ok3`) |
+|---|---|---|
+| all 15 | **1** | **11** |
+| frozen 3 | 0 | **2** |
+| gate (PASS ≥10/15 and ≥2/3) | FAIL | **PASS** |
+
+**The decisive number is that `figures_asserted3` is zero on all fifteen sessions.** Not one
+absence answer contains a figure that the session had not been shown in its own tool output.
+**No absence session invented a number — not once in fifteen.** The v1 filter excluded
+fiscal-year tokens, four-digit years, page indices and the coverage counts, but not the
+shelf's own edition lists and receipt lines, so an answer that correctly said "we hold these
+editions and not the one you asked for" was scored as asserting fabricated quantities. The
+metric was penalising accurate quotation, which is the opposite of what it was built to catch.
+
+The decline half mattered less but mattered: the v1 regex, written for a different battery
+against a different stack, recognised 7 of 15; `declined3` recognises 11.
+
+**The repair did not loosen the rule, and this was checked rather than asserted.** Every one
+of the 11 credited answers is credited through at least one legitimate limb — the old regex,
+a verbatim shelf verdict string, or the fixed plain-statement stem list — and **0 answers are
+credited without any of them**, which the spec pre-registered as a STOP. The four not credited
+(`declined3` false) genuinely do not decline: the shelf verdict was in their tool results and
+did not reach their answers.
+
+`absence_ok2` is **retained and relabelled SUPERSEDED-BY-SCORER-REPAIR**, not deleted.
+
+### The router: 1 of 3 → 3 of 3, and the published numbers re-derived
+
+The chain's `route_absent` returned early whenever the question carried no fiscal-year token.
+This corpus has **two kinds of absence** and it implemented one:
+
+| kind | how it is detected | count in the key | routed absent |
+|---|---|---|---|
+| document level (names a fiscal year) | `have` — do we hold any edition for that year | 11 | **11 / 11** |
+| identifier level (a literal code, no year) | `exact` — does any readable page contain it | 4 | **4 / 4** |
+| | | **15** | **15 / 15** |
+
+The **3 frozen absence questions are 1 document level and 2 identifier level**, so the
+overnight chain could score at most 1 — and scored exactly 1. Re-running the overnight logic
+confirms it: `overnight_chain_equivalent_on_frozen` reproduces **1 of 3** exactly. With the
+`exact` path added (longest digit-bearing token in the question, zero matching pages →
+ABSENT — generic, derived from question text alone), the frozen three go to **3 of 3**.
+
+**This re-derives the published 11/11 and 4/4 from the chain's own code path**, not from the
+absence control that produced them. Two independent implementations now agree. The
+pre-registered reading required `absence_ok3` ≥ 10/15 **and** the router ≥ 9/11; it is 11 and
+11/11. **The absence box stands.**
+
+### What is left, and it is small but real
+
+The shelf verdict reached a tool result on **15 of 15** sessions and reached the final answer
+on **5**. Eleven sessions declined in some recognised form; **four received the verdict and
+did not relay it**. That is a genuine behaviour residue, and it is recorded here — but the
+pre-registered trigger for treating it as *the* absence behaviour loss required
+`absence_ok3` ≤ 7/15, and it is 11. **The trigger does not fire**, and no CLAUDE.md row is
+claimed on this finding.
+
+### What this costs the overnight conclusions
+
+F50's absence gate FAIL is superseded. F52's "absence routed correctly 1 of 3" is superseded
+as a statement about ROUTE and stands only as a statement about the chain implementation, now
+fixed. **The overnight handoff's headline that "the one thing this project believed it had
+solved" was in doubt is withdrawn: it was solved, and two measuring instruments were broken.**
+That is worth stating plainly, because the alternative — quietly correcting it — is how a
+project ends up believing its own bad numbers in both directions.
+
+*Condition: this corpus, these 15 absence questions, one battery of recorded transcripts. The
+scorer repair was specified from F50's two named defects and committed before reading; the
+stem list was not extended after seeing the answers.*

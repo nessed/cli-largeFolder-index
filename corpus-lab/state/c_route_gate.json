@@ -1,0 +1,117 @@
+{
+ "generated_utc": "2026-09-14T03:26:16Z",
+ "document_level": {
+  "routed_absent": 11,
+  "n": 11
+ },
+ "identifier_level": {
+  "routed_absent": 4,
+  "n": 4
+ },
+ "frozen_sample": {
+  "routed_absent": 3,
+  "n": 3
+ },
+ "all_absence": {
+  "routed_absent": 15,
+  "n": 15
+ },
+ "overnight_chain_equivalent_on_frozen": {
+  "routed_absent": 1,
+  "n": 3
+ },
+ "note": "The overnight chain (F52) scored 1 of 3 because 2 of the 3 frozen absence questions are identifier level and its ROUTE had no exact path. That is a chain implementation gap, not a ROUTE failure.",
+ "per_question": {
+  "ab_00": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_01": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_02": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_03": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_04": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_05": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_06": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_07": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_08": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_09": {
+   "kind": "document_level",
+   "in_frozen_sample": true,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_10": {
+   "kind": "document_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "NO_EDITION_FOR"
+  },
+  "ab_11": {
+   "kind": "identifier_level",
+   "in_frozen_sample": true,
+   "routed_absent": true,
+   "reason": "TOTAL_PAGES_MATCHING=0"
+  },
+  "ab_12": {
+   "kind": "identifier_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "TOTAL_PAGES_MATCHING=0"
+  },
+  "ab_13": {
+   "kind": "identifier_level",
+   "in_frozen_sample": true,
+   "routed_absent": true,
+   "reason": "TOTAL_PAGES_MATCHING=0"
+  },
+  "ab_14": {
+   "kind": "identifier_level",
+   "in_frozen_sample": false,
+   "routed_absent": true,
+   "reason": "TOTAL_PAGES_MATCHING=0"
+  }
+ },
+ "wall_s": 0.3
+}

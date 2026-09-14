@@ -19,11 +19,18 @@
  "forbidden_total": 3,
  "absence_ok2_frozen3": 0,
  "absence_ok2_all15": 1,
+ "absence_ok3_frozen3": 2,
+ "absence_ok3_all15": 11,
+ "declined3": 11,
+ "shelf_verdict_in_tool_result": 15,
+ "shelf_verdict_in_answer": 5,
  "edition_list_quoted": 14,
  "total_cost_usd": 8.5338,
  "cost_n_of_m": "32/32",
  "mean_wall_s": 87.2,
  "timeouts": 0,
  "gate_behaviour": "FAIL",
- "gate_absence": "FAIL"
+ "gate_absence": "FAIL",
+ "gate_absence_v1_label": "SUPERSEDED-BY-SCORER-REPAIR (see F53); retained, not deleted",
+ "gate_absence_v2": "PASS"
 }

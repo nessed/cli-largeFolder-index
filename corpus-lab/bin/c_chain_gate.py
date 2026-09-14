@@ -25,6 +25,7 @@ verifier and never to the key's number.
 Counts, ids and booleans only.
 """
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -73,9 +74,43 @@ def page_text(ctx, rel, page_index):
     return row[0] if row else None
 
 
+# A literal identifier: the longest digit-bearing token in the question. Generic
+# -- "the longest run of non-space characters that contains a digit" -- and
+# derived from the question text alone, never from the key.
+_ID_TOKEN_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9()/._-]*\d[A-Za-z0-9()/._-]*")
+
+
+def longest_identifier(question):
+    cands = [t.strip(".,;:)") for t in _ID_TOKEN_RE.findall(question or "")]
+    cands = [t for t in cands if not G.FY_RE.fullmatch(t) and not re.fullmatch(r"\d{4}", t)]
+    if not cands:
+        return None
+    return max(cands, key=len)
+
+
 def route_absent(ctx, question):
+    """Two absence routes, because this corpus has two kinds of absence and the
+    2026-09-15 overnight chain only implemented one.
+
+    DOCUMENT level -- the question names a fiscal year: ask the shelf whether it
+    holds any edition of that publication for that year.
+
+    IDENTIFIER level -- the question names a literal identifier and no fiscal
+    year (a notification number, a demand number, a code). There is nothing for
+    `have` to check, and the overnight chain returned "not absent" for every one
+    of these without looking, which is why it scored 1 of 3 on the frozen
+    absence questions: 1 of those 3 is document level and 2 are identifier
+    level. `exact` is the path that was missing -- zero matching pages anywhere
+    in the index is the shelf's own evidence of absence.
+    """
     m = G.FY_RE.search(question)
     if not m:
+        tok = longest_identifier(question)
+        if not tok or len(tok) < 3:
+            return False, None
+        res = CSH.do_exact(ctx, tok, k=1)
+        if res.get("total", 0) == 0:
+            return True, "TOTAL_PAGES_MATCHING=0"
         return False, None
     fy = m.group(1)
     words = G.FY_RE.sub(" ", question)
