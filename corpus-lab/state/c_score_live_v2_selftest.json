@@ -1,0 +1,35 @@
+{
+ "generated_utc": "2026-09-14T22:58:36Z",
+ "n_checks": 4,
+ "n_passed": 4,
+ "all_pass": true,
+ "checks": [
+  {
+   "check": "p8_cited_right_page_strict_is_1",
+   "pass": true,
+   "got": 1
+  },
+  {
+   "check": "p8_cited_unopened_total_is_0",
+   "pass": true,
+   "got": 0
+  },
+  {
+   "check": "p8_absence_ok3_is_2_of_3",
+   "pass": true,
+   "got": "2/3"
+  },
+  {
+   "check": "registry_reproduces_gold_addresses",
+   "pass": true,
+   "got": 0.9699
+  }
+ ],
+ "registry": {
+  "n_gold_addresses": 332,
+  "n_gold_addresses_reproduced": 322,
+  "fraction": 0.9699,
+  "bar": 0.95,
+  "usable": true
+ }
+}
