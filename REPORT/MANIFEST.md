@@ -110,7 +110,7 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 | `HANDOFF_2026-09-15_pm.md` | *(written here)* — the afternoon forensics phase in seven answers | 11,772 | `84443c51113727c5` |
 | `HANDOFF_2026-09-15_evening.md` | *(written here)* — Experiment G, the production changes, chain v2 and the third live battery, in seven answers | 9,954 | `a4cd1678583c757c` |
 | `HANDOFF_2026-09-16.md` | *(written here)* — the model as document selector, the citation guard, and the fourth live battery, in eight answers | 9,392 | `de8cfb8cec5d8a1c` |
-| `SESSION_LOG_2026-09-13_to_09-14.md` | *(written here)* — six execution phases and the manual Sonnet/Opus probes in one place, written for a fresh agent | 14,456 | `e901ac2255471783` |
+| `SESSION_LOG_2026-09-13_to_09-14.md` | *(written here)* — six execution phases, the manual Sonnet/Opus sessions verbatim with timings and accuracy, and the current state of the project | 45,696 | `d8935eef06fb17db` |
 | `EXECUTE_SHELF_V2.md` | `EXECUTE_SHELF_V2.md` *(notice added)* | 10,923 | `5d89454913c705d5` |
 | `RESEARCH_2026-09-13.md` | `RESEARCH_2026-09-13.md` *(notice added)* | 12,302 | `314fd7ed6cf90162` |
 
