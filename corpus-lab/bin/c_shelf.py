@@ -1046,8 +1046,51 @@ def _print_open(res):
     print(res["body"])
 
 
+# `... | <path> | p<page_index>` -- the citation tail CLAUDE.md already asks for.
+_NOTE_TAIL_RE = re.compile(r"\|\s*(?P<path>[^|]+?)\s*\|\s*p(?P<page>\d+)\s*$", re.I)
+
+
 def do_note(ctx, slug, text):
+    """A note is the one place a figure crosses from a page into an answer, so
+    it is the one place provenance can be enforced by the tool rather than
+    asked for in prose. The 2026-09-15 batteries measured 5 and then 8 answers
+    citing a file the session never opened, with the instruction to open first
+    sitting in CLAUDE.md the whole time. An instruction the tool does not
+    enforce is a suggestion.
+
+    So: the note must carry the `| <path> | p<n>` tail the policy already
+    prescribes, and that (path, page) must appear in this slug's own
+    `_opened.jsonl`. Nothing is recorded when it does not.
+
+    Path comparison is by the last two segments, lowercased, matching
+    scoring.py's rule -- the agent quotes the path as `find` printed it, and
+    requiring a byte-identical string would fail honest notes for punctuation.
+    """
+    m = _NOTE_TAIL_RE.search(text or "")
+    if not m:
+        return {"ok": False, "error": "NOTE_REFUSED_NO_CITATION"}
+    cited_path = m.group("path").strip().strip('"\'')
+    cited_page = int(m.group("page"))
+
+    def tail2(s):
+        segs = [x for x in str(s).replace("\\", "/").lower().split("/") if x]
+        return "/".join(segs[-2:])
+
     nd = _notes_dir(ctx.root)
+    opened_log = nd / f"{slug}_opened.jsonl"
+    opened = []
+    if opened_log.exists():
+        for line in opened_log.read_text(encoding="utf-8").splitlines():
+            try:
+                opened.append(json.loads(line))
+            except Exception:
+                pass
+    want = tail2(cited_path)
+    if not any(o.get("page_index") == cited_page and tail2(o.get("rel")) == want
+               for o in opened):
+        return {"ok": False, "error": "NOTE_REFUSED_PAGE_NOT_OPENED",
+                "path": cited_path, "page_index": cited_page}
+
     log = nd / f"{slug}_notes.jsonl"
     with open(log, "a", encoding="utf-8") as fh:
         fh.write(json.dumps({"text": text, "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}) + "\n")
@@ -1098,13 +1141,17 @@ def main():
 
     p = sub.add_parser("inside"); p.add_argument("rel"); p.add_argument("terms")
     p.add_argument("--k", type=int, default=8)
-    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"], default="off")
+    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"],
+                   default="dense_first")  # B2c adopted 2026-09-15 (F55); the
+    # Python default stays None so every recorded number reproduces with explicit flags
 
     p = sub.add_parser("tables"); p.add_argument("rel"); p.add_argument("--grep")
 
     p = sub.add_parser("series"); p.add_argument("row_words"); p.add_argument("--family", required=True)
     p.add_argument("--from", dest="fy_from"); p.add_argument("--to", dest="fy_to"); p.add_argument("--slug")
-    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"], default="off")
+    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"],
+                   default="dense_first")  # B2c adopted 2026-09-15 (F55); the
+    # Python default stays None so every recorded number reproduces with explicit flags
 
     p = sub.add_parser("copies"); p.add_argument("rel")
 
@@ -1164,7 +1211,14 @@ def main():
         res = do_open(ctx, a.rel, a.page_index, slug=a.slug)
         _print_open(res)
     elif a.cmd == "note":
-        do_note(ctx, a.slug, a.text)
+        r = do_note(ctx, a.slug, a.text)
+        if not r.get("ok"):
+            if r["error"] == "NOTE_REFUSED_PAGE_NOT_OPENED":
+                print("NOTE_REFUSED_PAGE_NOT_OPENED %s p%d"
+                      % (r["path"], r["page_index"]), file=sys.stderr)
+            else:
+                print("NOTE_REFUSED_NO_CITATION", file=sys.stderr)
+            sys.exit(3)
         print("NOTED")
     elif a.cmd == "notes":
         res = do_notes(ctx, a.slug)

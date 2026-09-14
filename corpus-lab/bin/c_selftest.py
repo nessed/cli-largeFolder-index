@@ -139,6 +139,58 @@ def main():
     else:
         results["open_notes"] = {"pass": False}
 
+    # note requires open (2026-09-15, F59 provenance enforcement). A note whose
+    # cited page was never opened under the same slug must be refused and must
+    # record nothing; one opened properly must still be accepted.
+    if target_rel:
+        slug = "selftest_prov"
+        nd = CSH._notes_dir(None)
+        for f in (nd / (slug + "_notes.jsonl"), nd / (slug + "_opened.jsonl")):
+            if f.exists():
+                f.unlink()
+        tail = ' | %s | p0' % target_rel
+        r_no_tail = CSH.do_note(ctx, slug, "no citation here")
+        r_before = CSH.do_note(ctx, slug, "line" + tail)
+        recorded_before = (nd / (slug + "_notes.jsonl")).exists()
+        CSH.do_open(ctx, target_rel, 0, slug=slug)
+        r_after = CSH.do_note(ctx, slug, "line" + tail)
+        results["note_requires_open"] = {
+            "pass": (r_no_tail.get("error") == "NOTE_REFUSED_NO_CITATION"
+                     and r_before.get("error") == "NOTE_REFUSED_PAGE_NOT_OPENED"
+                     and not recorded_before
+                     and r_after.get("ok") is True),
+            "no_tail": r_no_tail.get("error"), "before_open": r_before.get("error"),
+            "recorded_before_open": recorded_before, "after_open_ok": r_after.get("ok"),
+        }
+        for f in (nd / (slug + "_notes.jsonl"), nd / (slug + "_opened.jsonl")):
+            if f.exists():
+                f.unlink()
+    else:
+        results["note_requires_open"] = {"pass": False, "reason": "no target"}
+
+    # the inside/series CLI default is B2c (dense_first) while the Python
+    # default stays None, so recorded numbers reproduce with explicit flags.
+    if target_rel:
+        want = [h["page_index"] for h in
+                CSH.do_inside(ctx, target_rel, "contents", k=8,
+                              caption_channel="dense_first")["hits"]]
+        r = subprocess.run([PY, SHELF_PY, "--db", DB, "--shelf", SHELF,
+                            "inside", target_rel, "contents", "--k", "8"],
+                           capture_output=True, text=True, errors="replace")
+        got = []
+        for line in (r.stdout or "").splitlines():
+            s = line.strip()
+            if s.startswith("p") and "|" in s:
+                try:
+                    got.append(int(s.split()[0][1:]))
+                except ValueError:
+                    pass
+        results["cli_caption_default_is_b2c"] = {
+            "pass": bool(want) and got == want,
+            "n_cli": len(got), "n_inprocess": len(want)}
+    else:
+        results["cli_caption_default_is_b2c"] = {"pass": False, "reason": "no target"}
+
     # bogus subcommand -> exit 2 and usage, via the real CLI
     r = subprocess.run([PY, SHELF_PY, "--db", DB, "--shelf", SHELF, "bogus_command_xyz"],
                         capture_output=True, text=True)

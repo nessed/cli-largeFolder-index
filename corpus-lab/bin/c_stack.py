@@ -64,10 +64,8 @@ the question and they matter more than anything else you do here. Write them as:
   question word and conversational filler dropped.
 
 Read the families it returns: each is a publication with the editions (fiscal years)
-held. Decide which publication and which year(s) answer the question. Prefer families with
-several dated editions over single files, notes or spreadsheets when the question asks for an
-official published figure; open a single file only when the question is about that file. If
-the question names a publication or a year, confirm it is held:
+held. Decide which publication and which year(s) answer the question. If the question
+names a publication or a year, confirm it is held:
 
     "{PY}" "{SHELF}" have "<publication words>" --fy <year like 2012-13>
 
@@ -77,12 +75,12 @@ year's edition without saying so.
 
 ## 2. Find the page inside the document
 
-    "{PY}" "{SHELF}" inside "<path exactly as printed>" "<the subject in a few words>" --caption {PAGECAP}
+    "{PY}" "{SHELF}" inside "<path exactly as printed>" "<the subject in a few words>"
     "{PY}" "{SHELF}" tables "<path>" --grep "<word>"
 
 For a question about how something changed over years, walk the editions in one go:
 
-    "{PY}" "{SHELF}" series "<the table row in a few words>" --family "<publication words>" --from 2015-16 --caption {PAGECAP}
+    "{PY}" "{SHELF}" series "<the table row in a few words>" --family "<publication words>" --from 2015-16
 
 series shows you the matching line per edition. It does not open pages; you still must
 open the page in each edition you use.
@@ -107,6 +105,9 @@ exact and, if TOTAL_PAGES_MATCHING=0, say that no readable page contains it:
 After opening a useful page:
 
     "{PY}" "{SHELF}" note --slug <slug> "<the exact line or table cell, verbatim> | <path> | p<page_index>"
+
+note will refuse a line whose page you have not opened with open under the same slug; if it
+refuses, open the page first.
 
 Then print and answer from them:
 
@@ -335,10 +336,10 @@ def do_selftest():
         chk("claude_md_find_has_frozen_flags",
             ("--fusion %s" % FROZEN_FUSION) in text)
         chk("claude_md_find_has_rewrites", text.count('--q "<rewrite>"') >= 3)
-        chk("claude_md_inside_has_caption",
-            ("inside " in text and ("--caption %s" % FROZEN_PAGE_CAPTION) in text))
-        chk("claude_md_series_has_caption",
-            text.count("--caption %s" % FROZEN_PAGE_CAPTION) >= 2)
+        chk("claude_md_inside_no_stale_caption_flag",
+            "--caption " not in text and "--caption dense" not in text)
+        chk("claude_md_note_enforcement_sentence",
+            "note will refuse a line whose page you have not opened" in text)
         chk("claude_md_no_placeholders",
             "{PY}" not in text and "{SHELF}" not in text)
 
