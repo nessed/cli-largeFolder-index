@@ -311,3 +311,103 @@ configuration's 10/17 and 14/30.
 
 This spends the **fifth and last** holdout look. Do not, to get past it: tune the fusion
 weight, change the pool depth, lower the caption cut, or add a seventh rewrite.
+
+---
+
+# Addendum — 2026-09-15, evening
+
+*Added, not a rewrite. Findings F57–F59. Three gates read: one adoption gate STOPped, two
+production changes shipped on gates already passed, and the live gate STOPped.*
+
+## B1. The boxes were NOT redrawn, and the condition that would have redrawn them failed twice
+
+The standing condition was: redraw RETRIEVE DOCUMENT → RETRIEVE PAGE as
+**RETRIEVE FAMILY → LOCATE TABLE** if the caption channel worked at document level **and**
+content-based edition selection reached 8 of 10.
+
+- **Experiment G** (caption similarity as a reranker over the top-100 pool): **9/17**, against
+  the frozen configuration's 10. **STOP.**
+- **ED3** (edition selection using B2c's much better pages): **3/10**, mean set size 2.0 —
+  *identical* to ED2's 3/10 and 2.0.
+
+**Both halves fail, and ED3's failure is the more informative.** Page retrieval improved from
+42 to 52 of 57 addresses and edition selection did not move by a single question. That is only
+consistent with **B2c finding the right kind of page in the wrong edition** — F51's offsets for
+the third time. Locating the table does not determine the edition here, because the volume that
+prints year Y's row is usually a later one. **The boxes stay as they are.**
+
+## B2. Captions: the same shape for the fourth time
+
+| where | result |
+|---|---|
+| document channel, lexical (E1) | STOP |
+| document channel, dense (E2) | STOP, below baseline |
+| **page channel inside one document (B2c)** | **PASS, holdout-confirmed** |
+| document channel, dense reranker over the pool (G) | STOP |
+
+**Captions discriminate within a document and dilute across the corpus.** Inside a document the
+competing captions are a few dozen tables of the same publication; across 1,618 families every
+dated series contains some caption plausibly about any fiscal subject, and a maximum over a
+family's captions is the statistic most exposed to that. G improved 4 questions and worsened 11.
+The unit is right; the scope is wrong.
+
+## C. CLAUDE ANSWERS — the citation rule now has a tool behind it, and the number still rose
+
+`note` refuses a citation whose page was not opened under the same slug
+(`NOTE_REFUSED_PAGE_NOT_OPENED`, exit 3, nothing recorded). Self-tested 10/10, and it fired in
+the live battery: 4 refusals across 19 note commands in 2 of 20 sessions.
+
+**`cited_unopened_total` before: 8. After: 10.**
+
+The enforcement guards the **note**; the **answer** does not pass through the note. The agent
+notes pages it did open and then names extra paths from a `find` listing in its answer, where no
+check exists. Two nights and two mechanisms — one instruction (pm, STOP) and one tool check
+(evening, STOP) — have now failed to move this number, for the same structural reason.
+
+## D. Live, three batteries, one shape
+
+| | overnight | pm | evening |
+|---|---|---|---|
+| L0 right publication never surfaced | 9 | 10 | **10** |
+| everything downstream (L1–L4) | 8 | 6 | 6 |
+| cited the right page | 0 | 2 | 1 |
+| absence (frozen 3, repaired scorer) | 2/3 | 3/3 | **3/3** |
+
+**L0 is 9–10 of 17 in all three.** Every downstream class is small and moves by ±1–2 between
+identical configurations. Absence is the one number stable across all three.
+
+## E. Boxes
+
+**Keep:** SHELF; VERIFY (3 of 4, then 3 of 5 in the chain, still never the bottleneck);
+session isolation; ROUTE/absence, now including the identifier-level path — **3/3 in the chain
+and 3/3 live, twice**. **Adopted this phase:** B2c as the production page method (F55).
+**Weak:** the trajectory walk; ROUTE's presence half.
+**Failed:** RETRIEVE DOCUMENT, now five ways; edition selection, now three ways
+(structural 3/17, content 3/10, content-with-better-pages 3/10); citation discipline, now two
+ways.
+**Untested:** the EXTRACT router; the VERIFY → retry edge.
+
+## F. The next experiment
+
+**None is justified on the retrieval side, and that is now a measured position rather than a
+pause.** Five mechanisms have been tried on the document box — more rewrites, a cross-encoder,
+per-query selection, a caption retrieval channel (lexical and dense), and a caption reranker —
+and the best of them moves the top ten from 9 to 10 of 17 and does not survive a holdout. The
+pool contains the answer on 16 of 17; nothing available reorders it.
+
+Two things are worth doing before any sixth mechanism, and neither is a retrieval idea:
+
+1. **Establish the variance.** Every live conclusion this project has drawn rests on single
+   batteries whose ±1–2 movements are indistinguishable from noise. Run the *same* configuration
+   three times and report the spread. Until that exists, no live gate band is trustworthy, this
+   phase's included. Cost: 3 × 20 sessions, no new code.
+2. **Ask whether the intermediate objective is the right one.** "Gold family in the top 10" has
+   been the target for five nights, and the live batteries show it decoupling from what matters:
+   the frozen configuration scores 10/17 offline while the agent surfaces 7–8/17 and cites 0–2.
+   A target the system can hit without the outcome improving is the wrong target.
+
+**If a sixth retrieval mechanism is attempted anyway**, the one the evidence points at is the
+opposite of everything tried so far: not reranking documents, but **retrieving pages directly
+and letting the document follow** — B2c works at page level, and the 1.2M-page index already
+exists. Pre-registered gate for that, fixed now: gold **page** in the top 20 over the whole
+corpus on ≥6/17 dev and ≥10/30 on holdout-2, which has **2 unspent looks**. Below that, stop.

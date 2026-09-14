@@ -656,3 +656,85 @@ experiment carries the mechanism that just worked at page level up to document l
 addendum in
 [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
 findings F53–F56.*
+
+---
+
+## 14. Night 5, evening (2026-09-15) — the document box, five mechanisms in, and one useful failure
+
+Three things were tested: whether the trick that fixed page retrieval also fixes document
+retrieval; whether enforcing the citation rule in the *tool* rather than in prose would stop the
+model citing files it never opened; and what the whole pipeline does end to end with the better
+page method in it.
+
+### The page fix does not transfer upward
+
+Ranking a document's captions by meaning fixed page retrieval decisively (82.7% on a holdout).
+Doing the same thing across the whole corpus — score every candidate publication by its
+best-matching caption — scores **9 of 17 against a baseline of 10**. It improves four questions
+and makes eleven worse.
+
+The reason is worth keeping, because it is now the fourth result with the same shape. Inside one
+document, the captions competing with the right table are a few dozen tables of the same
+publication, and "which of these is about wheat" is a question an embedding answers well. Across
+1,618 publications, every dated statistical series in the corpus contains *some* caption
+plausibly about any fiscal subject — and scoring a publication by its single best caption is the
+statistic most exposed to that. **Captions discriminate within a document and dilute across the
+corpus.** The unit is right; the scope is wrong.
+
+### Edition selection failed again, and this time it says something
+
+With the much better page retrieval doing the work, picking which year's volume holds the row
+scores **3 of 10** — *exactly* what the previous, worse rule scored, down to the mean set size.
+Page retrieval improved by ten addresses out of fifty-seven and edition selection did not move by
+a single question.
+
+That combination has only one explanation, and it is one this project has now measured three
+separate ways: **the pages being found are the right kind of page in the wrong edition.** The
+volume that prints a given year's figure is usually a later one, so a rule that matches the asked
+year against a volume's own year picks wrong roughly three times in four.
+
+### The citation rule now has a tool behind it. The number went up
+
+The folder's instructions have said "open the page before you cite it" for three nights. Two
+batteries measured 5, then 8 answers naming a file the session never opened. So the rule was moved
+out of prose and into the tool: `note` now parses the citation you give it and **refuses** if you
+have not opened that page.
+
+It works. It fired four times in the live battery and recorded nothing it shouldn't have. And
+answers citing unopened files rose from **8 to 10**.
+
+**Because the gate guards the note, and the answer does not pass through the note.** The model
+dutifully notes the pages it opened — that was never the problem — and then writes an answer that
+also mentions two other paths it saw in a search listing. There is no checkpoint between the notes
+and the answer. Two nights and two mechanisms have now failed at this for the same structural
+reason, which is more useful to know than either mechanism would have been had it worked.
+
+### The whole pipeline, end to end
+
+**8 of 17 reach the right publication → 5 reach a right page → 3 verify**, with honest refusal now
+**3 of 3**. The page improvement that was worth +10 of 57 addresses in isolation is worth **+1 of
+17 questions** here — the arithmetic of a pipeline whose loss is upstream.
+
+### Where the project actually stands
+
+Across three live batteries with different configurations, one number is stable: **on 9 to 10 of
+17 questions the right publication never reaches the model's screen at all.** Everything
+downstream — wrong edition, wrong page, sloppy citation — is four to six questions and moves by
+one or two between identical runs.
+
+Five mechanisms have now been tried on that one box: more query rewrites, a cross-encoder
+reranker, per-query selection instead of fusion, captions as a retrieval channel, and captions as
+a reranker. The best of them moves the score from 9 to 10 of 17 and does not survive its holdout.
+The right answer is in the top hundred candidates on sixteen of seventeen questions; nothing tried
+can pull it into the top ten.
+
+**The honest recommendation is not a sixth mechanism.** It is to establish how noisy these live
+measurements actually are — every conclusion here rests on single batteries whose movements of
+one or two questions are indistinguishable from run-to-run variation — and to ask whether "get the
+right publication into the top ten" is even the right thing to be optimising, given the frozen
+configuration scores 10 of 17 on that measure while the live agent surfaces 7 and cites 1.
+
+*Detail: [`08_what_next/HANDOFF_2026-09-15_evening.md`](08_what_next/HANDOFF_2026-09-15_evening.md),
+the evening addendum in
+[`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
+findings F57–F59.*

@@ -52,7 +52,7 @@ canonical table ranks 6th behind five prose restatements of its own subject).
 | approach C, the same pool at depth 100 | right document **in the pool on 16 of 17** — NEW; the loss is ranking, not coverage | — |
 | approach C + a compact cross-encoder reranker | **9/17** — NEW, gate STOP: it recovers what it cost and nothing more | 12/17 |
 | approach C, multi-year trajectory walk | **1/4** editions-walk correct — and the metric measures which *copy* the shelf calls primary, not page retrieval | 3/4 |
-| approach C, right *page* once document is right | **24 of 57 (42.1%)** — CORRECTED 2026-09-14, was 25/57 measured with a defective query | 60% (40% floor) |
+| approach C, right *page* once document is right | **52 of 57 (91.2% by address, 82.1% by question) dev and 67 of 81 (82.7%) on the holdout** — NEW 2026-09-15 pm, **gate PASS and adopted into production**; was 24 of 57 with lexical matching | 60% + 60% |
 | approach C + caption-aware page retrieval | **42 of 57 (73.7%)** — NEW, but *all* of the gain is on trajectory questions and none elsewhere | 60% |
 | approach C, structural edition selection | **3/17** — NEW; the year a question asks for is usually not the year on the document that answers it | 15/17 |
 | approach C + per-query selection instead of rank fusion | **5/17** — NEW 2026-09-15, gate STOP: the best-supported untried idea in the repo, and it is worse than the fusion it replaced | 12/17 |
@@ -64,6 +64,10 @@ canonical table ranks 6th behind five prose restatements of its own subject).
 | **approach C, live Claude Code battery on the frozen configuration** | **surfaced 8/17, opened the right page 1/17, cited the right page 0/17, cited a file it never opened 5 times, honest-refusal 1/15** — LIVE 2026-09-15, both gates FAIL. All 17 sessions *did* open pages; they opened the wrong ones | see F50 |
 | approach C, dense caption ranking **inside** the right document (B2c) | **52 of 57 (91.2%) dev, 67 of 81 (82.7%) holdout** — NEW 2026-09-15 pm, **gate PASS**, the first holdout-confirmed pass in the project; gain spread across question types, not trajectory-only | 60% + 60% |
 | approach C, live re-battery with one instruction changed | L1 loss class 4 → 2 and **cited-the-right-page 0 → 2**, the first ever; but cited-a-file-never-opened 5 → 8, so **gate STOP** and the change is kept unadopted | see F56 |
+| approach C, caption similarity as a **document** reranker (G) | **9 of 17** against the frozen 10 — NEW 2026-09-15 evening, gate STOP; improves 4 questions and worsens 11. Fourth result showing captions discriminate *within* a document and dilute *across* the corpus | 13/17 |
+| approach C, edition selection using the better pages (ED3) | **3 of 10**, mean set 2.0 — identical to the previous rule despite page retrieval going 42 → 52 of 57; the pages found are the right kind in the wrong edition | 8/10 |
+| approach C, whole pipeline end to end (chain v2) | **8 → 5 → 3 of 17 verified**, absence **3/3** — NEW 2026-09-15 evening; a page fix worth +10 of 57 in isolation is worth +1 of 17 in the chain | — |
+| approach C, third live battery (tool-enforced citation) | `note` now refuses a page you did not open — and **answers citing an unopened file rose 8 → 10**, because the gate guards the note and the answer does not pass through it. Gate STOP | see F59 |
 
 > **Extended 2026-09-15 — the first live battery, and the first end-to-end run.**
 > Six more pre-registered gates were read and **all six STOPped or FAILED**; no bar was moved.

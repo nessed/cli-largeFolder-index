@@ -1638,3 +1638,215 @@ anything CLAUDE.md can say.**
 the frozen retrieval configuration. Checksums 18 unchanged / 0 changed, isolation probes 2/2
 pass with a fresh token, 0 memory files, 0 new canary-bearing transcripts, rung torn down clean.
 $7.58 for 20 sessions with cost recorded for 18 of 20 (the two timeouts report none).*
+
+---
+
+## F57. Experiment G — the signal that fixed page retrieval does not transfer to document retrieval. STOP. And ED3 is unchanged at 3/10
+
+**Measured**, `state/c_caption_doc_gate.json` and `state/c_edition_set_v3.json`. Mechanism and
+gate specified in `state/experiment_g_spec.md`, committed (`1017099`) before this ran. 17
+answerable frozen questions, six C2 rewrites, the frozen configuration's top-100 pool. No model
+calls. **No holdout look spent** — see below.
+
+G was the best-licensed idea this project has had: F41 says the right document is in the
+top-100 pool on 16 of 17, F44 says catalogue cards cannot reorder that pool, and F55 says
+caption embeddings cleanly separate the right table from its neighbours *inside* a document. G
+carries that signal up one level — score each pooled family by the maximum cosine between the
+query's label words and any caption it contains, and fuse that rank with the existing one.
+
+| depth | frozen configuration | G1 | G2 |
+|---|---|---|---|
+| **top 10** | **10** | **9** | **9** |
+| top 20 | 12 | **13** | **13** |
+| top 50 | 14 | 14 | 14 |
+| top 100 | 16 | 16 | 16 |
+
+**Pre-registered gate: PASS ≥13/17, WEAK 11–12, STOP ≤10. It is 9. STOP.** The frozen document
+configuration stands unchanged.
+
+**The last holdout-1 look was not spent.** The gate's stop condition is "≤10/17 **or** holdout
+<16/30", and the development number alone triggers it. Spending the branch's final look to
+confirm a configuration four questions below the pass bar and one below the baseline it was
+meant to beat would tell us nothing, exactly as with Experiment C overnight. **Holdout-1 keeps
+its last look and is retired for this branch unused; holdout-2 remains at 0 of its 2 looks.**
+
+**G2 is not a separate result.** 14 of the 17 questions are table-like by the three generic
+signals, and on the remaining 3 the reranker changes nothing that reaches the top ten, so G2
+reproduces G1 exactly. The hypothesis that the harm concentrates on non-table questions and can
+be switched off by question type is therefore **not supported**: the harm is spread across the
+questions the signal was supposed to help.
+
+### Why it does not transfer, stated from the counts
+
+Per question, G1 improves the gold rank on **4**, worsens it on **11**, and leaves 2 unchanged.
+That is not a wash; it is a signal that is actively wrong more often than right, while
+occasionally being very right.
+
+The reason is visible in the diagnostic. Of the families ranked above gold under G1, **448 are
+dated series and 65 are singletons** — the same crowding F46 measured, barely moved. Caption
+similarity inside a document works because the competing captions belong to *the same
+publication*: a few dozen tables, one of which is about the subject. Across 1,618 families
+every dated statistical series in the corpus contains a caption that is *plausibly* about any
+given fiscal subject, because that is what these publications are — and the maximum over a
+family's captions is precisely the statistic most vulnerable to that. A family with 400
+captions gets 400 chances to produce one that looks close.
+
+**Something real is nonetheless recorded**: recall@20 rises 12 → 13, and **2 of the 9 questions
+the live battery classified L0 — the right publication never appeared on screen — now reach the
+top 10.** The signal is not noise. It is a signal whose false-positive rate at corpus scale
+exceeds its true-positive rate at the depth the measure lives, which is a different thing and
+closes the idea in this form rather than in general.
+
+This is now the fourth independent result with the same shape: **captions discriminate within a
+document and dilute across the corpus** (E1 STOP, E2 STOP and below baseline, B2c PASS, G STOP).
+The unit is right, the scope is wrong.
+
+### ED3 — unchanged at 3 of 10
+
+With the gold family supplied and **B2c's much better page retrieval** doing the selecting:
+
+| | ED2 (B2 pages) | **ED3 (B2c pages)** |
+|---|---|---|
+| edition set recall | 3/10 | **3/10** |
+| mean set size | 2.0 | **2.0** |
+| max set size | 6 | 6 |
+
+**Identical.** Reading, fixed in advance: below 8 of 10 means captions-plus-year do not select
+editions. They do not — and this is the sharper version of that finding, because page retrieval
+improved by a factor the page gate measures as 42→52 of 57 and edition selection did not move by
+a single question.
+
+That combination is only consistent with one thing, and it is what F51's offsets already said:
+**B2c is finding the right kind of page in the wrong edition.** The pages it surfaces carry the
+asked year in their bodies and sit in volumes the key does not cite, because the volume that
+prints year Y's row is usually a later one. Better page ranking cannot fix an edition rule; the
+year narrows the row, not the edition, for a third time.
+
+*Condition: this corpus, this caption harvest, max-cosine over a family's captions, pool 100,
+k=60, no weights or thresholds. It does not show that no document-level use of captions can
+work — an aggregate less extreme than the maximum, or a per-caption reranker over candidate
+pages rather than families, remains untried — but it does show this form fails, and the
+remaining variants are all "tune the aggregate", which the spec forbade.*
+
+---
+
+## F58. Chain v2 — a page fix worth +10 of 57 in isolation is worth +1 of 17 in the chain
+
+**Measured**, `state/c_chain_gate_v2.json` against `state/c_chain_gate.json`. Same 20 frozen
+questions, same frozen document configuration (E1 — Experiment G stopped, so it stands), the
+**production** page method B2c, and the identifier-level ROUTE path added in the pm run. 488
+verifier calls, 33 minutes, no model calls.
+
+| stage | v1 (B2 pages) | **v2 (B2c pages)** |
+|---|---|---|
+| gold family in the top 5 | 8 | **8** |
+| → a gold (file, page) reached | 4 | **5** |
+| → the cell verified on the page | 3 | **3** |
+| absence routed correctly | 1 / 3 | **3 / 3** |
+| mean pages opened per question | 46.4 | 50.2 |
+| questions hitting the 40-call verifier cap | 11 | 12 |
+
+**Neither pre-registered reading fires.** Address hits rose to 5, not the ≥6 that would have
+confirmed page selection as live-independent; verified hits lag address hits by 2, not the ≥3
+that would have made EXTRACT/VERIFY the next box. Both are reported as measured and no third
+reading is invented after the fact.
+
+**The headline is the size of the transfer, and it is the most useful number here.** B2c is
+worth **+10 of 57 addresses** when the right document is handed to it (42 → 52, F55). Inside
+the chain, where the document has to be found first, it is worth **+1 of 17 questions**. Same
+mechanism, same corpus, same questions — a factor of roughly ten lost to everything upstream.
+
+That is not a criticism of B2c; it is the arithmetic of a pipeline. The chain reaches a page
+only on the 8 questions whose family is in the top 5, and of those it must also pick the right
+edition. Better page *ranking within a document* cannot help on the 9 questions that never
+reach the right document, and it is diluted again by the edition step. The count that shows
+this directly: **family-in-top-5 but no address reached falls only from 4 to 3.**
+
+**Absence is now 3 of 3**, up from 1, entirely from the identifier-level `exact` path added in
+the pm run (F53) — the chain's earlier 1/3 was that implementation gap and nothing else.
+
+**Verified hits did not move, and the verifier is still not the bottleneck.** It converted 3 of
+the 4 addresses it was given in v1 and 3 of 5 in v2. The one address gained was a page whose row
+and column the verifier could not resolve, so the count of "reached but not verified" rose from
+1 to 2 — a small number and the only sign in the whole run that extraction may eventually
+matter. It is not yet worth a box.
+
+**The edition rule is still failing in the way ED3 measured this afternoon.** Its own counters:
+the year-based rule selected no edition at all and fell back to all primaries on **5 of 17**
+questions, and fired properly on 5. That is ED3's 3/10 arriving through a different door for the
+second time today.
+
+*Condition: this corpus, top-5 families, top-5 pages per edition, a 40-call verifier cap hit on
+12 of 17 questions — so the verified count is a floor. Deterministic, no model calls.*
+
+---
+
+## F59. LIVE-3 — tool-enforced provenance guards the wrong surface. STOP
+
+**Measured**, `state/c_live_battery_p7.json` and `state/c_live_forensics_p7.json` against the
+pm battery. 23 of 23 permitted sessions, `claude-sonnet-5` (probe init event confirms),
+**20 of 20 completed, 0 timeouts, $6.65**. Isolation 2/2 with a fresh token, checksums 18
+unchanged / 0 changed, 0 memory files, 0 new canary-bearing transcripts, rung torn down clean.
+
+Two production changes were under test, and the gate separates them on purpose.
+
+| the three separated metrics | pm | evening | tests |
+|---|---|---|---|
+| **L0** — right publication never surfaced | 10 | **10** | document retrieval (G not adopted, so flat is expected) |
+| **L2+L3** — edition and page choice | 2 | **2** | B2c in production |
+| **cited a file never opened** | 8 | **10** | the `note` enforcement |
+
+| | pm | evening |
+|---|---|---|
+| cited the right page | 2 | **1** |
+| opened the right page | 3 | 2 |
+| opened any evidence file | 3 | 4 |
+| wrote a note | 11 | 13 |
+| absence (frozen 3, v2 rule) | 3/3 | **3/3** |
+| timeouts | 2 | **0** |
+
+**Pre-registered gate LIVE-3: PASS needs `cited_right_page` ≥5/17, `cited_unopened_total` ≤3
+and absence ≥2/3. WEAK needs ≥4/17 and ≤5. It is 1, 10 and 3/3. STOP.**
+
+### The finding: the enforcement works and does not matter
+
+The tool change does exactly what its self-tests say. In the live battery it fired **4 times**
+— 1 `NOTE_REFUSED_PAGE_NOT_OPENED` and 3 `NOTE_REFUSED_NO_CITATION` — across **19** note
+commands in **2 of 20** sessions. Nothing was recorded that should not have been.
+
+And `cited_unopened_total` went **up**, 8 → 10.
+
+**Because the note gate guards the note, and the answer does not go through the note.** The
+agent writes notes about pages it did open — that was never the failure — and then writes an
+answer that names additional paths it saw in a `find` listing and never opened. Enforcement at
+the `note` boundary has no jurisdiction over the text of the final answer. The instruction and
+the tool check agree with each other and both sit upstream of the place the violation happens.
+
+This is a clean negative result about **where** to enforce, not about **whether** to. The
+surfaces that could actually bind are: refusing to emit an answer naming an unopened path
+(there is no hook for that in this harness), or scoring the answer against the notes after the
+fact (which is what the scorer already does, and which is measurement, not enforcement). It is
+worth saying plainly that **two nights of work have now gone into the citation-discipline
+problem — one instruction, one tool check — and neither moved the number**, while the
+measurement that says the number matters has never been in doubt.
+
+### B2c in production moved nothing live, and that was predictable
+
+L2+L3 is flat at 2. F58 had already measured why: B2c is worth +10 of 57 addresses with the
+document handed over and +1 of 17 inside the chain, because it only acts on questions that
+reach the right document, and 10 of 17 do not. The live battery reaches the right document even
+less often than the chain does. **A page fix cannot show up in a system whose loss is upstream
+of the page**, and this battery is the direct confirmation.
+
+### On the movements that are not findings
+
+`cited_right_page` 2 → 1 and `opened_right_page` 3 → 2 are, on a base of 17, inside the
+run-to-run variation this battery demonstrated in the pm run (where `surfaced` moved by one
+with retrieval untouched). The one movement plausibly outside noise is **timeouts 2 → 0**, and
+no change this phase targeted timeouts. **Absence holds at 3/3 across two batteries under the
+repaired scorer**, which is the one number that has now been stable through three system
+configurations.
+
+*Condition: this corpus, 17 answerable questions, one battery per configuration,
+claude-sonnet-5. Three batteries now agree on the shape: L0 is 9–10 of 17 in every one, and
+every downstream class is small and noisy.*
