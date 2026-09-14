@@ -64,3 +64,13 @@ The frozen 20 questions and their published numbers are the comparison point:
 A new approach earns a paid battery only after a free, offline gate shows it puts the
 right file in front of the model far more often than that. The exact gate numbers are in
 each BUILD file.
+
+## D — production hardening (written 2026-09-15, not yet executed)
+
+`D_PRODUCTION_HARDENING/EXECUTE_2026-09-15_NIGHT.md` is the executor prompt for the night of
+2026-09-15: approach C is built and measured; this plan makes it fast (two full-index scans
+removed from `open` and `find`), repairs the shelf's family clustering and primary-copy choice,
+shows the answering model a compact top-40 instead of twelve, guards page citations at the
+answer boundary, adds a scorer that credits legitimate alternative sources, and re-runs the live
+battery under the professor's real limits on Sonnet and Opus. Zero holdout looks. Approach B
+remains unbuilt.
