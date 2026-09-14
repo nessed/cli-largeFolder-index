@@ -1,0 +1,52 @@
+{
+ "generated_utc": "2026-09-14T10:40:00Z",
+ "n_checks": 9,
+ "n_passed": 9,
+ "all_pass": true,
+ "checks": [
+  {
+   "check": "cited_unopened_blocked",
+   "pass": true,
+   "rc": 0,
+   "decision": "block"
+  },
+  {
+   "check": "block_reason_names_the_path",
+   "pass": true,
+   "reason": "You cited page 7 and also other_dir/never_opened.pdf without opening it. Either open that "
+  },
+  {
+   "check": "block_reason_offers_both_remedies",
+   "pass": true
+  },
+  {
+   "check": "second_stop_passes_via_marker",
+   "pass": true,
+   "decision": null
+  },
+  {
+   "check": "stop_hook_active_passes",
+   "pass": true,
+   "decision": null
+  },
+  {
+   "check": "cited_opened_passes",
+   "pass": true,
+   "decision": null
+  },
+  {
+   "check": "no_citation_passes",
+   "pass": true,
+   "decision": null
+  },
+  {
+   "check": "guard_returns_only_a_decision",
+   "pass": true
+  },
+  {
+   "check": "exit_code_zero",
+   "pass": true,
+   "rc": 0
+  }
+ ]
+}

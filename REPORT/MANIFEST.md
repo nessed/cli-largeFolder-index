@@ -81,7 +81,7 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 |---|---|---|---|
 | `C_SHELF_FIRST_BUILD.md` | `plans_fable/C_SHELF_FIRST_BUILD.md` | 29,833 | `01273da06c41c63c` |
 | `C_SHELF_FIRST_PLAN.md` | `plans_fable/C_SHELF_FIRST_PLAN.md` | 9,369 | `a9d338016d0e64d3` |
-| `STAGE3_OFFLINE_GATE_REPORT.md` | *(written here)* — approach C's offline gate in full, incl. the corrected series-walk result | 11,164 | `c53da52a4b1815e0` |
+| `STAGE3_OFFLINE_GATE_REPORT.md` | *(written here)* — approach C's offline gate in full, incl. the corrected series-walk result | 14,509 | `a5c2ae6624a26227` |
 | `c_offline_gate.json` | `corpus-lab/state/c_offline_gate.json` | 784 | `6c43c8dc788c2cab` |
 | `c_preflight.json` | `corpus-lab/state/c_preflight.json` | 1,123 | `c91c200402b30f67` |
 | `c_queries.json` | `corpus-lab/state/c_queries.json` | 8,268 | `0b72574499c20e81` |
@@ -101,6 +101,16 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 | file | original | bytes | sha256[:16] |
 |---|---|---|---|
 | `CORRECTION_2026-09-13.md` | *(written here)* — supersedes the Shelf V2 recommendation in RESEARCH_2026-09-13.md | 1,469 | `7d222a6eb79a7b26` |
+| `ARCHITECTURE_REVIEW_2026-09-13.md` | *(written here)* — the adversarial review of the 2026-09-13 architecture, archived verbatim | 37,790 | `94883e6be6f57b9a` |
+| `CURRENT_WORKING_ARCHITECTURE_2026-09-13.md` | *(written here)* — the synthesis the review attacked; superseded 2026-09-14 | 9,374 | `24120b6b5388e248` |
+| `CURRENT_WORKING_ARCHITECTURE_2026-09-14.md` | *(written here)* — corrected architecture after experiments A and B were run; superseded 2026-09-15 | 9,806 | `5b7c92f903a47cae` |
+| `HANDOFF_2026-09-14.md` | *(written here)* — the corrected-continuation phase in twelve answers | 8,924 | `598b0529780064d3` |
+| `CURRENT_WORKING_ARCHITECTURE_2026-09-15.md` | *(written here)* — architecture after the caption experiments, the first live battery and the first end-to-end run | 30,408 | `ad59af75f1589c7b` |
+| `HANDOFF_2026-09-15.md` | *(written here)* — the 2026-09-15 phase in thirteen answers | 15,914 | `8489faec6fe93b78` |
+| `HANDOFF_2026-09-15_pm.md` | *(written here)* — the afternoon forensics phase in seven answers | 11,772 | `84443c51113727c5` |
+| `HANDOFF_2026-09-15_evening.md` | *(written here)* — Experiment G, the production changes, chain v2 and the third live battery, in seven answers | 9,954 | `a4cd1678583c757c` |
+| `HANDOFF_2026-09-16.md` | *(written here)* — the model as document selector, the citation guard, and the fourth live battery, in eight answers | 9,392 | `de8cfb8cec5d8a1c` |
+| `SESSION_LOG_2026-09-13_to_09-14.md` | *(written here)* — the full handover: six execution phases, the manual Sonnet/Opus sessions verbatim with timings and accuracy, the current state, and an operating manual | 58,819 | `c1094ee9ec4abc10` |
 | `EXECUTE_SHELF_V2.md` | `EXECUTE_SHELF_V2.md` *(notice added)* | 10,923 | `5d89454913c705d5` |
 | `RESEARCH_2026-09-13.md` | `RESEARCH_2026-09-13.md` *(notice added)* | 12,302 | `314fd7ed6cf90162` |
 
@@ -108,10 +118,10 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 
 | file | original | bytes | sha256[:16] |
 |---|---|---|---|
-| `FINDINGS_LIVE.md` | `corpus-lab/05_findings/FINDINGS_LIVE.md` | 34,970 | `f169b414499e2e51` |
+| `FINDINGS_LIVE.md` | `corpus-lab/05_findings/FINDINGS_LIVE.md` | 118,352 | `950c5e66146e12d6` |
 | `RESUME.md` | `corpus-lab/RESUME.md` | 11,283 | `b9fe6c5fbce760f8` |
-| `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 96,980 | `3bbdaa249dbc341e` |
+| `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 119,772 | `b1421e8ed9b0b2d5` |
 
 ---
 
-46 files, 619,484 bytes. Regenerated 2026-09-13.
+51 files, 714,866 bytes. Regenerated 2026-09-14.

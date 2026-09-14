@@ -1,0 +1,54 @@
+{
+ "generated_utc": "2026-09-14T04:34:57Z",
+ "n_checks": 10,
+ "n_passed": 10,
+ "all_pass": true,
+ "checks": [
+  {
+   "check": "cli_default_reproduces_dense_first",
+   "pass": true,
+   "n_addresses": 6,
+   "n_matching": 6
+  },
+  {
+   "check": "note_without_tail_refused",
+   "pass": true,
+   "error": "NOTE_REFUSED_NO_CITATION"
+  },
+  {
+   "check": "note_before_open_refused",
+   "pass": true,
+   "error": "NOTE_REFUSED_PAGE_NOT_OPENED"
+  },
+  {
+   "check": "refused_note_recorded_nothing",
+   "pass": true
+  },
+  {
+   "check": "note_after_open_accepted",
+   "pass": true,
+   "error": null
+  },
+  {
+   "check": "accepted_note_recorded",
+   "pass": true
+  },
+  {
+   "check": "note_for_other_page_refused",
+   "pass": true
+  },
+  {
+   "check": "cli_note_refusal_exit_3",
+   "pass": true,
+   "rc": 3
+  },
+  {
+   "check": "cli_note_refusal_message",
+   "pass": true
+  },
+  {
+   "check": "notes_output_unchanged",
+   "pass": true
+  }
+ ]
+}

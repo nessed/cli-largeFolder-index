@@ -1,5 +1,55 @@
 # Approach C, Stage 3 — the offline gate, in full
 
+> ## Correction — 2026-09-14
+>
+> **The body of this report is left exactly as written on 2026-09-13. Four of its
+> numbers were measured by a defective harness. This block says which, and what they
+> are once the harness is fixed. Every historical number below still reproduces
+> exactly from the same code path, so nothing here is a retraction of a measurement —
+> it is a correction of what the measurement was of.** Full detail in findings
+> F41–F44 and in [`../08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](../08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md).
+>
+> **1. The page row was measured with the whole question (defect D1).** §2's
+> `page_rank ≤ 5` row fed the in-document search the entire question text, which
+> overflows its four-content-word exact-phrase tier — the same defect that had
+> already been found and fixed for the series walk, never carried across. The
+> corrected baseline, using the short row phrase, is **24 of 57 addresses (42.1%
+> micro, 27.9% macro)**, against the historical 25 of 57 (43.9%). The defect was
+> real; it was not costing anything. The corrected 24/57 is the baseline any page
+> change must now beat, not the 43.9%.
+>
+> **2. The document denominator excluded two questions (defect D2).** Two of the 17
+> answerable questions were scored an automatic miss because the shelf had
+> hash-collapsed their evidence path into another file's duplicate list. Resolving
+> those paths to their surviving twin — byte-identical files share page indices —
+> rescues both and leaves **0 of 17 excluded**. Corrected counts: **C1 stays 6/17**,
+> **C2 moves 8/17 → 9/17**. That is a scorer correction, not a retrieval improvement.
+>
+> **3. The present-edition control was circular (defect D3).** §2's 14/17 control
+> queried the shelf with the shelf's own family words, so it asked the shelf about
+> itself. The corrected control asks the *question's* own words with a year the
+> family actually holds swapped in: **8 of 11 say EDITION_PRESENT**, 3 unresolvable
+> because the matched family holds no dated primary. That is a weak pass, not the
+> clean 14/17. The absence result itself survives intact — all 11 document-level
+> hits are `NO_EDITION_FOR`, none is `NO_FAMILY_MATCHES`, so the circularity the
+> review feared did not bite.
+>
+> **4. Per-question ranks were never persisted (defect D4), so §2's headline hid the
+> real result.** Recall past the top 10 was unknown. It is now: **C2 gold-family
+> recall@100 is 16 of 17** on this set and 28 of 30 on the frozen holdout. The
+> candidate pool nearly always holds the answer. This report's document failure is a
+> ranking failure, not a retrieval-coverage failure — and a compact cross-encoder
+> over that pool was then built, measured and **failed its gate** (F44).
+>
+> **5. §3's series result does not mean what this report reads it as.** `series_ok`
+> stays 1 of 4 even with the best available page method. The reason is not page
+> retrieval: across the four trajectory questions the fiscal years line up on 21 of
+> 24 evidence years, but the file the walk opens at that year is the file the key
+> cites on only **3** of those 21. The walk has been measuring which copy the shelf
+> calls primary. Handed the correct document, the same trajectory pages are found in
+> the top 5 on **40 of 42** addresses (F42).
+
+
 *Written 2026-09-13. This is the detailed report behind the summary table in the
 project's main [`README.md`](../README.md) §7. It covers only Stage 3 — measuring
 the shelf that Stage 1 built — and it updates two numbers from what that summary

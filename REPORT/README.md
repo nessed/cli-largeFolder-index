@@ -120,7 +120,7 @@ Three things came out of this night, and all three still stand:
    Absence was answered honestly **0 out of 3 times on every stack** — every one of them
    invented an answer rather than admitting the material wasn't there.
 3. **The three unbuilt stacks were ruled out on measurements, not opinion.** Embeddings
-   over full pages ran at 8.2 pages/s on this CPU-only machine, projecting a 20.8-hour
+   over full pages ran at 8.2 pages/s on this CPU-only machine, projecting a 40.9–46-hour
    build. The PDF MCP server took 415 seconds to process five small PDFs and accepted
    neither a directory nor a glob. Recoll has no unattended install path on Windows.
 
@@ -262,19 +262,26 @@ of publications and their editions, pick the right book, then search inside that
 The shelf built: 12,760 distinct documents (plus 874 exact duplicates collapsed by hash,
 accounting exactly to the 13,634 indexed), 1,618 publication families, 393 of them with
 two or more editions, 89,380 explicit table captions harvested. Embedding those cards took
-28 minutes at 7.6 per second — feasible, unlike the 20.8 hours full-page embedding would
+28 minutes at 7.6 per second — feasible, unlike the 40.9–46 hours full-page embedding would
 have needed. All 13 self-tests pass.
 
 **The gate result is mixed, and it is the most interesting result in the whole project:**
 
 | measure | result | gate |
 |---|---|---|
-| right document ranked in top 10 | 6/17 (8/17 with query rewrites) | **FAIL** — needed ≥12 |
-| right page in top 5, once in the right document | 43.9% of 57 | weak pass |
+| right document ranked in top 10 | 6/17 (**9/17** with query rewrites — CORRECTED 2026-09-14) | **FAIL** — needed ≥12 |
+| right page in top 5, once in the right document | **42.1% of 57** — CORRECTED 2026-09-14; the 43.9% was measured with a defective query | **FAIL** against the 60% bar |
 | trajectory questions resolved across editions | 1/4 (was 0/4 — see below) | **FAIL** — needed 3/4 |
 | **absence: correctly said "no edition for that"** | **11/11** | **PASS** |
 | **absence: exact-identifier searches correctly returned nothing** | **4/4** | **PASS** |
-| control: correctly confirmed editions it *does* hold | 14/17 | weak pass |
+| control: correctly confirmed editions it *does* hold | 14/17 was circular; the honest symmetric control is **8/11** — CORRECTED 2026-09-14 | weak pass |
+
+> **Corrected 2026-09-14.** Four defects in the harness behind this table were found by an
+> adversarial review and fixed; every historical number above still reproduces exactly from
+> the same code path. What changed is what they were measurements *of*. See
+> [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md)
+> and the dated correction block at the top of
+> [`06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md`](06_approach_c_shelf/STAGE3_OFFLINE_GATE_REPORT.md).
 
 **Finding the right document is still the failure. But absence is not.** Every earlier
 stack scored 0 out of 3 on honest refusal. Approach C scored 11/11 and 4/4 — because it
@@ -300,7 +307,7 @@ the approach rather than of the harness.
 
 *Semantic retrieval is inside these numbers, not missing from them.* The shelf ranks
 documents by fusing FTS5 and BGE-small semantic top-200 lists with reciprocal-rank fusion,
-plus query rewrites. So 6/17 and 8/17 are what lexical **and** dense retrieval achieve
+plus query rewrites. So 6/17 and 9/17 (corrected 2026-09-14; 8/17 as first measured) are what lexical **and** dense retrieval achieve
 together over the small card pool — which retires the idea, stated elsewhere in this repo,
 that card-scale embedding was the big untried lever.
 
@@ -397,11 +404,19 @@ failed this, and the numbers have barely moved across four nights:
 | approach | best result | bar |
 |---|---|---|
 | stock tools / index / enforced index | 0.167 / 0.235 / 0.176 recall | — |
-| eight lexical query strategies | right file in top-50: **0/17** | — |
+| eight lexical query strategies | right file in top-50: **1/17** (term-coverage rerank; 0 for the other seven) | — |
 | evidence_v1 table catalogue | 3/17, then 2/17 after tuning | 10/17 |
-| approach C shelf (lexical + semantic, fused) | right document in top-10: 6/17, 8/17 with rewrites | 12/17 |
+| approach C shelf (lexical + semantic, fused) | right document in top-10: 6/17, **9/17** with rewrites (CORRECTED) | 12/17 |
+| approach C, the same pool at depth 100 | right document in the pool on **16/17** (NEW) | — |
+| approach C + compact cross-encoder reranker | **9/17** (NEW, gate STOP) | 12/17 |
 | approach C, multi-year trajectory walk | 1/4 | 3/4 |
-| approach C, right page once document is right | 25/57 (43.9%) | 60% |
+| approach C, right page once document is right | **24/57 (42.1%)** (CORRECTED) | 60% |
+| approach C + caption-aware page retrieval | **42/57 (73.7%)**, all of it on trajectory questions (NEW) | 60% |
+| approach C, structural edition selection | **3/17** (NEW) | 15/17 |
+
+See [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md),
+[`08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md`](08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md)
+and [`08_what_next/HANDOFF_2026-09-14.md`](08_what_next/HANDOFF_2026-09-14.md).
 
 **The diagnosis is now specific, and it is the same one from two independent directions.**
 The corpus is full of near-identical yearly editions of the same publications. A vague
@@ -417,11 +432,11 @@ approach C does successfully — does not by itself solve the second one.
 
 **Matching on meaning rather than words HAS now been tested, and it did not rescue this.**
 An earlier draft of this summary called it the one big untried lever, on the reasoning that
-dense embedding had only ever been costed over full pages (20.8 hours) and not over the much
+dense embedding had only ever been costed over full pages (40.9–46 hours for this harness) and not over the much
 smaller card pool. Approach C then built it — BGE-small vectors over 12,760 document cards
 in 28 minutes, fused with FTS5 top-200 by reciprocal-rank fusion, with query rewrites and
 family grouping on top — and that combined lexical-plus-semantic route is what produced the
-6/17 and 8/17 above. Card-scale semantic retrieval is measured, not missing.
+6/17 and 9/17 above. Card-scale semantic retrieval is measured, not missing.
 
 **The clearest genuinely untried lever is narrower and more specific:** use the harvested
 `Table N.N:` captions to tell a canonical table apart from prose that merely repeats its
@@ -438,3 +453,387 @@ document *was* handed to the agent and it opened none of them, citing snippets i
 the entire tuning loop, and approach C's shelf build and gate were all free. Nothing is
 currently running, no stack is installed in any corpus, and the corpus has been verified
 byte-identical to its baseline throughout.
+
+---
+
+## 12. Night 5 (2026-09-15) — both "untried levers" above were tried, and the first live battery ran
+
+**§11 named two things as the clearest untried levers. Both were built and measured tonight.
+Neither rescued the project, and the second one failed in a way nobody predicted.** The
+paragraphs above are kept exactly as written, because they were an honest statement of what
+was believed on 2026-09-14; this section is the correction.
+
+### The caption channel — built, measured, STOP
+
+§11 said: *use the harvested `Table N.N:` captions to tell a canonical table apart from prose
+that merely repeats its subject. Neither the in-document search nor the series walk uses that
+channel yet.* Both now do, at three levels.
+
+- **At page level inside a known-correct document** (B2, measured 2026-09-14): 24 → **42 of
+  57** addresses in the top five. A large win — but **all of it on trajectory questions** and
+  nothing on the other four types.
+- **At corpus level as a document channel** (E1, NEW): a new FTS5 index over all **89,380**
+  captions, entering each query's fusion as a third ranked list. Right document in the top ten
+  **9 → 10 of 17**; on the 30-question holdout the top ten did not move (14), but recall@20
+  went 16 → 20, recall@50 24 → 28, and **recall@100 28 → 29, the first movement of that
+  number in the project's history**. The pre-registered gate needed both halves. **STOP.**
+- **With caption embeddings as well** (E2, NEW): all 89,380 captions embedded. Dev **9**,
+  holdout **13** — the first configuration to go *below* the baseline. **STOP.**
+
+**The diagnostic that matters is not the score.** Taking the union of each question's top-20
+caption hits across all six rewrites — up to 120 (file, page) pairs — a gold evidence address
+appears in it on **1 of 13** questions. And a year-aware variant of the page rule (B2b, NEW)
+came out *identical to B2 at every single address*, because on all **6** year-asking questions
+**no caption in the correct document contains the question's subject words at all**, with or
+without the year.
+
+So the honest restatement is: **the captions this corpus yields describe the tables that
+trajectory questions want and do not describe the tables the other question types want.** That
+is a fact about caption *coverage*, not about caption *matching* — it cannot be fixed by
+another matching rule, which is exactly what B2b was.
+
+### The open-before-cite rule — run, and the result is the surprise of the night
+
+§11 said: *on 5 of 17 questions the right document was handed to the agent and it opened none
+of them, citing snippets instead. A "quote the line before you cite it" rule was written for
+this and has never been run.*
+
+**It has now been run**, in the first live Claude Code battery on a frozen retrieval
+configuration: 35 real sessions (`claude-sonnet-5`, fresh process per question, the folder's
+own `CLAUDE.md`, no memory carried between sessions, $8.53, 0 timeouts).
+
+| | |
+|---|---|
+| an evidence path was printed to the session | **8 / 17** |
+| it opened *any* evidence file | **2 / 17** |
+| it opened the *right page* | **1 / 17** |
+| it cited the right page | **0 / 17** |
+| it named a file it had never opened | **5** (on 2 questions) |
+| it wrote a note before answering | 12 / 17 |
+
+**The rule was followed. That is the finding.** Every one of the 17 sessions issued `open`
+commands — 56 of them across 16 of the 20 sessions — and only two questions produced a
+citation to an unopened file. The agents did not answer from snippets this time. **They opened
+the wrong pages**: on 6 of the 8 questions where the right path was printed on screen, the
+session went and opened something else.
+
+So the behavioural fix that has been sitting in the backlog for two nights turns out to be
+close to free and close to worthless *on its own*. The bottleneck is one step earlier — in
+which of the ranked candidates is worth opening — and no rule about citation discipline
+reaches it.
+
+### And the one thing that was solved is now in question
+
+The status table at the top of the repository has said, for four nights, that honest refusal
+works: 11/11 and 4/4. Under the live battery's stricter scorer, **`absence_ok2` is 1 of 15**.
+
+But **14 of those 15 sessions did run the shelf, get its absence verdict, and print it**. The
+scorer requires two things at once — a decline phrase *and* no numeric figures — and each half
+fails separately: 8 of 15 assert no figures but do not match the inherited decline regex, and
+6 decline in substance while quoting *the shelf's own edition counts*, which the metric reads
+as invented figures.
+
+**Both numbers are published, because only one of them can be right and it is not yet known
+which.** The next experiment is not a retrieval idea: repair the scorer against those two
+named defects, write the gate first, and re-read the 32 transcripts already on disk. If the
+repaired number is ≥10/15 the absence box goes back to *solved* and 1/15 was an artefact. If
+it stays low, then the one thing this project believed it had solved has been quietly failing,
+which would be the most important correction it has made.
+
+### Where this leaves the project
+
+Every retrieval lever has now been pulled: more rewrites, a cross-encoder reranker, a
+different fusion rule, a lexical caption channel, a dense caption channel, a caption page
+rule, a year-aware page rule, and two edition-selection rules. **The best of them moves the
+document top-ten from 9 to 10 of 17 and does not survive the holdout.** Six pre-registered
+gates were read on 2026-09-15 and all six STOPped or FAILED, with no bar moved.
+
+The end-to-end pipeline was also run for the first time, deterministically, with the printed
+table cell checked by the geometry-aware verifier rather than compared to the answer key —
+see F52 and the 2026-09-15 architecture note for its loss decomposition.
+
+*Full detail: [`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md)
+and [`08_what_next/HANDOFF_2026-09-15.md`](08_what_next/HANDOFF_2026-09-15.md); findings F46–F52.*
+
+---
+
+## 13. Night 5, afternoon (2026-09-15 pm) — the corrections, and the first gate to pass
+
+Section 12 above ended with the project's one solved box in doubt and every retrieval lever
+exhausted. Four hours of forensics changed both conclusions, and the honest summary is that
+**two of yesterday's headline numbers were broken instruments, not broken systems.**
+
+### Honest refusal is solved after all
+
+The overnight battery scored it **1 of 15** and the deterministic chain **1 of 3**. Both were
+defects, and different ones.
+
+- **The scorer counted the shelf's own output as invention.** Its rule was "declined, and
+  asserted no figures". An honest answer that says *we hold these editions and not the one you
+  asked for* and then lists them emits digits — and the filter read those as fabricated
+  quantities. Repaired so that a number the session was **shown** cannot count as a number it
+  **made up**, the score is **11 of 15**. The decisive statistic: **zero sessions out of
+  fifteen contained a single figure they had not been shown.** Not one absence answer invented
+  anything.
+- **The chain could only see half the question set.** This corpus has two kinds of absence — a
+  missing *edition* (the question names a year) and a missing *identifier* (a code, no year) —
+  and the chain implemented only the first. The three questions it was scored on are one of the
+  first kind and two of the second, so it could score at most 1. With the missing path added:
+  **3 of 3**, and across the whole key **11/11 and 4/4**, re-deriving the published figures
+  from an entirely separate implementation.
+
+Both old numbers stay published, labelled superseded. This is worth dwelling on: for about
+eighteen hours this repository sincerely believed its one success might be a mirage, and said
+so in writing. It wasn't. But the only reason we know that is that both numbers were written
+down and then attacked.
+
+### Where the agent actually goes wrong
+
+Every one of the 17 answerable sessions was classified into one ordered failure class:
+
+| | |
+|---|---|
+| **the right publication never appeared on screen at all** | **9 of 17** |
+| it appeared and the session opened a different publication | 4 |
+| right publication, wrong year's edition | 2 |
+| right document, wrong page | 1 |
+| right page open, not cited | 1 |
+| cited the right page | 0 |
+
+**More than half the loss happens before the agent makes any choice at all.** Everything
+downstream — wrong edition, wrong page, failure to cite — is four questions in total. And the
+agent used its tools exactly as instructed: every single `find` carried hand-written query
+rewrites, and on 8 of 17 questions it searched using vocabulary of its own invention rather
+than the question's words.
+
+### The first gate to pass
+
+Yesterday's finding was that on every year-asking question, *no caption in the correct document
+contains the question's subject words at all* — a tax listed under its statutory name, a series
+under its official title. That was called a coverage problem no matching rule could fix.
+
+It was a **vocabulary** problem, and an embedding crosses it. Ranking a document's own captions
+by meaning rather than testing them for shared words:
+
+| right page in the top five, given the right document | before | after |
+|---|---|---|
+| development set | 42 of 57 (39.7% of questions) | **52 of 57 (82.1%)** |
+| **holdout** | 35 of 81 (40.0%) | **67 of 81 (77.7%)** |
+
+**This is the first pre-registered gate this project has passed, and the first result whose
+holdout number is as good as its development number.** Five of the six questions that had no
+caption match at all now land on the right page. And unlike every previous page result, the
+gain is spread across question types rather than sitting entirely on one.
+
+There is a nice irony in it: the same dense-caption idea *hurt* when applied across all 89,380
+captions in the corpus, and helps enormously inside a single document. Across the whole shelf
+an embedding drowns a precise match in plausible neighbours; inside one document there are no
+neighbours to confuse it with.
+
+### And one thing that did not work
+
+A single sentence was added to the folder's instructions — prefer publications with several
+dated editions over one-off files — and the whole battery re-run with nothing else changed. The
+targeted failure class halved, and the project recorded **its first correctly cited pages in a
+live session, 0 → 2**. But answers naming a file the session never opened rose from 5 to 8, and
+the pre-registered gate required that nothing else worsen. **It stops**, and the change is kept
+on the branch unadopted.
+
+The caveat matters: retrieval did not change, yet the number of sessions that saw the right file
+still moved by one, and two sessions timed out where none had before. A two-question movement on
+a base of seventeen is inside this battery's own noise. The gains may be real or may be luck,
+and one battery cannot tell — which is exactly why the bar was set at three.
+
+### Where the project stands
+
+**The bottleneck is now named precisely: finding the right document, and nothing else is close.**
+Page retrieval given the right document is, as of today, largely solved (82.7% on the holdout).
+Honest refusal is solved. Verification was never the problem. What remains is that on more than
+half the questions the right publication never reaches the agent's screen — and the next
+experiment carries the mechanism that just worked at page level up to document level.
+
+*Detail: [`08_what_next/HANDOFF_2026-09-15_pm.md`](08_what_next/HANDOFF_2026-09-15_pm.md), the
+addendum in
+[`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
+findings F53–F56.*
+
+---
+
+## 14. Night 5, evening (2026-09-15) — the document box, five mechanisms in, and one useful failure
+
+Three things were tested: whether the trick that fixed page retrieval also fixes document
+retrieval; whether enforcing the citation rule in the *tool* rather than in prose would stop the
+model citing files it never opened; and what the whole pipeline does end to end with the better
+page method in it.
+
+### The page fix does not transfer upward
+
+Ranking a document's captions by meaning fixed page retrieval decisively (82.7% on a holdout).
+Doing the same thing across the whole corpus — score every candidate publication by its
+best-matching caption — scores **9 of 17 against a baseline of 10**. It improves four questions
+and makes eleven worse.
+
+The reason is worth keeping, because it is now the fourth result with the same shape. Inside one
+document, the captions competing with the right table are a few dozen tables of the same
+publication, and "which of these is about wheat" is a question an embedding answers well. Across
+1,618 publications, every dated statistical series in the corpus contains *some* caption
+plausibly about any fiscal subject — and scoring a publication by its single best caption is the
+statistic most exposed to that. **Captions discriminate within a document and dilute across the
+corpus.** The unit is right; the scope is wrong.
+
+### Edition selection failed again, and this time it says something
+
+With the much better page retrieval doing the work, picking which year's volume holds the row
+scores **3 of 10** — *exactly* what the previous, worse rule scored, down to the mean set size.
+Page retrieval improved by ten addresses out of fifty-seven and edition selection did not move by
+a single question.
+
+That combination has only one explanation, and it is one this project has now measured three
+separate ways: **the pages being found are the right kind of page in the wrong edition.** The
+volume that prints a given year's figure is usually a later one, so a rule that matches the asked
+year against a volume's own year picks wrong roughly three times in four.
+
+### The citation rule now has a tool behind it. The number went up
+
+The folder's instructions have said "open the page before you cite it" for three nights. Two
+batteries measured 5, then 8 answers naming a file the session never opened. So the rule was moved
+out of prose and into the tool: `note` now parses the citation you give it and **refuses** if you
+have not opened that page.
+
+It works. It fired four times in the live battery and recorded nothing it shouldn't have. And
+answers citing unopened files rose from **8 to 10**.
+
+**Because the gate guards the note, and the answer does not pass through the note.** The model
+dutifully notes the pages it opened — that was never the problem — and then writes an answer that
+also mentions two other paths it saw in a search listing. There is no checkpoint between the notes
+and the answer. Two nights and two mechanisms have now failed at this for the same structural
+reason, which is more useful to know than either mechanism would have been had it worked.
+
+### The whole pipeline, end to end
+
+**8 of 17 reach the right publication → 5 reach a right page → 3 verify**, with honest refusal now
+**3 of 3**. The page improvement that was worth +10 of 57 addresses in isolation is worth **+1 of
+17 questions** here — the arithmetic of a pipeline whose loss is upstream.
+
+### Where the project actually stands
+
+Across three live batteries with different configurations, one number is stable: **on 9 to 10 of
+17 questions the right publication never reaches the model's screen at all.** Everything
+downstream — wrong edition, wrong page, sloppy citation — is four to six questions and moves by
+one or two between identical runs.
+
+Five mechanisms have now been tried on that one box: more query rewrites, a cross-encoder
+reranker, per-query selection instead of fusion, captions as a retrieval channel, and captions as
+a reranker. The best of them moves the score from 9 to 10 of 17 and does not survive its holdout.
+The right answer is in the top hundred candidates on sixteen of seventeen questions; nothing tried
+can pull it into the top ten.
+
+**The honest recommendation is not a sixth mechanism.** It is to establish how noisy these live
+measurements actually are — every conclusion here rests on single batteries whose movements of
+one or two questions are indistinguishable from run-to-run variation — and to ask whether "get the
+right publication into the top ten" is even the right thing to be optimising, given the frozen
+configuration scores 10 of 17 on that measure while the live agent surfaces 7 and cites 1.
+
+*Detail: [`08_what_next/HANDOFF_2026-09-15_evening.md`](08_what_next/HANDOFF_2026-09-15_evening.md),
+the evening addendum in
+[`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
+findings F57–F59.*
+
+---
+
+## 15. Night 6 (2026-09-16) — the model turns out to be the best ranker, and we could not prove it
+
+Two things were tested: whether the answering model, shown the hundred candidate publications the
+shelf already produces, can pick the right one — and whether checking citations *at the answer*
+rather than in the instructions would stop the model naming files it never opened.
+
+### The model picks the right publication on 14 of 17
+
+For five nights the project has tried to reorder the candidate list by measuring similarity:
+query rewrites, a cross-encoder, a different fusion rule, captions as a search channel, captions
+as a reranker. Between them they moved the score from 9 of 17 to 10.
+
+This time the list was simply shown to the model — one line per publication, the years it holds,
+two lines from its contents — and it was asked which would print this sort of table, explicitly
+*not* by word overlap.
+
+**14 of 17, and the right publication ranked first on 8.**
+
+That is the largest movement the document channel has seen, and it points at something the five
+earlier attempts could not have found. Picking the right publication is not a similarity
+judgement. It needs to know what a statistical yearbook is, that a tax may be listed under its
+statutory name, which sort of institution publishes which sort of table. A language model has
+that; a cosine does not.
+
+**And it cannot be trusted yet, because we never got to check it.** Every number in this project
+is confirmed against a set of questions it has never seen, and this one was not — a mistake in
+how the experiment was run ate the budget before the confirmation could be bought. The
+development number stands at 14 of 17 with nothing behind it, which is precisely the kind of
+number this project has twice caught itself being wrong about.
+
+**The mistake is worth describing, because it is the third measurement defect caught in four
+days and the most embarrassing.** The calls were made from inside the project folder. Claude Code
+loads a folder's own notes as context — so the model being asked "which publication answers this
+question" was also reading this project's architecture review, its goals and its plans. One
+response quoted them back. The run was discarded, the calls it had spent could not be, and the
+budget ran out four questions short of a confirmed result. The fix is permanent: the calls now
+run from outside the project, behind a guard that refuses to start if any notes are reachable.
+
+There was a clean negative alongside it. Asking the model to *name* the publication it would
+look in, and then looking that name up, scores **1 of 17**. Recognising the right publication in
+a list and recalling its exact title are different abilities, and only the first one is there.
+
+### Citations of files nobody opened: 10 → 0
+
+The folder's instructions have said "open the page before you cite it" since night three. Answers
+naming files the session never opened went 5, then 8, then 10 — *rising* while two separate
+mechanisms tried to stop it. An instruction did nothing. A check on the note-taking command did
+nothing, and the reason turned out to be structural: the model dutifully notes the pages it
+opened, and then writes an answer mentioning two others. **The answer never passes through the
+note.**
+
+So the check moved to the answer itself. When a session finishes, a hook reads what it wrote,
+compares the paths it cited against the pages it actually opened, and if there is a mismatch it
+says so once — open it, or drop it — and then never interferes again.
+
+**It fired six times in twenty sessions, and citations of unopened files went to zero.**
+
+With one honest caveat recorded in the findings: of the twenty answers, nine cite pages that were
+all genuinely opened, and ten cite nothing at all. A guard that can be satisfied by saying less
+is not unambiguously an improvement, and that number is now tracked.
+
+**And the answers are no better.** The right page is still cited on 1 of 17 questions — the same
+as before the guard, and the same as before the instruction. Citation discipline was a real
+defect, it is now fixed at the only boundary where it could be, and it was never what was making
+the answers wrong.
+
+### Four live batteries now say the same thing
+
+| | night 5 (×3) | night 6 |
+|---|---|---|
+| the right publication never reaches the model | 9, 10, 10 of 17 | **11 of 17** |
+| the right page is cited | 0, 2, 1 | **1** |
+| a file is cited that nobody opened | 5, 8, 10 | **0** |
+| honest refusal (3 absence questions) | 2/3, 3/3, 3/3 | **2/3** |
+
+Across four configurations, **the one stable number is that on more than half the questions the
+right publication never reaches the model at all.** Everything else moves by one or two between
+runs, including between runs where nothing relevant changed — which is itself a finding: on
+seventeen questions, this measurement's noise is about ±2, and no single battery should be read
+more finely than that.
+
+### Where this leaves the project
+
+Two sub-problems are now genuinely solved and neither moved the outcome: finding the right *page*
+inside a document you already have right (83% on a held-out set), and citing only what you opened
+(10 to 0). The outcome did not move because the loss is upstream of both.
+
+The one promising lead is the one that could not be confirmed: **the model itself is a better
+document selector than any ranking function tried, by four questions.** Confirming that costs 47
+calls and nothing else — the experiment is written, the instrument is repaired, and the
+confirmation set is untouched.
+
+*Detail: [`08_what_next/HANDOFF_2026-09-16.md`](08_what_next/HANDOFF_2026-09-16.md), the 2026-09-16
+addendum in
+[`08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md),
+findings F60–F62.*

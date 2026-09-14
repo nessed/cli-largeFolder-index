@@ -1,0 +1,44 @@
+{
+ "page_method": "row+caption_first",
+ "window": "[Y, Y+2]",
+ "topk": 5,
+ "n_year_addresses": 24,
+ "unit": "distinct (question, fiscal year) pairs",
+ "strict_hits": 12,
+ "tolerant_hits": 14,
+ "mean_candidate_set_size": 2.46,
+ "offset_distribution": {
+  "Y": 4,
+  "Y+1": 6,
+  "Y+2": 4,
+  "none": 10
+ },
+ "per_question": {
+  "tr_04": {
+   "type": "trajectory",
+   "n_year_addresses": 8,
+   "strict_hits": 7,
+   "tolerant_hits": 7
+  },
+  "tr_07": {
+   "type": "trajectory",
+   "n_year_addresses": 4,
+   "strict_hits": 2,
+   "tolerant_hits": 2
+  },
+  "tr_10": {
+   "type": "trajectory",
+   "n_year_addresses": 6,
+   "strict_hits": 3,
+   "tolerant_hits": 3
+  },
+  "tr_16": {
+   "type": "trajectory",
+   "n_year_addresses": 6,
+   "strict_hits": 0,
+   "tolerant_hits": 2
+  }
+ },
+ "gate": "WEAK",
+ "wall_s": 827.5
+}

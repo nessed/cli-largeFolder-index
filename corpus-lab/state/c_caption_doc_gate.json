@@ -1,0 +1,103 @@
+{
+ "generated_utc": "2026-09-14T04:25:43Z",
+ "pool": 100,
+ "n": 17,
+ "dev": {
+  "frozen": {
+   "curve": {
+    "recall_at_10": 10,
+    "recall_at_20": 12,
+    "recall_at_50": 14,
+    "recall_at_100": 16,
+    "recall_at_200": 16
+   },
+   "family_le_10": 10,
+   "per_question_rank": {
+    "cd_04": 22,
+    "mb_04": 33,
+    "mb_05": 12,
+    "mb_07": 71,
+    "nm_09": 88,
+    "pl_01": 1,
+    "pl_14": 2,
+    "pl_21": 13,
+    "rc_05": 9,
+    "rc_07": 1,
+    "rl_05": 1,
+    "sd_03": 5,
+    "sd_05": null,
+    "tr_04": 2,
+    "tr_07": 1,
+    "tr_10": 1,
+    "tr_16": 8
+   }
+  },
+  "G1": {
+   "curve": {
+    "recall_at_10": 9,
+    "recall_at_20": 13,
+    "recall_at_50": 14,
+    "recall_at_100": 16,
+    "recall_at_200": 16
+   },
+   "family_le_10": 9,
+   "per_question_rank": {
+    "cd_04": 53,
+    "mb_04": 20,
+    "mb_05": 15,
+    "mb_07": 25,
+    "nm_09": 93,
+    "pl_01": 5,
+    "pl_14": 8,
+    "pl_21": 17,
+    "rc_05": 7,
+    "rc_07": 5,
+    "rl_05": 3,
+    "sd_03": 6,
+    "sd_05": null,
+    "tr_04": 1,
+    "tr_07": 6,
+    "tr_10": 1,
+    "tr_16": 11
+   }
+  },
+  "G2": {
+   "curve": {
+    "recall_at_10": 9,
+    "recall_at_20": 13,
+    "recall_at_50": 14,
+    "recall_at_100": 16,
+    "recall_at_200": 16
+   },
+   "family_le_10": 9,
+   "per_question_rank": {
+    "cd_04": 53,
+    "mb_04": 20,
+    "mb_05": 15,
+    "mb_07": 25,
+    "nm_09": 93,
+    "pl_01": 5,
+    "pl_14": 8,
+    "pl_21": 17,
+    "rc_05": 7,
+    "rc_07": 5,
+    "rl_05": 1,
+    "sd_03": 5,
+    "sd_05": null,
+    "tr_04": 1,
+    "tr_07": 6,
+    "tr_10": 1,
+    "tr_16": 11
+   }
+  }
+ },
+ "chosen_on_dev": "G1",
+ "n_table_like": 14,
+ "diagnostic_above_gold": {
+  "singleton": 65,
+  "fy": 448
+ },
+ "live_L0_questions": 9,
+ "live_L0_now_in_top10": 2,
+ "wall_s": 23.6
+}

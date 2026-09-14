@@ -1,0 +1,96 @@
+{
+ "generated_utc": "2026-09-14T09:46:13Z",
+ "n_checks": 22,
+ "n_passed": 22,
+ "all_pass": true,
+ "checks": [
+  {
+   "check": "setup_exit_0",
+   "pass": true
+  },
+  {
+   "check": "claude_md_created",
+   "pass": true
+  },
+  {
+   "check": "settings_created",
+   "pass": true
+  },
+  {
+   "check": "state_file_created",
+   "pass": true
+  },
+  {
+   "check": "deny_includes_backstop",
+   "pass": true
+  },
+  {
+   "check": "deny_includes_extra_bash",
+   "pass": true
+  },
+  {
+   "check": "deny_nonempty",
+   "pass": true
+  },
+  {
+   "check": "stop_guard_installed",
+   "pass": true
+  },
+  {
+   "check": "claude_md_has_open_before_you_cite",
+   "pass": true
+  },
+  {
+   "check": "claude_md_has_search_result_sentence",
+   "pass": true
+  },
+  {
+   "check": "claude_md_find_has_frozen_flags",
+   "pass": true
+  },
+  {
+   "check": "claude_md_find_has_rewrites",
+   "pass": true
+  },
+  {
+   "check": "claude_md_inside_no_stale_caption_flag",
+   "pass": true
+  },
+  {
+   "check": "claude_md_note_enforcement_sentence",
+   "pass": true
+  },
+  {
+   "check": "claude_md_no_placeholders",
+   "pass": true
+  },
+  {
+   "check": "second_setup_refuses_exit_3",
+   "pass": true
+  },
+  {
+   "check": "teardown_exit_0",
+   "pass": true
+  },
+  {
+   "check": "claude_md_gone",
+   "pass": true
+  },
+  {
+   "check": "claude_dir_gone",
+   "pass": true
+  },
+  {
+   "check": "stray_file_refused_exit_3",
+   "pass": true
+  },
+  {
+   "check": "stray_file_survived",
+   "pass": true
+  },
+  {
+   "check": "scratch_cleaned",
+   "pass": true
+  }
+ ]
+}

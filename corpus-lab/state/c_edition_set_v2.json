@@ -1,0 +1,79 @@
+{
+ "n_year_bearing_questions": 10,
+ "set_recall_questions": 3,
+ "mean_set_size": 2.0,
+ "max_set_size": 6,
+ "per_question": {
+  "cd_04": {
+   "type": "canonical_duplicate",
+   "set_size": 0,
+   "family_primaries": 12,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 1
+  },
+  "mb_04": {
+   "type": "multi_branch",
+   "set_size": 3,
+   "family_primaries": 6,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 3
+  },
+  "mb_05": {
+   "type": "multi_branch",
+   "set_size": 2,
+   "family_primaries": 6,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 3
+  },
+  "mb_07": {
+   "type": "multi_branch",
+   "set_size": 3,
+   "family_primaries": 6,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 3
+  },
+  "nm_09": {
+   "type": "name_content_mismatch",
+   "set_size": 0,
+   "family_primaries": 1,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 1
+  },
+  "pl_01": {
+   "type": "point_lookup",
+   "set_size": 5,
+   "family_primaries": 5,
+   "all_evidence_editions_in_set": true,
+   "n_evidence_editions": 1
+  },
+  "pl_14": {
+   "type": "point_lookup",
+   "set_size": 1,
+   "family_primaries": 5,
+   "all_evidence_editions_in_set": true,
+   "n_evidence_editions": 1
+  },
+  "pl_21": {
+   "type": "point_lookup",
+   "set_size": 6,
+   "family_primaries": 6,
+   "all_evidence_editions_in_set": true,
+   "n_evidence_editions": 1
+  },
+  "rc_05": {
+   "type": "reconciliation",
+   "set_size": 0,
+   "family_primaries": 12,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 2
+  },
+  "rc_07": {
+   "type": "reconciliation",
+   "set_size": 0,
+   "family_primaries": 12,
+   "all_evidence_editions_in_set": false,
+   "n_evidence_editions": 2
+  }
+ },
+ "wall_s": 390.1
+}

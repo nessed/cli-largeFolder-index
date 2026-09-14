@@ -1,0 +1,35 @@
+{
+ "page_method": "row+caption_first",
+ "hits": 1,
+ "n": 4,
+ "per_question": {
+  "tr_04": {
+   "hit_editions": 2,
+   "n_editions": 15,
+   "ok": true,
+   "skipped": false,
+   "row_words_word_count": 3
+  },
+  "tr_07": {
+   "hit_editions": 0,
+   "n_editions": 15,
+   "ok": false,
+   "skipped": false,
+   "row_words_word_count": 3
+  },
+  "tr_10": {
+   "hit_editions": 0,
+   "n_editions": 15,
+   "ok": false,
+   "skipped": false,
+   "row_words_word_count": 2
+  },
+  "tr_16": {
+   "hit_editions": 0,
+   "n_editions": 6,
+   "ok": false,
+   "skipped": false,
+   "row_words_word_count": 3
+  }
+ }
+}

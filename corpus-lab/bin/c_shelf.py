@@ -270,16 +270,127 @@ def _editions_for_family(ctx, family):
     return singletons, n_copies, "singleton"
 
 
-def do_find(ctx, queries, pool=200):
-    """Returns ALL fused families, ranked best-first (not sliced to any k) --
-    the CLI printer shows the top --k, the offline gate checks rank within
-    whatever depth it needs (measurement uses 50)."""
-    all_lists = []
-    for q in queries:
-        all_lists.append(_lex_search(ctx, q, pool))
-        all_lists.append(_vec_search(ctx, q, pool))
-    doc_scores = _rrf_fuse(all_lists, k=60)
+# --------------------------------------------------------------------- #
+# caption channel (experiment E, 2026-09-15)
+#
+# A table's caption line is the shortest honest description of what the table
+# holds. B2 (F42) showed it is a strong page-level signal inside a document
+# already known to be the right one. E asks the harder question: is it also a
+# DOCUMENT-level signal at corpus scale -- can "which publication" be answered
+# by searching 89,380 caption lines instead of 12,760 catalog cards?
+# --------------------------------------------------------------------- #
+def _label_words(query):
+    """The query reduced to the words a caption would plausibly print: content
+    words, minus fiscal-year tokens, minus the trajectory scaffolding words.
 
+    The two exclusion rules are imported from c_offline_gate rather than
+    restated, so there is exactly one definition of each in the repository and
+    no chance of quietly widening either. The import is deferred to call time
+    because c_offline_gate imports this module.
+    """
+    from c_offline_gate import _TRAJECTORY_FILLER
+    stripped = FY_RE.sub(" ", query or "")
+    return [w for w in content_words(stripped) if w not in _TRAJECTORY_FILLER]
+
+
+def _cap_db(ctx):
+    if not hasattr(ctx, "_capdb"):
+        p = Path(ctx.shelf_path).parent / "captions_fts.db"
+        ctx._capdb = sqlite3.connect(f"file:{p}?mode=ro", uri=True) if p.exists() else None
+    return ctx._capdb
+
+
+def _cap_search(ctx, query, limit):
+    """Lexical caption channel. Returns (families in first-seen order,
+    ranked [(rel, page_index), ...]).
+
+    All words first: a caption is a label, so requiring every one of them is
+    what tells a table ABOUT the subject apart from one that merely mentions
+    it. Below 20 hits that is too strict to rank with, so it falls back to any
+    word -- the same all-then-any shape `inside` already uses on page bodies.
+    """
+    db = _cap_db(ctx)
+    if db is None:
+        return [], []
+    words = _label_words(query)
+    if not words:
+        return [], []
+
+    def run(match):
+        try:
+            return db.execute(
+                "SELECT rel, page_index FROM cap WHERE cap MATCH ? "
+                "ORDER BY bm25(cap) LIMIT ?", (match, limit)).fetchall()
+        except sqlite3.OperationalError:
+            return []
+
+    rows = run(" AND ".join('"%s"' % w for w in words))
+    if len(rows) < 20:
+        rows = run(" OR ".join('"%s"' % w for w in words))
+
+    families, seen = [], set()
+    pages = []
+    for rel, page_index in rows:
+        pages.append((rel, page_index))
+        fam = ctx.rel_to_family.get(rel)
+        if fam and fam not in seen:
+            seen.add(fam)
+            families.append(fam)
+    return families, pages
+
+
+def _cap_vec_search(ctx, query, limit):
+    """Dense caption channel (E2). Same label-word string as the lexical one,
+    cosine over the caption embeddings."""
+    import numpy as np
+    base = Path(ctx.shelf_path).parent
+    if not hasattr(ctx, "_capvecs"):
+        npy, idsf = base / "captions.f16.npy", base / "captions_ids.jsonl"
+        if not (npy.exists() and idsf.exists()):
+            ctx._capvecs, ctx._capvec_ids = None, None
+        else:
+            ctx._capvecs = np.load(npy).astype("float32")
+            ctx._capvec_ids = [json.loads(l) for l in
+                               idsf.read_text(encoding="utf-8").splitlines()]
+    if ctx._capvecs is None:
+        return [], []
+    words = _label_words(query)
+    if not words:
+        return [], []
+    qv = np.asarray(next(iter(_model().embed([" ".join(words)]))), dtype="float32")
+    n = np.linalg.norm(qv)
+    if n > 0:
+        qv = qv / n
+    scores = ctx._capvecs @ qv
+    top = np.argsort(-scores)[:limit]
+
+    families, seen = [], set()
+    pages = []
+    for i in top:
+        rec = ctx._capvec_ids[int(i)]
+        rel = rec["rel"]
+        pages.append((rel, rec["page_index"]))
+        fam = ctx.rel_to_family.get(rel)
+        if fam and fam not in seen:
+            seen.add(fam)
+            families.append(fam)
+    return families, pages
+
+
+def _rels_first_seen(pages):
+    """[(rel, page_index), ...] -> the distinct rels in first-seen order."""
+    out, seen = [], set()
+    for rel, _ in pages:
+        if rel not in seen:
+            seen.add(rel)
+            out.append(rel)
+    return out
+
+
+def _fam_rank_from_doc_scores(ctx, doc_scores):
+    """Collapse a doc-level score map to a family-level one: a family scores
+    what its single best-scoring document scores (unchanged from the original
+    fusion), and carries that document as its representative."""
     fam_scores, fam_best_doc = {}, {}
     for rel, score in doc_scores.items():
         fam = ctx.rel_to_family.get(rel)
@@ -288,8 +399,76 @@ def do_find(ctx, queries, pool=200):
         if fam not in fam_scores or score > fam_scores[fam]:
             fam_scores[fam] = score
             fam_best_doc[fam] = rel
+    return fam_scores, fam_best_doc
 
-    ranked = sorted(fam_scores.items(), key=lambda x: -x[1])
+
+def do_find(ctx, queries, pool=200, fusion="rrf", caption_channel=None):
+    """Returns ALL fused families, ranked best-first (not sliced to any k) --
+    the CLI printer shows the top --k, the offline gate checks rank within
+    whatever depth it needs (measurement uses 50).
+
+    fusion="rrf" (default, unchanged): one reciprocal-rank fusion over every
+    query's lexical and vector lists at once, so a family's score is the sum of
+    its reciprocal ranks everywhere it appeared.
+
+    fusion="best" (2026-09-15, experiment C): each query is fused on its own
+    into its own family ranking; a family is then scored by its BEST rank
+    across the queries, ties broken by how many queries returned it at all and
+    then by summed per-query RRF score. The point is that summation lets five
+    queries that half-found a family outvote one query that found it first,
+    which F41 measured as costing three questions their own inputs already had.
+    No tunable constant is introduced: k=60 is the same one the rrf rule uses.
+
+    caption_channel (2026-09-15, experiment E) adds the caption line as its own
+    retrieval channel: "lex" gives every query a third ranked list from the
+    caption FTS index, "lex+vec" a fourth from caption embeddings. It is added
+    per query, so both fusion rules see it the same way.
+    """
+    if fusion not in ("rrf", "best"):
+        raise ValueError("unknown fusion: %r" % (fusion,))
+    if caption_channel not in (None, "lex", "lex+vec"):
+        raise ValueError("unknown caption_channel: %r" % (caption_channel,))
+
+    per_query_lists = []
+    for q in queries:
+        lists = [_lex_search(ctx, q, pool), _vec_search(ctx, q, pool)]
+        # The caption channel ranks CAPTIONS; fusion happens in document
+        # space, so a caption list enters as the documents those captions
+        # sit in, in first-seen order. Handing over the family list here
+        # instead silently contributes nothing at all -- rel_to_family
+        # drops every key it does not recognise as a rel, which is how
+        # the first E1 run reproduced the baseline to the last question.
+        if caption_channel in ("lex", "lex+vec"):
+            lists.append(_rels_first_seen(_cap_search(ctx, q, pool)[1]))
+        if caption_channel == "lex+vec":
+            lists.append(_rels_first_seen(_cap_vec_search(ctx, q, pool)[1]))
+        per_query_lists.append(lists)
+
+    if fusion == "rrf":
+        all_lists = [lst for lists in per_query_lists for lst in lists]
+        doc_scores = _rrf_fuse(all_lists, k=60)
+        fam_scores, fam_best_doc = _fam_rank_from_doc_scores(ctx, doc_scores)
+        ranked = sorted(fam_scores.items(), key=lambda x: -x[1])
+        n_docs_considered = len(doc_scores)
+    else:
+        best_rank, n_found, sum_rrf = {}, {}, {}
+        fam_best_doc, docs_seen = {}, set()
+        for lists in per_query_lists:
+            doc_scores = _rrf_fuse(lists, k=60)
+            docs_seen.update(doc_scores)
+            q_fam_scores, q_fam_doc = _fam_rank_from_doc_scores(ctx, doc_scores)
+            q_ranked = sorted(q_fam_scores.items(), key=lambda x: -x[1])
+            for rank, (fam, score) in enumerate(q_ranked, start=1):
+                n_found[fam] = n_found.get(fam, 0) + 1
+                sum_rrf[fam] = sum_rrf.get(fam, 0.0) + score
+                if fam not in best_rank or rank < best_rank[fam]:
+                    best_rank[fam] = rank
+                    fam_best_doc[fam] = q_fam_doc[fam]
+        order = sorted(best_rank.items(),
+                       key=lambda x: (x[1], -n_found[x[0]], -sum_rrf[x[0]]))
+        ranked = [(fam, sum_rrf[fam]) for fam, _ in order]
+        n_docs_considered = len(docs_seen)
+
     qwords = []
     for q in queries:
         qwords.extend(content_words(q))
@@ -315,7 +494,8 @@ def do_find(ctx, queries, pool=200):
     return {
         "families": families_out,
         "receipt": {"queries": len(queries), "lex": pool, "vec": pool,
-                    "families": len(fam_scores), "docs_considered": len(doc_scores)},
+                    "fusion": fusion, "caption": caption_channel or "off",
+                    "families": len(ranked), "docs_considered": n_docs_considered},
         "coverage": ctx.coverage(),
         "qwords": qwords,
     }
@@ -483,12 +663,138 @@ def _best_line(body, words):
     return " ".join(best_line.split())[:200]
 
 
-def do_inside(ctx, rel, terms, k=8):
+def _caption_hit_pages(ctx, rel, words):
+    """2026-09-14, experiment B2. Pages of `rel` whose harvested table caption
+    contains EVERY query content word. Substring match on the lowercased
+    caption, same content_words() normalisation the body tier uses -- a
+    caption is a short label, so requiring all of them is the point: it is
+    what tells "Table 4.2: <subject>" apart from a prose page that merely
+    mentions the subject. Returns (set_of_page_indices, {page: caption})."""
+    if not words:
+        return set(), {}
+    lw = [w.lower() for w in words]
+    pages, captions = set(), {}
+    for page_index, caption in ctx.shelf.execute(
+            "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)):
+        low = (caption or "").lower()
+        if all(w in low for w in lw):
+            pages.add(page_index)
+            if page_index not in captions:
+                captions[page_index] = caption
+    return pages, captions
+
+
+def _caption_hit_pages_labelled(ctx, rel, query, body_by_page):
+    """B2b, 2026-09-15. Two changes to the B2 caption match, both aimed at
+    the same measured fact: a question's fiscal year is printed in the
+    table BODY, as a column heading, and almost never in the caption, so
+    requiring the caption to carry it (which B2 effectively does, since the
+    year survives content_words) throws the caption away on exactly the
+    questions that name a year.
+
+    1. The caption must contain every LABEL word -- the query minus fiscal
+       year tokens and minus trajectory filler, the same reduction the
+       corpus-scale caption channel uses.
+    2. If the query carries a fiscal year, a caption-hit page is kept only
+       if that year appears in the page body -- the year selects the column,
+       the caption selects the table.
+
+    If the year filter empties the list the unfiltered caption ordering is
+    returned instead, so the channel can never do worse than having no year.
+    Returns (pages, {page: caption}, n_dropped_by_year_filter)."""
+    words = _label_words(query)
+    if not words:
+        return set(), {}, 0
+    lw = [w.lower() for w in words]
+    pages, captions = set(), {}
+    for page_index, caption in ctx.shelf.execute(
+            "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)):
+        low = (caption or "").lower()
+        if all(w in low for w in lw):
+            pages.add(page_index)
+            if page_index not in captions:
+                captions[page_index] = caption
+    m = FY_RE.search(query or "")
+    if not m or not pages:
+        return pages, captions, 0
+    fy = m.group(1)
+    kept = {pi for pi in pages if fy in (body_by_page.get(pi) or "")}
+    if not kept:
+        return pages, captions, 0
+    return kept, {pi: captions[pi] for pi in kept if pi in captions}, len(pages) - len(kept)
+
+
+def _caption_hit_pages_dense(ctx, rel, query, body_by_page):
+    """B2c, 2026-09-15 pm. B2/B2b match a caption by requiring every label word
+    to appear in it, and F48 measured what that costs: on every year-asking
+    question NO caption in the correct document contains the question's subject
+    words at all. The words are simply different words -- a tax listed under its
+    statutory name, a series under its official title. That is a vocabulary gap,
+    and a lexical matcher cannot cross it however the match is phrased.
+
+    So rank this document's own captions by cosine against the query's label
+    words instead of testing them for word containment. The cut is the
+    document's OWN median caption score plus a floor of the top 3, so no
+    threshold is tuned against the questions: a document whose captions are all
+    equally unlike the query still yields its three best, and a document with a
+    clear winner yields the half that beats its own middle.
+
+    Returns (pages, {page: caption}, n_dropped_by_year_filter)."""
+    import numpy as np
+    words = _label_words(query)
+    if not words:
+        return set(), {}, 0
+    rows = ctx.shelf.execute(
+        "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)).fetchall()
+    rows = [(pi, c or "") for pi, c in rows if (c or "").strip()]
+    if not rows:
+        return set(), {}, 0
+
+    qv = np.asarray(next(iter(_model().embed([" ".join(words)]))), dtype="float32")
+    n = np.linalg.norm(qv)
+    if n > 0:
+        qv = qv / n
+    cvs = np.asarray(list(_model().embed([c for _pi, c in rows])), dtype="float32")
+    norms = np.linalg.norm(cvs, axis=1, keepdims=True)
+    norms[norms == 0] = 1.0
+    cvs = cvs / norms
+    scores = cvs @ qv
+
+    order = list(np.argsort(-scores))
+    med = float(np.median(scores))
+    keep = [i for i in order if float(scores[i]) >= med]
+    for i in order[:3]:
+        if i not in keep:
+            keep.append(i)
+    pages = {rows[i][0] for i in keep}
+    captions = {rows[i][0]: rows[i][1] for i in keep}
+
+    m = FY_RE.search(query or "")
+    if not m or not pages:
+        return pages, captions, 0
+    fy = m.group(1)
+    kept = {pi for pi in pages if fy in (body_by_page.get(pi) or "")}
+    if not kept:
+        return pages, captions, 0
+    return kept, {pi: captions[pi] for pi in kept if pi in captions}, len(pages) - len(kept)
+
+
+def do_inside(ctx, rel, terms, k=8, caption_channel=None):
+    """caption_channel=None is the original behaviour, unchanged.
+
+    "first": pages whose caption matches every query word are ranked ahead of
+    everything else, ordered among themselves by their body BM25 rank; a
+    caption page the body ranking never returned goes after those; the rest of
+    the body ranking follows. Each hit carries `via`.
+
+    "rrf": reciprocal-rank fusion of the caption list (ordered by number of
+    matching query words, then page index) with the body list."""
     row = ctx.rel_to_row.get(rel)
     n_pages = row["n_pages"] if row else None
     pages = _load_doc_pages(ctx, rel)
     if not pages:
-        return {"rel": rel, "n_pages": n_pages, "tier": "none", "hits": []}
+        return {"rel": rel, "n_pages": n_pages, "tier": "none", "hits": [],
+                "n_caption_hits": 0}
 
     mem = sqlite3.connect(":memory:")
     mem.execute("CREATE VIRTUAL TABLE p USING fts5(page_index UNINDEXED, body)")
@@ -496,6 +802,9 @@ def do_inside(ctx, rel, terms, k=8):
     mem.commit()
 
     words = content_words(terms)
+    # the caption channel reorders the body ranking, so it needs to see more of
+    # it than the k rows the caller wants back; the final list is still cut to k.
+    lim = k if caption_channel is None else max(k * 5, 50)
     tier = "any"
     rows = []
     if words:
@@ -508,7 +817,7 @@ def do_inside(ctx, rel, terms, k=8):
         try:
             rows = mem.execute(
                 "SELECT page_index, body, bm25(p) FROM p WHERE p MATCH ? ORDER BY bm25(p) LIMIT ?",
-                (m, k)).fetchall()
+                (m, lim)).fetchall()
         except sqlite3.OperationalError:
             rows = []
         if not rows and words:
@@ -516,7 +825,7 @@ def do_inside(ctx, rel, terms, k=8):
             try:
                 rows = mem.execute(
                     "SELECT page_index, body, bm25(p) FROM p WHERE p MATCH ? ORDER BY bm25(p) LIMIT ?",
-                    (m2, k)).fetchall()
+                    (m2, lim)).fetchall()
             except sqlite3.OperationalError:
                 rows = []
             tier = "any"
@@ -524,7 +833,61 @@ def do_inside(ctx, rel, terms, k=8):
     for page_index, body, score in rows:
         hits.append({"page_index": page_index, "score": round(score, 3),
                      "line": _best_line(body, words)})
-    return {"rel": rel, "n_pages": n_pages, "tier": tier if words else "none", "hits": hits}
+
+    if caption_channel is None:
+        return {"rel": rel, "n_pages": n_pages,
+                "tier": tier if words else "none", "hits": hits}
+
+    n_year_dropped = 0
+    if caption_channel == "dense_first":
+        body_by_page = {pi: body for pi, body in pages}
+        cap_pages, cap_text, n_year_dropped = _caption_hit_pages_dense(
+            ctx, rel, terms, body_by_page)
+    elif caption_channel == "first_label":
+        body_by_page = {pi: body for pi, body in pages}
+        cap_pages, cap_text, n_year_dropped = _caption_hit_pages_labelled(
+            ctx, rel, terms, body_by_page)
+    else:
+        cap_pages, cap_text = _caption_hit_pages(ctx, rel, words)
+    body_pages = {h["page_index"] for h in hits}
+    for h in hits:
+        h["via"] = "caption" if h["page_index"] in cap_pages else "body"
+
+    if caption_channel in ("first", "first_label", "dense_first"):
+        cap_with_body = [h for h in hits if h["page_index"] in cap_pages]
+        cap_only = [{"page_index": pi, "score": None, "via": "caption",
+                     "line": " ".join((cap_text.get(pi) or "").split())[:200]}
+                    for pi in sorted(cap_pages - body_pages)]
+        rest = [h for h in hits if h["page_index"] not in cap_pages]
+        final = cap_with_body + cap_only + rest
+    elif caption_channel == "rrf":
+        # caption list ordered by how many query words the caption carries,
+        # then page index; fused with the body list at the usual k=60.
+        lw = [w.lower() for w in words]
+        def _n_words(pi):
+            low = (cap_text.get(pi) or "").lower()
+            return sum(1 for w in lw if w in low)
+        cap_order = sorted(cap_pages, key=lambda pi: (-_n_words(pi), pi))
+        body_order = [h["page_index"] for h in hits]
+        scores = {}
+        for lst in (cap_order, body_order):
+            for r, pi in enumerate(lst, start=1):
+                scores[pi] = scores.get(pi, 0.0) + 1.0 / (60 + r)
+        by_page = {h["page_index"]: h for h in hits}
+        final = []
+        for pi in sorted(scores, key=lambda x: (-scores[x], x)):
+            if pi in by_page:
+                final.append(by_page[pi])
+            else:
+                final.append({"page_index": pi, "score": None, "via": "caption",
+                              "line": " ".join((cap_text.get(pi) or "").split())[:200]})
+    else:
+        raise ValueError("unknown caption_channel: %r" % (caption_channel,))
+
+    return {"rel": rel, "n_pages": n_pages, "tier": tier if words else "none",
+            "hits": final[:k], "n_caption_hits": len(cap_pages),
+            "n_caption_pages_dropped_by_year": n_year_dropped,
+            "caption_channel": caption_channel}
 
 
 def _print_inside(res):
@@ -553,7 +916,8 @@ def _print_tables(res):
 # --------------------------------------------------------------------- #
 # series
 # --------------------------------------------------------------------- #
-def do_series(ctx, row_words, family_words, fy_from=None, fy_to=None, k=1, exact_family=False):
+def do_series(ctx, row_words, family_words, fy_from=None, fy_to=None, k=1,
+              exact_family=False, caption_channel=None):
     """exact_family=True: `family_words` IS already a real docs.family key (the
     caller resolved it directly from ctx.rel_to_family, not from user text) --
     use it as-is instead of re-resolving through do_have's fuzzy search. That
@@ -581,7 +945,8 @@ def do_series(ctx, row_words, family_words, fy_from=None, fy_to=None, k=1, exact
 
     out, matched = [], 0
     for r in members:
-        ins = do_inside(ctx, r["rel"], row_words, k=k)
+        ins = do_inside(ctx, r["rel"], row_words, k=k,
+                        caption_channel=caption_channel)
         if ins["hits"]:
             matched += 1
             h = ins["hits"][0]
@@ -681,8 +1046,51 @@ def _print_open(res):
     print(res["body"])
 
 
+# `... | <path> | p<page_index>` -- the citation tail CLAUDE.md already asks for.
+_NOTE_TAIL_RE = re.compile(r"\|\s*(?P<path>[^|]+?)\s*\|\s*p(?P<page>\d+)\s*$", re.I)
+
+
 def do_note(ctx, slug, text):
+    """A note is the one place a figure crosses from a page into an answer, so
+    it is the one place provenance can be enforced by the tool rather than
+    asked for in prose. The 2026-09-15 batteries measured 5 and then 8 answers
+    citing a file the session never opened, with the instruction to open first
+    sitting in CLAUDE.md the whole time. An instruction the tool does not
+    enforce is a suggestion.
+
+    So: the note must carry the `| <path> | p<n>` tail the policy already
+    prescribes, and that (path, page) must appear in this slug's own
+    `_opened.jsonl`. Nothing is recorded when it does not.
+
+    Path comparison is by the last two segments, lowercased, matching
+    scoring.py's rule -- the agent quotes the path as `find` printed it, and
+    requiring a byte-identical string would fail honest notes for punctuation.
+    """
+    m = _NOTE_TAIL_RE.search(text or "")
+    if not m:
+        return {"ok": False, "error": "NOTE_REFUSED_NO_CITATION"}
+    cited_path = m.group("path").strip().strip('"\'')
+    cited_page = int(m.group("page"))
+
+    def tail2(s):
+        segs = [x for x in str(s).replace("\\", "/").lower().split("/") if x]
+        return "/".join(segs[-2:])
+
     nd = _notes_dir(ctx.root)
+    opened_log = nd / f"{slug}_opened.jsonl"
+    opened = []
+    if opened_log.exists():
+        for line in opened_log.read_text(encoding="utf-8").splitlines():
+            try:
+                opened.append(json.loads(line))
+            except Exception:
+                pass
+    want = tail2(cited_path)
+    if not any(o.get("page_index") == cited_page and tail2(o.get("rel")) == want
+               for o in opened):
+        return {"ok": False, "error": "NOTE_REFUSED_PAGE_NOT_OPENED",
+                "path": cited_path, "page_index": cited_page}
+
     log = nd / f"{slug}_notes.jsonl"
     with open(log, "a", encoding="utf-8") as fh:
         fh.write(json.dumps({"text": text, "ts": time.strftime("%Y-%m-%dT%H:%M:%S")}) + "\n")
@@ -725,16 +1133,25 @@ def main():
 
     p = sub.add_parser("find"); p.add_argument("question"); p.add_argument("--q", action="append", default=[])
     p.add_argument("--k", type=int, default=12); p.add_argument("--slug")
+    p.add_argument("--fusion", choices=["rrf", "best"], default="rrf")
+    p.add_argument("--caption-channel", dest="caption_channel",
+                   choices=["off", "lex", "lex+vec"], default="off")
 
     p = sub.add_parser("have"); p.add_argument("words"); p.add_argument("--fy")
 
     p = sub.add_parser("inside"); p.add_argument("rel"); p.add_argument("terms")
     p.add_argument("--k", type=int, default=8)
+    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"],
+                   default="dense_first")  # B2c adopted 2026-09-15 (F55); the
+    # Python default stays None so every recorded number reproduces with explicit flags
 
     p = sub.add_parser("tables"); p.add_argument("rel"); p.add_argument("--grep")
 
     p = sub.add_parser("series"); p.add_argument("row_words"); p.add_argument("--family", required=True)
     p.add_argument("--from", dest="fy_from"); p.add_argument("--to", dest="fy_to"); p.add_argument("--slug")
+    p.add_argument("--caption", choices=["off", "first", "first_label", "dense_first"],
+                   default="dense_first")  # B2c adopted 2026-09-15 (F55); the
+    # Python default stays None so every recorded number reproduces with explicit flags
 
     p = sub.add_parser("copies"); p.add_argument("rel")
 
@@ -767,19 +1184,22 @@ def main():
 
     if a.cmd == "find":
         queries = [a.question] + list(a.q)
-        res = do_find(ctx, queries)
+        cc = None if a.caption_channel == "off" else a.caption_channel
+        res = do_find(ctx, queries, fusion=a.fusion, caption_channel=cc)
         _print_find(res, a.k)
     elif a.cmd == "have":
         res = do_have(ctx, a.words, fy=a.fy)
         _print_have(res)
     elif a.cmd == "inside":
-        res = do_inside(ctx, a.rel, a.terms, k=a.k)
+        res = do_inside(ctx, a.rel, a.terms, k=a.k,
+                        caption_channel=None if a.caption == "off" else a.caption)
         _print_inside(res)
     elif a.cmd == "tables":
         res = do_tables(ctx, a.rel, grep=a.grep)
         _print_tables(res)
     elif a.cmd == "series":
-        res = do_series(ctx, a.row_words, a.family, fy_from=a.fy_from, fy_to=a.fy_to)
+        res = do_series(ctx, a.row_words, a.family, fy_from=a.fy_from, fy_to=a.fy_to,
+                        caption_channel=None if a.caption == "off" else a.caption)
         _print_series(res)
     elif a.cmd == "copies":
         res = do_copies(ctx, a.rel)
@@ -791,7 +1211,14 @@ def main():
         res = do_open(ctx, a.rel, a.page_index, slug=a.slug)
         _print_open(res)
     elif a.cmd == "note":
-        do_note(ctx, a.slug, a.text)
+        r = do_note(ctx, a.slug, a.text)
+        if not r.get("ok"):
+            if r["error"] == "NOTE_REFUSED_PAGE_NOT_OPENED":
+                print("NOTE_REFUSED_PAGE_NOT_OPENED %s p%d"
+                      % (r["path"], r["page_index"]), file=sys.stderr)
+            else:
+                print("NOTE_REFUSED_NO_CITATION", file=sys.stderr)
+            sys.exit(3)
         print("NOTED")
     elif a.cmd == "notes":
         res = do_notes(ctx, a.slug)

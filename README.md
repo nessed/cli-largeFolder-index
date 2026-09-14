@@ -5,11 +5,17 @@ vague question in ordinary language, and get back the actual number with the fil
 it came from — and an honest "not in here" when the answer genuinely isn't?
 
 **Answer so far: the honest-refusal half works. The find-the-right-page half does not,
-and we now know fairly precisely why.** Four nights, five approaches measured end to end,
-three more ruled out on measurements rather than opinion, about $31 spent. This repository
+and we now know fairly precisely why.** Six nights, fourteen approaches measured end to end, twelve pre-registered gates read
+(one passed), five live Claude Code batteries, about $71 spent. This repository
 is the full record — code, measurements, failures, and the diagnosis.
 
-> ### 👉 Start at [`REPORT/README.md`](REPORT/README.md)
+> ### 👉 New here? Start at [`REPORT/README.md`](REPORT/README.md)
+>
+> ### 👉 Picking up the work? Start at [`REPORT/08_what_next/SESSION_LOG_2026-09-13_to_09-14.md`](REPORT/08_what_next/SESSION_LOG_2026-09-13_to_09-14.md)
+>
+> That file is the full handover: six execution phases, twelve pre-registered gates, the
+> Claude session transcripts verbatim with timings and accuracy, the current state of every
+> box, and an operating manual (Appendix C) with a runnable command for every number below.
 >
 > It walks the whole project start to finish in plain English, written for someone who has
 > never seen this repo. Everything else here is supporting evidence.
@@ -26,9 +32,9 @@ is the full record — code, measurements, failures, and the diagnosis.
 | | |
 |---|---|
 | ✅ **Solved** | Getting the model to *use* a tool you give it. One line in `CLAUDE.md` moved index adoption from 0 of 38 sessions to 38 of 38. A hook that *forced* the same thing scored slightly worse. |
-| ✅ **Solved** | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. |
+| ✅ **Solved** (disputed 2026-09-15 am, **restored the same day** — see F53) | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. **2026-09-15, and this is the useful part of the story:** an overnight live battery scored this 1 of 15 and the deterministic chain 1 of 3, putting the whole claim in doubt. Both were measurement defects. The scorer counted the shelf's own quoted edition lists as invented figures — no absence session invented a number, not once in fifteen — and the chain had no path for identifier-level absence, which is 2 of the 3 questions it scored. Repaired: **11 of 15 live**, and ROUTE re-derives **11/11 and 4/4** from a second implementation. Both numbers are published; the old one is labelled SUPERSEDED-BY-SCORER-REPAIR, not deleted (F53). |
 | 🟡 **Built, trustworthy, retrieval-independent** | Coverage accounting over 15,010 files, content hashing, provenance records, geometry-aware table-cell verification, a typed evidence compiler, safe install/teardown, and test suites. None of it depends on which retrieval idea eventually wins. |
-| ❌ **Not solved** | Putting the right page in front of the model for a vague question. **Every approach has failed this**, and the numbers have barely moved in four nights. |
+| ❌ **Not solved** | Putting the right page in front of the model for a vague question. **Every approach has failed this.** Measured across four live batteries: on **9 to 11 of 17** questions the right publication never reaches the model at all, and it cites the right page on **0 to 2**. Two sub-problems are now solved — the right *page* inside a known-right document (82.7% on a holdout) and citing only what was opened (10 → 0) — and neither moved the outcome. The one promising lead is that the model itself picks the right publication from the candidate list on **14 of 17**, which is measured but not yet confirmed on a holdout. |
 
 ### The one open problem
 
@@ -46,11 +52,51 @@ canonical table ranks 6th behind five prose restatements of its own subject).
 | approach | best measured result | bar |
 |---|---|---|
 | stock tools / index / index+hook | 0.167 / 0.235 / 0.176 question recall — all inside noise | — |
-| eight lexical query strategies | right file in global top-50: **0 of 17** | — |
+| eight lexical query strategies | right file in global top-50: **1 of 17** (the term-coverage rerank; 0 for the other seven) | — |
 | `evidence_v1` table catalogue | **3/17**, then **2/17** after 13 measured tuning iterations | 10/17 |
-| approach C "shelf" (document-first) | right *document* in top-10: **6/17** (8/17 with 5 paraphrases) | 12/17 |
-| approach C, multi-year trajectory walk | **1/4** editions-walk correct | 3/4 |
-| approach C, right *page* once document is right | 25 of 57 (43.9%) | 60% (40% floor) |
+| approach C "shelf" (document-first) | right *document* in top-10: **6/17** (**9/17** with 5 paraphrases) — CORRECTED 2026-09-14, was 8/17 with 2 questions wrongly excluded | 12/17 |
+| approach C, the same pool at depth 100 | right document **in the pool on 16 of 17** — NEW; the loss is ranking, not coverage | — |
+| approach C + a compact cross-encoder reranker | **9/17** — NEW, gate STOP: it recovers what it cost and nothing more | 12/17 |
+| approach C, multi-year trajectory walk | **1/4** editions-walk correct — and the metric measures which *copy* the shelf calls primary, not page retrieval | 3/4 |
+| approach C, right *page* once document is right | **52 of 57 (91.2% by address, 82.1% by question) dev and 67 of 81 (82.7%) on the holdout** — NEW 2026-09-15 pm, **gate PASS and adopted into production**; was 24 of 57 with lexical matching | 60% + 60% |
+| approach C + caption-aware page retrieval | **42 of 57 (73.7%)** — NEW, but *all* of the gain is on trajectory questions and none elsewhere | 60% |
+| approach C, structural edition selection | **3/17** — NEW; the year a question asks for is usually not the year on the document that answers it | 15/17 |
+| approach C + per-query selection instead of rank fusion | **5/17** — NEW 2026-09-15, gate STOP: the best-supported untried idea in the repo, and it is worse than the fusion it replaced | 12/17 |
+| approach C + a caption-line retrieval channel (89,380 captions) | **10/17** dev, **14/30** holdout — NEW 2026-09-15, gate STOP. Below the top ten it is the biggest document-channel gain yet measured (holdout recall@100 28 → 29) | 12/17 |
+| the same caption channel, plus caption embeddings | **9/17** dev, **13/30** holdout — NEW 2026-09-15, gate STOP: dense dilutes a short table title | 12/17 |
+| approach C, year-aware caption page rule | **42/57, 39.7%** — NEW 2026-09-15, identical to the plain caption rule at every address; on all 6 year-asking questions *no caption matches the subject words at all* | 60% + 60% |
+| approach C, vintage-tolerant trajectory walk | **strict 12/24, tolerant 14/24** — NEW 2026-09-15, WEAK. 10 of the 14 hits come from a *later* edition than the year asked about | 16/24 |
+| approach C, content-based edition selection | **3/10**, mean set size 2.0 — NEW 2026-09-15; a small, confident, wrong set | 8/10 |
+| **approach C, live Claude Code battery on the frozen configuration** | **surfaced 8/17, opened the right page 1/17, cited the right page 0/17, cited a file it never opened 5 times, honest-refusal 1/15** — LIVE 2026-09-15, both gates FAIL. All 17 sessions *did* open pages; they opened the wrong ones | see F50 |
+| approach C, dense caption ranking **inside** the right document (B2c) | **52 of 57 (91.2%) dev, 67 of 81 (82.7%) holdout** — NEW 2026-09-15 pm, **gate PASS**, the first holdout-confirmed pass in the project; gain spread across question types, not trajectory-only | 60% + 60% |
+| approach C, live re-battery with one instruction changed | L1 loss class 4 → 2 and **cited-the-right-page 0 → 2**, the first ever; but cited-a-file-never-opened 5 → 8, so **gate STOP** and the change is kept unadopted | see F56 |
+| approach C, caption similarity as a **document** reranker (G) | **9 of 17** against the frozen 10 — NEW 2026-09-15 evening, gate STOP; improves 4 questions and worsens 11. Fourth result showing captions discriminate *within* a document and dilute *across* the corpus | 13/17 |
+| approach C, edition selection using the better pages (ED3) | **3 of 10**, mean set 2.0 — identical to the previous rule despite page retrieval going 42 → 52 of 57; the pages found are the right kind in the wrong edition | 8/10 |
+| approach C, whole pipeline end to end (chain v2) | **8 → 5 → 3 of 17 verified**, absence **3/3** — NEW 2026-09-15 evening; a page fix worth +10 of 57 in isolation is worth +1 of 17 in the chain | — |
+| approach C, third live battery (tool-enforced citation) | `note` now refuses a page you did not open — and **answers citing an unopened file rose 8 → 10**, because the gate guards the note and the answer does not pass through it. Gate STOP | see F59 |
+| **approach C, the model picks the publication from the top-100 pool (H)** | **14 of 17** against 10 for the best statistical ranker, with **8 of 17 ranked first** — NEW 2026-09-16, the largest document-channel movement in the project. **Not certified**: a contamination defect in the first run ate the call budget, so the holdout was never measured | 13/17 + holdout |
+| approach C, asking the model to *name* the publication instead | **1 of 17** — selecting from a list works, generating a title does not | — |
+| approach C, fourth live battery (citation guard on the answer) | **answers citing a file nobody opened: 10 → 0**, six blocks in six of twenty sessions — the third attempt at this and the first to work. **Right page still cited on 1 of 17** | see F62 |
+
+> **Extended 2026-09-15 — the first live battery, and the first end-to-end run.**
+> Six more pre-registered gates were read and **all six STOPped or FAILED**; no bar was moved.
+> The headline change is not a score, it is a diagnosis: 32 real Claude Code sessions show the
+> agent *following* the open-before-cite rule and still opening the wrong pages, and the
+> honest-refusal number — long the one solved thing here — scores 1 of 15 under a scorer whose
+> own transcripts say 14 of 15 found the right verdict. Which of those is true is the next
+> experiment. See
+> [`REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md`](REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-15.md)
+> and [`REPORT/08_what_next/HANDOFF_2026-09-15.md`](REPORT/08_what_next/HANDOFF_2026-09-15.md).
+
+> **Corrected and extended 2026-09-14.** An adversarial review found four defects in the
+> harness behind the approach-C rows; every historical number still reproduces exactly from
+> the original code path, but several were measurements of something other than what they
+> were read as. The review is at
+> [`REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md`](REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md),
+> what replaced it at
+> [`REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md),
+> and the phase in twelve plain answers at
+> [`REPORT/08_what_next/HANDOFF_2026-09-14.md`](REPORT/08_what_next/HANDOFF_2026-09-14.md).
 
 ---
 
@@ -94,9 +140,14 @@ Each was measured, and the reasons are written up:
 
 - **Dense/semantic embedding over the small card pool.** Approach C built it: BGE-small
   vectors over 12,760 document cards (28 minutes, 7.6 cards/s), fused with FTS5 top-200 by
-  reciprocal-rank fusion, plus query rewrites. **It is inside the 6/17 and 8/17 numbers
-  above.** Semantic retrieval at card scale is tested, not untried.
-- **Full-page dense embedding** — 8.2 pages/s measured, 20.8 hours projected, no GPU.
+  reciprocal-rank fusion, plus query rewrites. **It is inside the 6/17 and 9/17 numbers
+  above.** Semantic retrieval at card scale is tested, not untried. A compact cross-encoder
+  reranked on top of it on 2026-09-14 and failed its gate — see
+  [`REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md`](REPORT/08_what_next/CURRENT_WORKING_ARCHITECTURE_2026-09-14.md)
+  and [`REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md`](REPORT/08_what_next/ARCHITECTURE_REVIEW_2026-09-13.md).
+- **Full-page dense embedding** — 8.2 pages/s measured, **40.9–46 hours** for this harness's
+  1,206,260 pages, no GPU. (The 20.8-hour figure quoted here until 2026-09-14 was the
+  projection for the smaller ra-ship fixture, not for this corpus.)
 - **A relevance-score threshold for absence** — disproven; absent and answerable questions
   score in the same range ([`probe_score_floor.json`](REPORT/03_night3_rescore_and_rank/probe_score_floor.json)).
 - **Multi-query fusion by summation** — rewards documents for repeating shared generic

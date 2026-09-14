@@ -1,0 +1,12 @@
+{
+ "generated_utc": "2026-09-14T04:23:15Z",
+ "seed": 20260915,
+ "n_eligible": 73,
+ "n_frozen": 30,
+ "n_haiku_calls": 30,
+ "n_rewrite_failed": 0,
+ "n_cached": 30,
+ "n_with_6_queries": 30,
+ "looks_used": 0,
+ "looks_allowed_today": 2
+}
