@@ -2203,6 +2203,86 @@ still reproduces, and Phase 5 runs at 60 and 900.
 
 ---
 
+## F66. Shelf v2 — the family fix works, and it is blocked by a side effect nobody predicted. Gate S STOP
+
+NEW, 2026-09-15 night, Phase 9.2. Source: `state/c_shelf_v2_gate.json`,
+`state/c_shelf_build_v2.json`. Gate S was written into the plan **before the v2 shelf was
+built**; every row below is read against a bar that already existed.
+
+Three structural defects were measured on the v1 shelf and three changes written for them, in a
+new builder (`c_shelf_build_v2.py`) writing to a new directory, with the frozen
+`c_shelf_build.py` neither run nor edited:
+
+**(a)** a bare calendar year in a family name became `{yr}`, as a fiscal year already did, and a
+document with no fiscal-year token but a bare year got that year as its edition;
+**(b)** a family whose token list is another family's with 1–3 extra *leading* tokens — a
+citation fragment stuck on the front — was folded into it;
+**(c)** the primary copy of an edition became the consensus copy (most identical-hash siblings,
+marker-flagged filenames last) rather than the shortest path.
+
+### What the build did
+
+| | v1 | v2 |
+|---|---|---|
+| documents | 12,760 | 12,809 |
+| families | 1,618 | **1,512** |
+| fragment families folded | — | 52, moving 167 members |
+| bare-year families normalised | — | 146 |
+| edition clusters whose primary changed | — | 306 |
+| accounting identity (docs + duplicates = 13,634 indexed files) | holds | **holds** |
+
+### Gate S
+
+| row | v1 | v2 | bar | |
+|---|---|---|---|---|
+| document top-10, dev | 10/17 | 10/17 | ≥ 10 | pass |
+| document pool@100, dev | 16/17 | 16/17 | ≥ 16 | pass |
+| B2c pages, dev | 52/57 | 52/57 | ≥ 52 | pass |
+| ROUTE absence | 11/11, 4/4 | 11/11, 4/4 | exact | pass |
+| gold families that are fragments | 0 | 0 | must fall | pass (vacuously) |
+| **gold evidence files hidden as non-primary** | **20** | **31** | must not increase | **FAIL** |
+
+**Verdict: STOP. Production stays on the v1 shelf. Phases 3–7 proceed on v1.**
+
+### The change that worked
+
+`(b)` did exactly what it was written to do, and the effect is visible in a way no recall number
+captures. A new counter — of the top 40 families a dev `find` returns, how many are a longer form
+of another family already in the same list — reads **35 across 17 lists on v1 and 0 on v2**. That
+is the defect section 1.3 described: the same fiscal-operations publication occupying ranks 4, 5,
+6 and 11, spending four of the model's forty slots on one publication. On v2 it spends one.
+
+### The side effect that blocked it, and why it was not predicted
+
+Change (a) gave a fiscal-year-like edition to **4,333 documents that previously had none**. The
+builder treats an edition cluster whose `fy_primary` is `None` as *"no edition here — every
+survivor is a primary"*. Give those clusters a year and they flip to *"one primary, the rest
+hidden"*. Primaries fell from **7,694 of 12,760 documents to 4,198 of 12,809**, and 11 more gold
+evidence files landed on the hidden side, where `find` will not offer them.
+
+So (a) and (c) interact through a branch neither was written against: (a) decides how many
+clusters have an edition at all, and (c) only runs on clusters that do. The diagnosis in the plan
+was right about all three defects; it did not model the branch between them.
+
+**Not tuned.** The pre-registered rule is that a missed row is a STOP and the changes are not
+adjusted to pass it. (a), (b) and (c) are left exactly as written, the v2 shelf and its artefacts
+are kept on disk unused, and the next session can take the three apart — the obvious experiment is
+**(b) alone**, which is the one with a measured benefit and no interaction, but that is an
+experiment to be pre-registered, not a fix to be slipped in tonight.
+
+### What this costs the night
+
+Nothing that was counted on. Every recall row on v2 was identical to v1 — this was never expected
+to move retrieval, and it did not. What it would have bought is a cleaner list for the model to
+read, and that is exactly what `find --compact 40` (F67) now depends on. The compact list ships on
+v1, with its 35 duplicate slots in every 680 shown, and the live battery measures it that way.
+
+*Condition: offline, dev set of 17, one configuration, no holdout look spent. One dev set carries
+±3 noise (F63), so the five identical recall rows are consistent with no change and with a small
+change in either direction.*
+
+---
+
 ## F67. Showing the model forty candidates instead of twelve, in the session it is already in
 
 NEW, 2026-09-15 night, Phase 9.3. Source: `state/c_compact_depth.json`,

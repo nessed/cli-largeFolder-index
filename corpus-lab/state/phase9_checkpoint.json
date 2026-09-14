@@ -177,9 +177,30 @@
    "kv": {
     "flags": 2
    }
+  },
+  "2.3": {
+   "status": "done",
+   "started": "2026-09-15T04:45:28",
+   "note": "Gate S",
+   "finished": "2026-09-15T04:46:35",
+   "kv": {
+    "verdict": "STOP",
+    "hidden_gold_v1": 20,
+    "hidden_gold_v2": 31,
+    "crowding_v1": 35,
+    "crowding_v2": 0
+   }
+  },
+  "2.4": {
+   "status": "done",
+   "started": "2026-09-15T04:47:26",
+   "finished": "2026-09-15T04:47:26",
+   "kv": {
+    "committed": 1
+   }
   }
  },
- "last_beat": "2026-09-15T04:35:24",
+ "last_beat": "2026-09-15T04:47:26",
  "notes": [
   "2026-09-15T04:14:12  after_phase1 bench re-run needed: the first attempt ran under the Phase 2 embedding load and every row was inflated; kept as after_phase1_under_load_INVALID"
  ]

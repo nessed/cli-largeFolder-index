@@ -1,19 +1,81 @@
 {
- "generated_utc": "2026-09-14T23:03:28Z",
+ "generated_utc": "2026-09-14T23:45:44Z",
  "v1_shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
- "v2_shelf_dir": "corpus-lab/02_stacks/s7_shelf",
+ "v2_shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf_v2",
  "v1_structure": {
   "n_gold_files_on_shelf": 64,
   "gold_files_hidden_as_non_primary": 20,
   "n_gold_families": 13,
   "gold_families_that_are_fragments": 0,
-  "n_families_total": 1618
+  "n_families_total": 1618,
+  "fragment_slots_in_top40_over_17_dev_lists": 35
  },
  "v2_structure": {
   "n_gold_files_on_shelf": 64,
-  "gold_files_hidden_as_non_primary": 20,
+  "gold_files_hidden_as_non_primary": 31,
   "n_gold_families": 13,
   "gold_families_that_are_fragments": 0,
-  "n_families_total": 1618
+  "n_families_total": 1512,
+  "fragment_slots_in_top40_over_17_dev_lists": 0
+ },
+ "gate_s": {
+  "document_top10_dev": {
+   "got": 10,
+   "bar": 10,
+   "pass": true
+  },
+  "document_pool100_dev": {
+   "got": 16,
+   "bar": 16,
+   "pass": true
+  },
+  "b2c_pages_dev": {
+   "got": 52,
+   "bar": 52,
+   "pass": true
+  },
+  "route_document_level": {
+   "got": 11,
+   "bar": 11,
+   "pass": true
+  },
+  "route_identifier_level": {
+   "got": 4,
+   "bar": 4,
+   "pass": true
+  },
+  "gold_files_hidden_as_non_primary": {
+   "v1": 20,
+   "v2": 31,
+   "rule": "must not increase",
+   "pass": false
+  },
+  "gold_families_that_are_fragments": {
+   "v1": 0,
+   "v2": 0,
+   "rule": "must fall",
+   "pass": true
+  }
+ },
+ "verdict": "STOP",
+ "rows_not_supplied": [],
+ "note": "Any improvement on the top-10 row is recorded, not claimed: one dev set carries +/-3 noise (F63).",
+ "stop_row": "gold_files_hidden_as_non_primary",
+ "cause": {
+  "summary": "Change (a), the bare-year fallback, gave fy_primary to 4333 documents that previously had none. The builder treats an edition cluster with fy_primary=None as 'no edition -- every survivor is a primary', so those clusters flipped to 'one primary, the rest hidden'. Primaries fell from 7694 of 12760 docs to 4198 of 12809, and 11 more gold evidence files landed on the hidden side.",
+  "v1_n_primary": 7694,
+  "v2_n_primary": 4198,
+  "v1_n_docs": 12760,
+  "v2_n_docs": 12809,
+  "v1_clusters": 3590,
+  "v2_clusters": 3945,
+  "n_docs_given_a_calendar_year_by_change_a": 4333,
+  "not_tuned": "Pre-registered rule: a missed row is a STOP, and the changes are not tuned to pass. (a), (b) and (c) are left exactly as written."
+ },
+ "consequence": "Production stays on the v1 shelf. Phases 3-7 proceed on v1. The v2 shelf and its artefacts are kept on disk, unused, so the next session can take the three changes apart without rebuilding.",
+ "what_v2_did_fix": {
+  "families": "1618 -> 1512",
+  "fragment_slots_in_top40_over_17_dev_lists": "35 -> 0",
+  "recall_rows": "all five held exactly: 10/17, 16/17, 52/57, 11/11, 4/4"
  }
 }
