@@ -163,5 +163,951 @@
     ]
    }
   }
+ },
+ "after_phase1_provisional": {
+  "generated": "2026-09-14T22:43:24Z",
+  "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "repeats": 3,
+  "commands": {
+   "find": {
+    "median_s": 2.543,
+    "min_s": 2.525,
+    "max_s": 2.627,
+    "runs": [
+     2.543,
+     2.525,
+     2.627
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "open": {
+    "median_s": 0.416,
+    "min_s": 0.413,
+    "max_s": 0.446,
+    "runs": [
+     0.416,
+     0.413,
+     0.446
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "coverage": {
+    "median_s": 0.423,
+    "min_s": 0.411,
+    "max_s": 0.441,
+    "runs": [
+     0.423,
+     0.411,
+     0.441
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false,
+    "coverage_line": "COVERAGE indexed=13634 image_only_no_text=1211 failed=32 unsupported=120 pages=1206260"
+   },
+   "inside": {
+    "median_s": 2.699,
+    "min_s": 2.443,
+    "max_s": 2.702,
+    "runs": [
+     2.699,
+     2.702,
+     2.443
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "series": {
+    "median_s": 2.487,
+    "min_s": 2.446,
+    "max_s": 2.557,
+    "runs": [
+     2.557,
+     2.446,
+     2.487
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "have": {
+    "median_s": 0.416,
+    "min_s": 0.407,
+    "max_s": 0.42,
+    "runs": [
+     0.42,
+     0.416,
+     0.407
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "tables": {
+    "median_s": 0.395,
+    "min_s": 0.389,
+    "max_s": 0.402,
+    "runs": [
+     0.402,
+     0.395,
+     0.389
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "exact": {
+    "median_s": 0.437,
+    "min_s": 0.428,
+    "max_s": 0.441,
+    "runs": [
+     0.441,
+     0.428,
+     0.437
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "copies": {
+    "median_s": 0.392,
+    "min_s": 0.389,
+    "max_s": 0.399,
+    "runs": [
+     0.389,
+     0.392,
+     0.399
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "notes": {
+    "median_s": 0.389,
+    "min_s": 0.383,
+    "max_s": 0.401,
+    "runs": [
+     0.401,
+     0.389,
+     0.383
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "note": {
+    "median_s": 0.386,
+    "min_s": 0.376,
+    "max_s": 0.399,
+    "runs": [
+     0.386,
+     0.399,
+     0.376
+    ],
+    "rc": [
+     3,
+     3,
+     3
+    ],
+    "fastembed_loaded": false
+   }
+  },
+  "gate_1": {
+   "open": {
+    "median_s": 0.416,
+    "bar_s": 0.5,
+    "pass": true
+   },
+   "find": {
+    "median_s": 2.543,
+    "bar_s": 3.5,
+    "pass": true
+   },
+   "inside": {
+    "median_s": 2.699,
+    "bar_s": 2.5,
+    "pass": false
+   },
+   "series": {
+    "median_s": 2.487,
+    "bar_s": 5.0,
+    "pass": true
+   },
+   "have": {
+    "median_s": 0.416,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "tables": {
+    "median_s": 0.395,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "exact": {
+    "median_s": 0.437,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "coverage": {
+    "median_s": 0.423,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "_all_pass": false
+  }
+ },
+ "after_phase1_under_load_INVALID": {
+  "generated": "2026-09-14T23:13:58Z",
+  "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "repeats": 3,
+  "commands": {
+   "find": {
+    "median_s": 4.351,
+    "min_s": 3.807,
+    "max_s": 5.063,
+    "runs": [
+     3.807,
+     4.351,
+     5.063
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "open": {
+    "median_s": 0.749,
+    "min_s": 0.632,
+    "max_s": 0.75,
+    "runs": [
+     0.75,
+     0.632,
+     0.749
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "coverage": {
+    "median_s": 0.669,
+    "min_s": 0.635,
+    "max_s": 0.672,
+    "runs": [
+     0.669,
+     0.635,
+     0.672
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false,
+    "coverage_line": "COVERAGE indexed=13634 image_only_no_text=1211 failed=32 unsupported=120 pages=1206260"
+   },
+   "inside": {
+    "median_s": 8.563,
+    "min_s": 5.768,
+    "max_s": 8.865,
+    "runs": [
+     5.768,
+     8.563,
+     8.865
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "series": {
+    "median_s": 4.388,
+    "min_s": 4.097,
+    "max_s": 5.809,
+    "runs": [
+     5.809,
+     4.388,
+     4.097
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "have": {
+    "median_s": 0.768,
+    "min_s": 0.697,
+    "max_s": 0.873,
+    "runs": [
+     0.697,
+     0.873,
+     0.768
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "tables": {
+    "median_s": 0.705,
+    "min_s": 0.643,
+    "max_s": 0.744,
+    "runs": [
+     0.643,
+     0.744,
+     0.705
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "exact": {
+    "median_s": 0.803,
+    "min_s": 0.552,
+    "max_s": 1.054,
+    "runs": [
+     1.054,
+     0.803,
+     0.552
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "copies": {
+    "median_s": 0.535,
+    "min_s": 0.494,
+    "max_s": 0.551,
+    "runs": [
+     0.535,
+     0.494,
+     0.551
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "notes": {
+    "median_s": 0.538,
+    "min_s": 0.514,
+    "max_s": 0.748,
+    "runs": [
+     0.514,
+     0.538,
+     0.748
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "note": {
+    "median_s": 0.686,
+    "min_s": 0.583,
+    "max_s": 0.704,
+    "runs": [
+     0.704,
+     0.583,
+     0.686
+    ],
+    "rc": [
+     3,
+     3,
+     3
+    ],
+    "fastembed_loaded": false
+   },
+   "import_floor": {
+    "median_s": 0.605,
+    "min_s": 0.497,
+    "max_s": 0.63,
+    "runs": [
+     0.605,
+     0.497,
+     0.63
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "gate_1": {
+   "open": {
+    "median_s": 0.749,
+    "bar_s": 0.5,
+    "pass": false
+   },
+   "find": {
+    "median_s": 4.351,
+    "bar_s": 3.5,
+    "pass": false
+   },
+   "inside": {
+    "median_s": 8.563,
+    "bar_s": 2.5,
+    "pass": false
+   },
+   "series": {
+    "median_s": 4.388,
+    "bar_s": 5.0,
+    "pass": true
+   },
+   "have": {
+    "median_s": 0.768,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "tables": {
+    "median_s": 0.705,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "exact": {
+    "median_s": 0.803,
+    "bar_s": 0.8,
+    "pass": false
+   },
+   "coverage": {
+    "median_s": 0.669,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "_all_pass": false
+  },
+  "note": "Taken while the Phase 2 card-embedding job saturated the CPU. The import floor alone moved 0.42s -> 0.60s, so every row is inflated. NOT a Gate 1 reading; kept so the contaminated run is visible rather than deleted."
+ },
+ "after_phase1": {
+  "generated": "2026-09-14T23:32:13Z",
+  "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "repeats": 3,
+  "commands": {
+   "find": {
+    "median_s": 1.152,
+    "min_s": 1.131,
+    "max_s": 1.174,
+    "runs": [
+     1.174,
+     1.131,
+     1.152
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "open": {
+    "median_s": 0.184,
+    "min_s": 0.181,
+    "max_s": 0.192,
+    "runs": [
+     0.192,
+     0.181,
+     0.184
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "coverage": {
+    "median_s": 0.174,
+    "min_s": 0.172,
+    "max_s": 0.175,
+    "runs": [
+     0.174,
+     0.172,
+     0.175
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false,
+    "coverage_line": "COVERAGE indexed=13634 image_only_no_text=1211 failed=32 unsupported=120 pages=1206260"
+   },
+   "inside": {
+    "median_s": 1.137,
+    "min_s": 1.136,
+    "max_s": 1.137,
+    "runs": [
+     1.136,
+     1.137,
+     1.137
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "series": {
+    "median_s": 1.223,
+    "min_s": 1.215,
+    "max_s": 1.228,
+    "runs": [
+     1.228,
+     1.215,
+     1.223
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "have": {
+    "median_s": 0.191,
+    "min_s": 0.189,
+    "max_s": 0.198,
+    "runs": [
+     0.198,
+     0.189,
+     0.191
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "tables": {
+    "median_s": 0.173,
+    "min_s": 0.171,
+    "max_s": 0.181,
+    "runs": [
+     0.181,
+     0.173,
+     0.171
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "exact": {
+    "median_s": 0.205,
+    "min_s": 0.199,
+    "max_s": 0.205,
+    "runs": [
+     0.205,
+     0.205,
+     0.199
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "copies": {
+    "median_s": 0.173,
+    "min_s": 0.172,
+    "max_s": 0.177,
+    "runs": [
+     0.177,
+     0.173,
+     0.172
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "notes": {
+    "median_s": 0.172,
+    "min_s": 0.171,
+    "max_s": 0.178,
+    "runs": [
+     0.178,
+     0.171,
+     0.172
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "note": {
+    "median_s": 0.173,
+    "min_s": 0.167,
+    "max_s": 0.181,
+    "runs": [
+     0.173,
+     0.181,
+     0.167
+    ],
+    "rc": [
+     3,
+     3,
+     3
+    ],
+    "fastembed_loaded": false
+   },
+   "import_floor": {
+    "median_s": 0.159,
+    "min_s": 0.158,
+    "max_s": 0.162,
+    "runs": [
+     0.162,
+     0.159,
+     0.158
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "gate_1": {
+   "open": {
+    "median_s": 0.184,
+    "bar_s": 0.5,
+    "pass": true
+   },
+   "find": {
+    "median_s": 1.152,
+    "bar_s": 3.5,
+    "pass": true
+   },
+   "inside": {
+    "median_s": 1.137,
+    "bar_s": 2.5,
+    "pass": true
+   },
+   "series": {
+    "median_s": 1.223,
+    "bar_s": 5.0,
+    "pass": true
+   },
+   "have": {
+    "median_s": 0.191,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "tables": {
+    "median_s": 0.173,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "exact": {
+    "median_s": 0.205,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "coverage": {
+    "median_s": 0.174,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "_all_pass": true
+  }
+ },
+ "baseline_v1_warm": {
+  "generated": "2026-09-14T23:33:39Z",
+  "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "repeats": 3,
+  "commands": {
+   "find": {
+    "median_s": 4.138,
+    "min_s": 4.12,
+    "max_s": 4.182,
+    "runs": [
+     4.12,
+     4.138,
+     4.182
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "open": {
+    "median_s": 2.947,
+    "min_s": 2.944,
+    "max_s": 2.959,
+    "runs": [
+     2.944,
+     2.947,
+     2.959
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "coverage": {
+    "median_s": 2.891,
+    "min_s": 2.889,
+    "max_s": 2.899,
+    "runs": [
+     2.899,
+     2.891,
+     2.889
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false,
+    "coverage_line": "COVERAGE indexed=13634 image_only_no_text=1211 failed=32 unsupported=120 pages=1206260"
+   },
+   "inside": {
+    "median_s": 1.688,
+    "min_s": 1.658,
+    "max_s": 1.692,
+    "runs": [
+     1.692,
+     1.688,
+     1.658
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "series": {
+    "median_s": 4.519,
+    "min_s": 4.509,
+    "max_s": 4.537,
+    "runs": [
+     4.509,
+     4.537,
+     4.519
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   },
+   "have": {
+    "median_s": 0.188,
+    "min_s": 0.185,
+    "max_s": 0.191,
+    "runs": [
+     0.188,
+     0.185,
+     0.191
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "tables": {
+    "median_s": 0.172,
+    "min_s": 0.167,
+    "max_s": 0.177,
+    "runs": [
+     0.177,
+     0.172,
+     0.167
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "exact": {
+    "median_s": 0.2,
+    "min_s": 0.197,
+    "max_s": 0.202,
+    "runs": [
+     0.197,
+     0.2,
+     0.202
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "copies": {
+    "median_s": 0.172,
+    "min_s": 0.166,
+    "max_s": 0.172,
+    "runs": [
+     0.172,
+     0.166,
+     0.172
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "notes": {
+    "median_s": 0.172,
+    "min_s": 0.17,
+    "max_s": 0.181,
+    "runs": [
+     0.181,
+     0.172,
+     0.17
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ],
+    "fastembed_loaded": false
+   },
+   "note": {
+    "median_s": 0.173,
+    "min_s": 0.167,
+    "max_s": 0.175,
+    "runs": [
+     0.175,
+     0.167,
+     0.173
+    ],
+    "rc": [
+     3,
+     3,
+     3
+    ],
+    "fastembed_loaded": false
+   },
+   "import_floor": {
+    "median_s": 0.158,
+    "min_s": 0.157,
+    "max_s": 0.164,
+    "runs": [
+     0.157,
+     0.164,
+     0.158
+    ],
+    "rc": [
+     0,
+     0,
+     0
+    ]
+   }
+  },
+  "gate_1": {
+   "open": {
+    "median_s": 2.947,
+    "bar_s": 0.5,
+    "pass": false
+   },
+   "find": {
+    "median_s": 4.138,
+    "bar_s": 3.5,
+    "pass": false
+   },
+   "inside": {
+    "median_s": 1.688,
+    "bar_s": 2.5,
+    "pass": true
+   },
+   "series": {
+    "median_s": 4.519,
+    "bar_s": 5.0,
+    "pass": true
+   },
+   "have": {
+    "median_s": 0.188,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "tables": {
+    "median_s": 0.172,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "exact": {
+    "median_s": 0.2,
+    "bar_s": 0.8,
+    "pass": true
+   },
+   "coverage": {
+    "median_s": 2.891,
+    "bar_s": 0.8,
+    "pass": false
+   },
+   "_all_pass": false
+  }
  }
 }

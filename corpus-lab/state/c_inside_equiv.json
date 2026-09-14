@@ -1,0 +1,9 @@
+{
+ "n_addresses": 57,
+ "top5_set_identical": 57,
+ "top5_order_identical": 57,
+ "n_documents_without_stored_vectors": 0,
+ "gate_requires_set_identical_ge": 54,
+ "shelf_dir": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf",
+ "verdict": "SHIP"
+}

@@ -66,10 +66,87 @@
    }
   },
   "0.6": {
-   "status": "in_progress",
-   "started": "2026-09-15T03:27:57"
+   "status": "done",
+   "started": "2026-09-15T03:27:57",
+   "finished": "2026-09-15T03:28:07",
+   "kv": {
+    "committed": 1
+   }
+  },
+  "1.1": {
+   "status": "done",
+   "started": "2026-09-15T03:28:40",
+   "finished": "2026-09-15T04:12:43",
+   "kv": {
+    "n": 300,
+    "identical": 300
+   }
+  },
+  "2.2": {
+   "status": "done",
+   "started": "2026-09-15T04:04:32",
+   "note": "shelf v2 build",
+   "finished": "2026-09-15T04:31:56",
+   "kv": {
+    "n_docs": 12809,
+    "n_dupes": 825,
+    "n_families": 1512,
+    "merged": 52,
+    "primary_changed": 306,
+    "bare_year": 146
+   }
+  },
+  "4.1": {
+   "status": "done",
+   "started": "2026-09-15T04:05:08",
+   "finished": "2026-09-15T04:05:08",
+   "kv": {
+    "registry_frac": 0.97
+   }
+  },
+  "4.2": {
+   "status": "done",
+   "started": "2026-09-15T04:05:08",
+   "finished": "2026-09-15T04:05:08",
+   "kv": {
+    "p8_regression": "pass"
+   }
+  },
+  "1.2": {
+   "status": "done",
+   "started": "2026-09-15T04:12:43",
+   "finished": "2026-09-15T04:12:43",
+   "kv": {
+    "coverage_before": 9.88,
+    "coverage_after": 0.42
+   }
+  },
+  "1.3": {
+   "status": "done",
+   "started": "2026-09-15T04:12:43",
+   "finished": "2026-09-15T04:12:43",
+   "kv": {
+    "align": 200,
+    "top5_identical": 57,
+    "of": 57
+   }
+  },
+  "1.5": {
+   "status": "done",
+   "started": "2026-09-15T04:12:44",
+   "note": "re-bench",
+   "finished": "2026-09-15T04:34:55",
+   "kv": {
+    "gate1": "PASS",
+    "open_before": 2.95,
+    "open_after": 0.18,
+    "find_before": 4.14,
+    "find_after": 1.15
+   }
   }
  },
- "last_beat": "2026-09-15T03:27:57",
- "notes": []
+ "last_beat": "2026-09-15T04:34:55",
+ "notes": [
+  "2026-09-15T04:14:12  after_phase1 bench re-run needed: the first attempt ran under the Phase 2 embedding load and every row was inflated; kept as after_phase1_under_load_INVALID"
+ ]
 }

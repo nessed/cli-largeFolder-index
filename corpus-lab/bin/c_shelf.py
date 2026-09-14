@@ -146,9 +146,48 @@ class Ctx:
         # corpus_search.coverage() does SELECT COUNT(*) FROM pages -- a full
         # scan of the 1.2M-row FTS5 table every call. The corpus is read-only
         # for the life of this process, so compute it once.
+        #
+        # Phase 9.1.2: once per PROCESS is not enough. Every shelf command the
+        # model runs is a fresh process, and `find` prints the COVERAGE line, so
+        # the 7.4s scan was being paid on nearly every call. The corpus is
+        # read-only for the life of an index, so the result is cached in
+        # shelf.db's meta table alongside the source db's size and mtime; a
+        # mismatch on either recomputes and rewrites. The printed line is
+        # identical either way -- this caches a count, it changes no ranking.
         if not hasattr(self, "_coverage_cache"):
-            self._coverage_cache = _cs_coverage(self.db)
+            self._coverage_cache = self._coverage_cached_or_compute()
         return self._coverage_cache
+
+    def _db_stamp(self):
+        try:
+            st = os.stat(self.db_path)
+            return "%d:%d" % (st.st_size, int(st.st_mtime))
+        except OSError:
+            return None
+
+    def _coverage_cached_or_compute(self):
+        stamp = self._db_stamp()
+        if stamp:
+            try:
+                row = self.shelf.execute(
+                    "SELECT v FROM meta WHERE k='coverage_cache'").fetchone()
+                if row:
+                    rec = json.loads(row[0])
+                    if rec.get("stamp") == stamp:
+                        return rec["coverage"]
+            except Exception:
+                pass
+        cov = _cs_coverage(self.db)
+        if stamp:
+            try:
+                self.shelf.execute("DELETE FROM meta WHERE k='coverage_cache'")
+                self.shelf.execute(
+                    "INSERT INTO meta(k, v) VALUES('coverage_cache', ?)",
+                    (json.dumps({"stamp": stamp, "coverage": cov}),))
+                self.shelf.commit()
+            except Exception:
+                pass  # a read-only shelf must still answer, just slowly
+        return cov
 
 
 _ctx_cache = {}
@@ -501,6 +540,82 @@ def do_find(ctx, queries, pool=200, fusion="rrf", caption_channel=None):
     }
 
 
+def _compact_line(i, f):
+    """One family on one line, in the card shape Experiment H used
+    (c_llm_select_gate.build_cards). Built from shelf fields only."""
+    eds = f["editions"]
+    fys = [e["fy"] for e in eds if e.get("fy")]
+    if fys:
+        span = ("%d editions %s-%s" % (len(fys), min(fys), max(fys))
+                if len(fys) > 1 else "1 edition %s" % fys[0])
+    else:
+        rel = f.get("primary_rel") or f.get("best_rel") or ""
+        ext = Path(rel).suffix.lower().lstrip(".") or "file"
+        span = "single file, %s" % ext
+    why = " | ".join(w.strip() for w in (f.get("why") or [])[:2] if w and w.strip())
+    why = re.sub(r"\s+", " ", why)[:120]
+    return "#%d  %s | %s | %s" % (i, _family_words(f["family"]), span, why)
+
+
+def _print_find_compact(res, n, question):
+    """Phase 9.3.1. The model was being shown twelve candidates; offline, the gold
+    publication is in the fused top 10 on 10/17 but the top 50 on 14/17, and
+    Experiment H (F60, F63) measured that a model shown 100 one-line cards ranks
+    the gold in its own top 10 on 11-14/17 -- better than any statistical
+    reranker we tried. H was a separate headless call and never shipped. This is
+    the same mechanism at zero extra calls: show more of the list, in the session
+    that is already running, one line each."""
+    fams = res["families"][:n]
+    for i, f in enumerate(fams, start=1):
+        print(_compact_line(i, f))
+    print('expand: find "%s" --show i,j,k   (same flags as this call)' % question)
+    r = res["receipt"]
+    print(f"RECEIPT queries={r['queries']} lex=[{r['lex']}] vec=[{r['vec']}] "
+          f"families={r['families']} docs_considered={r['docs_considered']} "
+          f"shown={len(fams)}")
+    _print_coverage(res["coverage"])
+
+
+def _print_find_show(res, indices):
+    """The verbose entries for chosen indices only, same format as `find`."""
+    fams = res["families"]
+    for i in indices:
+        if i < 1 or i > len(fams):
+            print("#%d  (no such rank; the list held %d families)" % (i, len(fams)))
+            continue
+        _print_find_entry(i, fams[i - 1], res["qwords"])
+    r = res["receipt"]
+    print(f"RECEIPT queries={r['queries']} lex=[{r['lex']}] vec=[{r['vec']}] "
+          f"families={r['families']} docs_considered={r['docs_considered']} "
+          f"shown={len(indices)}")
+    _print_coverage(res["coverage"])
+
+
+def _print_find_entry(i, f, qwords):
+    print(f"#{i}  family: {f['family']}")
+    eds = f["editions"]
+    parts = [f"{e['fy'] or Path(e['rel']).name}*({e['n_pages']}p)" for e in eds]
+    if len(parts) > 6:
+        shown = parts[:3] + ["…"] + parts[-2:]
+    else:
+        shown = parts
+    print(f"    editions: {' '.join(shown)}   "
+          f"[{f['n_editions']} editions, {f['n_copies_hidden']} copies not shown]")
+    why = " | ".join(f'"{w}"' for w in f["why"])
+    print(f"    why: {why}")
+    terms = " ".join(qwords[:6])
+    fam_words = _family_words(f["family"])
+    # Name the primary copy, and say plainly that the others exist: on v2 the
+    # primary is the consensus copy, and a session that opens a hidden one-off
+    # instead is reading a draft (Session Log A.5.2).
+    hidden = ""
+    if f.get("n_copies_hidden"):
+        hidden = ('   (%d other copies hidden; copies "%s" lists them)'
+                  % (f["n_copies_hidden"], f["primary_rel"]))
+    print(f'    open with: inside "{f["primary_rel"]}" "{terms}"   or   '
+          f'series "<row words>" --family "{fam_words}"{hidden}')
+
+
 def _print_find(res, k):
     for i, f in enumerate(res["families"][:k], start=1):
         print(f"#{i}  family: {f['family']}")
@@ -724,6 +839,75 @@ def _caption_hit_pages_labelled(ctx, rel, query, body_by_page):
     return kept, {pi: captions[pi] for pi in kept if pi in captions}, len(pages) - len(kept)
 
 
+def _caption_vector_store(ctx):
+    """(npy handle, {rel: [(npy_row, page_index), ...]}) or (None, None).
+
+    Built once per process. The rel -> rows map is cached beside the npy as
+    captions_by_rel.json because parsing 89k jsonl lines costs ~1s and every
+    shelf command is a fresh process."""
+    if hasattr(ctx, "_capvec"):
+        return ctx._capvec
+    ctx._capvec = (None, None)
+    try:
+        import numpy as np
+        d = Path(ctx.shelf_path).parent
+        npy, ids = d / "captions.f16.npy", d / "captions_ids.jsonl"
+        if not (npy.exists() and ids.exists()):
+            return ctx._capvec
+        cache = d / "captions_by_rel.json"
+        by_rel = None
+        if cache.exists() and cache.stat().st_mtime >= ids.stat().st_mtime:
+            try:
+                by_rel = json.loads(cache.read_text(encoding="utf-8"))
+            except Exception:
+                by_rel = None
+        if by_rel is None:
+            by_rel = {}
+            with open(ids, "r", encoding="utf-8") as fh:
+                for line in fh:
+                    if not line.strip():
+                        continue
+                    r = json.loads(line)
+                    by_rel.setdefault(r["rel"], []).append([r["i"], r["page_index"]])
+            try:
+                cache.write_text(json.dumps(by_rel), encoding="utf-8")
+            except OSError:
+                pass
+        ctx._capvec = (np.load(str(npy), mmap_mode="r"), by_rel)
+    except Exception:
+        ctx._capvec = (None, None)
+    return ctx._capvec
+
+
+def _stored_caption_vectors(ctx, rel, rows_all):
+    """Unit-normalised float32 vectors for this rel's NON-BLANK captions, in the
+    same order `rows` has them, or None if alignment cannot be proven.
+
+    Alignment is positional: c_caption_embed.py embedded every caption row in
+    rowid order, one npy row each, so this rel's stored rows must have exactly
+    the same page_index sequence as its table rows read in rowid order. If they
+    do not, the npy is stale relative to the shelf and the caller re-embeds."""
+    mat, by_rel = _caption_vector_store(ctx)
+    if mat is None:
+        return None
+    ent = by_rel.get(rel)
+    if not ent or len(ent) != len(rows_all):
+        return None
+    if [e[1] for e in ent] != [pi for pi, _c in rows_all]:
+        return None
+    keep = [ent[j][0] for j, (_pi, c) in enumerate(rows_all) if (c or "").strip()]
+    if not keep:
+        return None
+    try:
+        import numpy as np
+        v = np.asarray(mat[keep, :], dtype="float32")
+        norms = np.linalg.norm(v, axis=1, keepdims=True)
+        norms[norms == 0] = 1.0
+        return v / norms
+    except Exception:
+        return None
+
+
 def _caption_hit_pages_dense(ctx, rel, query, body_by_page):
     """B2c, 2026-09-15 pm. B2/B2b match a caption by requiring every label word
     to appear in it, and F48 measured what that costs: on every year-asking
@@ -744,9 +928,12 @@ def _caption_hit_pages_dense(ctx, rel, query, body_by_page):
     words = _label_words(query)
     if not words:
         return set(), {}, 0
-    rows = ctx.shelf.execute(
-        "SELECT page_index, caption FROM captions WHERE rel=?", (rel,)).fetchall()
-    rows = [(pi, c or "") for pi, c in rows if (c or "").strip()]
+    # ORDER BY rowid so the row order is the one c_caption_embed.py wrote the
+    # vectors in; without it the stored rows cannot be aligned.
+    rows_all = ctx.shelf.execute(
+        "SELECT page_index, caption FROM captions WHERE rel=? ORDER BY rowid",
+        (rel,)).fetchall()
+    rows = [(pi, c or "") for pi, c in rows_all if (c or "").strip()]
     if not rows:
         return set(), {}, 0
 
@@ -754,10 +941,20 @@ def _caption_hit_pages_dense(ctx, rel, query, body_by_page):
     n = np.linalg.norm(qv)
     if n > 0:
         qv = qv / n
-    cvs = np.asarray(list(_model().embed([c for _pi, c in rows])), dtype="float32")
-    norms = np.linalg.norm(cvs, axis=1, keepdims=True)
-    norms[norms == 0] = 1.0
-    cvs = cvs / norms
+
+    # Phase 9.1.3: captions.f16.npy already holds a vector for every caption in
+    # the shelf, written by c_caption_embed.py. Re-embedding a 496-page Survey's
+    # 144 captions on every `inside` call cost ~1.3s on top of the model load for
+    # a result the file on disk already had. Read the document's rows out of the
+    # npy instead; only the query is embedded. Falls back to embedding whenever
+    # the stored rows cannot be proven to line up with the table rows, so any
+    # shelf without caption vectors (a fresh v2 build, say) still answers.
+    cvs = _stored_caption_vectors(ctx, rel, rows_all)
+    if cvs is None:
+        cvs = np.asarray(list(_model().embed([c for _pi, c in rows])), dtype="float32")
+        norms = np.linalg.norm(cvs, axis=1, keepdims=True)
+        norms[norms == 0] = 1.0
+        cvs = cvs / norms
     scores = cvs @ qv
 
     order = list(np.argsort(-scores))
@@ -1024,8 +1221,28 @@ def _print_exact(res):
 
 
 def do_open(ctx, rel, page_index, slug=None):
-    row = ctx.db.execute("SELECT body FROM pages WHERE rel=? AND page_index=?",
-                          (rel, page_index)).fetchone()
+    # Phase 9.1.1: `SELECT body FROM pages WHERE rel=? AND page_index=?` is a full
+    # scan of 1.2M rows -- `rel` is UNINDEXED in the FTS5 table -- which cost ~7.5s
+    # on EVERY open, and a trajectory session issues a dozen of them. The shelf
+    # already caches (rel -> contiguous rowid block) in page_ranges for `inside`,
+    # so the same range turns the scan into a rowid lookup. Rank-preserving by
+    # construction: same row, same bytes (verified byte-identical on 300 pages by
+    # bin/c_open_equiv_check.py). The original query stays as the fallback so any
+    # rel absent from the cache behaves exactly as before.
+    row = None
+    try:
+        _ensure_page_ranges(ctx)
+        rng = ctx.shelf.execute(
+            "SELECT start_id, end_id FROM page_ranges WHERE rel=?", (rel,)).fetchone()
+        if rng:
+            row = ctx.db.execute(
+                "SELECT c2 FROM pages_content WHERE id BETWEEN ? AND ? AND c1=?",
+                (rng[0], rng[1], page_index)).fetchone()
+    except Exception:
+        row = None
+    if row is None:
+        row = ctx.db.execute("SELECT body FROM pages WHERE rel=? AND page_index=?",
+                             (rel, page_index)).fetchone()
     if not row:
         return {"rel": rel, "page_index": page_index, "found": False}
     body = row[0][:12000]
@@ -1133,6 +1350,12 @@ def main():
 
     p = sub.add_parser("find"); p.add_argument("question"); p.add_argument("--q", action="append", default=[])
     p.add_argument("--k", type=int, default=12); p.add_argument("--slug")
+    # Phase 9.3.1. Both default to off, so the output with neither flag is
+    # byte-for-byte what it was.
+    p.add_argument("--compact", type=int, default=None,
+                   help="print the top N families as one line each, fused order")
+    p.add_argument("--show", default=None,
+                   help="comma-separated ranks from a --compact list; print those in full")
     p.add_argument("--fusion", choices=["rrf", "best"], default="rrf")
     p.add_argument("--caption-channel", dest="caption_channel",
                    choices=["off", "lex", "lex+vec"], default="off")
@@ -1186,7 +1409,16 @@ def main():
         queries = [a.question] + list(a.q)
         cc = None if a.caption_channel == "off" else a.caption_channel
         res = do_find(ctx, queries, fusion=a.fusion, caption_channel=cc)
-        _print_find(res, a.k)
+        if a.show:
+            idx = []
+            for part in str(a.show).replace(" ", ",").split(","):
+                if part.strip().isdigit():
+                    idx.append(int(part.strip()))
+            _print_find_show(res, idx)
+        elif a.compact:
+            _print_find_compact(res, a.compact, a.question)
+        else:
+            _print_find(res, a.k)
     elif a.cmd == "have":
         res = do_have(ctx, a.words, fy=a.fy)
         _print_have(res)
