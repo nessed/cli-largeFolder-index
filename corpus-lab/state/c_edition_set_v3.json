@@ -1,0 +1,59 @@
+{
+ "page_method": "B2c dense_first",
+ "n_year_bearing_questions": 10,
+ "set_recall_questions": 3,
+ "mean_set_size": 2.0,
+ "max_set_size": 6,
+ "per_question": {
+  "cd_04": {
+   "set_size": 0,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 12
+  },
+  "mb_04": {
+   "set_size": 3,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 6
+  },
+  "mb_05": {
+   "set_size": 2,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 6
+  },
+  "mb_07": {
+   "set_size": 3,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 6
+  },
+  "nm_09": {
+   "set_size": 0,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 1
+  },
+  "pl_01": {
+   "set_size": 5,
+   "all_evidence_editions_in_set": true,
+   "family_primaries": 5
+  },
+  "pl_14": {
+   "set_size": 1,
+   "all_evidence_editions_in_set": true,
+   "family_primaries": 5
+  },
+  "pl_21": {
+   "set_size": 6,
+   "all_evidence_editions_in_set": true,
+   "family_primaries": 6
+  },
+  "rc_05": {
+   "set_size": 0,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 12
+  },
+  "rc_07": {
+   "set_size": 0,
+   "all_evidence_editions_in_set": false,
+   "family_primaries": 12
+  }
+ }
+}
