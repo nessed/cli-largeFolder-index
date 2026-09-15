@@ -307,3 +307,31 @@ def test_page_token_near_path_is_a_citation():
     answer = "See a.pdf page 9 for the table."
     citations, _ = V3.citations_and_mentions(answer)
     assert ("a.pdf", 9) in citations
+
+
+# --------------------------------------------------------------------------
+# c_live_battery --capture: the default must preserve behaviour exactly
+# --------------------------------------------------------------------------
+
+def test_battery_capture_defaults_to_last():
+    """Rule 14: additive flags only, defaults preserve behaviour. If --capture
+    ever defaulted to `full`, every recorded battery would stop reproducing."""
+    import c_live_battery as B
+    ap = None
+    import argparse
+    # rebuild the parser the way main() does, without running a battery
+    src = Path(B.__file__).read_text(encoding="utf-8")
+    assert '"--capture", choices=["last", "full"], default="last"' in src
+    assert "MAX_TURNS = 25" in src and "TIMEOUT = 300" in src
+    assert hasattr(B, "add_full_capture")
+    del ap, argparse
+
+
+def test_battery_full_capture_uses_the_scorers_own_function():
+    """One reconstruction, two callers. If the battery grew its own copy, the
+    live path and the re-scoring path could silently diverge."""
+    import c_live_battery as B
+    src = Path(B.__file__).read_text(encoding="utf-8")
+    assert "import c_score_live_v3 as V3" in src
+    assert "V3.reconstruct_full_answer(jl)" in src
+    assert 'rec["answer_text"]' not in src, "answer_text must never be rewritten"

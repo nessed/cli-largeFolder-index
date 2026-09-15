@@ -16,6 +16,15 @@ arguments, at --parallel 2, and touches run_harness.py not at all.
   python -u corpus-lab/bin/c_live_battery.py --group frozen20 --model <id>
   python -u corpus-lab/bin/c_live_battery.py --group extra_abs --model <id>
   python -u corpus-lab/bin/c_live_battery.py --probe auth --model <id>
+
+Phase 10.1.3 adds `--capture full` (default `last`, unchanged). The harness keeps
+the LAST assistant message, so a session the Stop guard challenged records only
+the confirmation reply and the real answer is lost. With `--capture full` the
+record gains two fields beside the untouched `answer_text`:
+`answer_text_last` (what was always stored) and `answer_text_full` (the
+reconstruction). The reconstruction is `c_score_live_v3.reconstruct_full_answer`
+-- the SAME function the scorer uses on recorded sessions, so the live path and
+the re-scoring path cannot drift apart.
 """
 import argparse
 import json
@@ -70,6 +79,32 @@ def load_questions():
     return qs_by_id, frozen, extra_abs
 
 
+def add_full_capture(phase, qid):
+    """Attach the reconstructed answer to a finished session's record.
+
+    Additive only: `answer_text` is never rewritten, so every scorer that reads
+    the old field reads exactly what it read before.
+    """
+    import c_score_live_v3 as V3
+    base = L.RUNS / phase / ("%s__%s__%s" % (STACK, CORPUS_LABEL, qid))
+    rj, jl = base.with_suffix(".json"), base.with_suffix(".jsonl")
+    if not rj.exists() or not jl.exists():
+        return None
+    try:
+        rec = json.loads(rj.read_text(encoding="utf-8"))
+        recon = V3.reconstruct_full_answer(jl)
+        rec["answer_text_last"] = recon["answer_text_last"]
+        rec["answer_text_full"] = recon["answer_text_full"]
+        rec["answer_was_fragment"] = recon["was_fragment"]
+        rec["n_hook_blocks"] = recon["n_hook_blocks"]
+        rec["capture"] = "full"
+        rj.write_text(json.dumps(rec, indent=1), encoding="utf-8")
+        return recon
+    except Exception as e:
+        print("  CAPTURE_FULL_FAILED %s: %s" % (qid, e), file=sys.stderr)
+        return None
+
+
 def result_exists(phase, qid):
     return (L.RUNS / phase / ("%s__%s__%s.json" % (STACK, CORPUS_LABEL, qid))).exists()
 
@@ -87,6 +122,9 @@ def main(argv):
     # frozen values, so every recorded battery still reproduces.
     ap.add_argument("--max-turns", dest="max_turns", type=int, default=MAX_TURNS)
     ap.add_argument("--timeout", type=int, default=TIMEOUT)
+    ap.add_argument("--capture", choices=["last", "full"], default="last",
+                    help="full: also store answer_text_full, reconstructed across "
+                         "a guard interruption (adds fields; changes none)")
     ap.add_argument("--phase-tag", dest="phase_tag", default="P5",
                     help="phase prefix; a re-battery uses a NEW tag so ask.py's "
                          "stale-result guard is respected instead of forced")
@@ -122,7 +160,13 @@ def main(argv):
         for f in futs:
             qid, rc, so, se = f.result()
             done += 1
-            print("[%s] rc=%d %s" % (qid, rc, so), flush=True)
+            note = ""
+            if a.capture == "full":
+                recon = add_full_capture(phase, qid)
+                if recon and recon["was_fragment"]:
+                    note = "  [FRAGMENT recovered %d -> %d chars]" % (
+                        len(recon["answer_text_last"]), len(recon["answer_text_full"]))
+            print("[%s] rc=%d %s%s" % (qid, rc, so, note), flush=True)
             if done % 5 == 0 or done == len(todo):
                 cost, n = 0.0, 0
                 for i in ids:

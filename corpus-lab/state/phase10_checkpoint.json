@@ -109,10 +109,15 @@
    "finished": "2026-09-15T21:03:05"
   },
   "1.8": {
-   "status": "in_progress",
-   "started": "2026-09-15T21:03:06"
+   "status": "done",
+   "started": "2026-09-15T21:03:06",
+   "finished": "2026-09-15T21:04:24",
+   "kv": {
+    "tag": 1,
+    "sha_recorded": 1
+   }
   }
  },
- "last_beat": "2026-09-15T21:03:06",
+ "last_beat": "2026-09-15T21:04:24",
  "notes": []
 }
