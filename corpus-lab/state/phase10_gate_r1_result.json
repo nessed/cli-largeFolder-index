@@ -1,0 +1,134 @@
+{
+ "gate": "R1",
+ "spec": "corpus-lab/state/phase10_gate_r_spec.md",
+ "evaluated_utc": "2026-09-15T16:58:20Z",
+ "verdict": "GATE_R1_STOP",
+ "rows_failed": [
+  "R1.3"
+ ],
+ "rows": [
+  {
+   "id": "R1.1",
+   "check": "both installs exit 0",
+   "pass": true,
+   "actual": "A rc=0 B rc=0"
+  },
+  {
+   "id": "R1.2",
+   "check": "each install <= 20 min",
+   "pass": true,
+   "actual": "A 118s B 118s"
+  },
+  {
+   "id": "R1.3",
+   "check": "canonical_export.json sha256 A == B",
+   "pass": false,
+   "actual": "FIRST DIFFERENCE -> pages.files row 7: columns ['n_pages', 'rel', 'sha256', 'size'] differ (first: 23 vs 33)"
+  },
+  {
+   "id": "R1.4",
+   "check": "build_manifest counts A == B (incl. file count)",
+   "pass": true,
+   "actual": "all equal; n_files=502; {'n_docs': 472, 'n_families': 146, 'n_captions': 4483, 'n_cards': 472, 'n_files': 500, 'status_counts': {'failed_encrypted': 1, 'image_only_no_text': 9, 'indexed': 489, 'unsupported_type': 1}}"
+  },
+  {
+   "id": "R1.5",
+   "check": "vectors deterministic (or float noise within bar)",
+   "pass": true,
+   "actual": {
+    "cards": {
+     "class": "deterministic",
+     "detail": "rounded-to-3dp hashes equal; shape [472, 384]"
+    },
+    "captions": {
+     "class": "deterministic",
+     "detail": "rounded-to-3dp hashes equal; shape [4483, 384]"
+    }
+   }
+  },
+  {
+   "id": "R1.6",
+   "check": "retrieval outputs A == B",
+   "pass": true,
+   "actual": {
+    "identical": true,
+    "n_differing_probes": 0,
+    "first_differences": []
+   }
+  },
+  {
+   "id": "R1.7",
+   "check": "c_selftest same check set, passing in both",
+   "pass": true,
+   "actual": "A 18 checks pass=True, B 18 checks pass=True; symmetric difference []"
+  },
+  {
+   "id": "R1.8",
+   "check": "memory files 0 before and after in both rooms",
+   "pass": true,
+   "actual": "A before=0 after=0; B before=0 after=0"
+  }
+ ],
+ "vector_class": {
+  "cards": {
+   "class": "deterministic",
+   "detail": "rounded-to-3dp hashes equal; shape [472, 384]"
+  },
+  "captions": {
+   "class": "deterministic",
+   "detail": "rounded-to-3dp hashes equal; shape [4483, 384]"
+  }
+ },
+ "canonical_sha256": {
+  "A": "5cf645476c0c1bc960700c24c9f6adb26d82074cec46e5e6e40418fa92ac8c52",
+  "B": "f7d5aad0c93db55dd95276c193ac0510eb6f3b80162eac811a26b0e7b43b7556"
+ },
+ "builder": {
+  "A": "v1",
+  "B": "v1"
+ },
+ "canonical_diagnosis": {
+  "per_table": {
+   "pages.files": {
+    "equal": false,
+    "n_rows_a": 500,
+    "n_rows_b": 500,
+    "columns": [
+     "error_class",
+     "file_id",
+     "n_pages",
+     "rel",
+     "sha256",
+     "size",
+     "status"
+    ],
+    "identical_after_dropping": "file_id",
+    "rows_with_same_rel_but_different_id": 255
+   },
+   "shelf.captions": {
+    "equal": true,
+    "n_rows": 4483
+   },
+   "shelf.cards": {
+    "equal": true,
+    "n_rows": 472
+   },
+   "shelf.docs": {
+    "equal": true,
+    "n_rows": 472
+   },
+   "shelf.families": {
+    "equal": true,
+    "n_rows": 146
+   }
+  },
+  "surrogate_id_candidates": [
+   "file_id",
+   "id",
+   "rowid",
+   "doc_id",
+   "page_id"
+  ]
+ },
+ "diagnosis_note": "Diagnosis explains a difference; it never excuses one. The verdict above applies the gate line as written -- any canonical difference fails -- because relaxing a rule after seeing the result is how a gate stops meaning anything."
+}

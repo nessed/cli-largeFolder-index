@@ -2,7 +2,7 @@
  "id": "p10_gate_r1",
  "schema": "run_record/1",
  "started_at": "2026-09-15T21:19:16",
- "finished_at": null,
+ "finished_at": "2026-09-15T21:59:32",
  "command": "p10_cleanroom.py build/probe --room A,B --package dist/retrieval-portable-1b217ff --corpus harness/corpus_500",
  "recorder_argv": [
   "corpus-lab/bin/run_record.py",
@@ -89,9 +89,15 @@
  "outputs_existed_at_start": {
   "corpus-lab/state/phase10_gate_r1_result.json": false
  },
- "outputs": {},
- "notes": [],
- "conclusion": null,
- "adopted": null,
+ "outputs": {
+  "corpus-lab/state/phase10_gate_r1_result.json": "669630b41423fbfca1a55f5f7a2904c9507305b66d1ec50fcf2cbaacee4aa659"
+ },
+ "notes": [
+  "2026-09-15T21:59:31  Gate R1 = GATE_R1_STOP on R1.3 only. Sole cause: the file_id surrogate key in pages.files, assigned by filesystem walk order; 255 of 500 rows share rel/sha256/size/status and differ only in that column, and dropping it alone makes the tables identical as sets. Nothing downstream references it - all four shelf tables matched byte-for-byte.",
+  "2026-09-15T21:59:32  Gate line says ANY canonical difference fails, so STOP is recorded rather than the method relaxed after seeing the result. Dropping surrogate ids from the canonical export goes to the handoff as a pre-registered method change for next time.",
+  "2026-09-15T21:59:32  Two real portability defects found and fixed: c_stop_guard_selftest.py missing from the package (c_selftest shells out to it, so the guard check silently never ran), and the clean room asserting the 15000 rung's page count against a 500-file corpus."
+ ],
+ "conclusion": "The package installs from a copy and the two builds are logically identical: same counts, bit-identical vectors, all 31 retrieval probes identical, 4 of 5 canonical tables byte-identical, 18/18 self-test both rooms. STOP recorded on R1.3 for the file_id surrogate key alone.",
+ "adopted": "yes",
  "supersedes": null
 }

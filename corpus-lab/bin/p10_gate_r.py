@@ -72,6 +72,44 @@ def first_table_difference(ca, cb):
     return None
 
 
+def diagnose_canonical(ca, cb):
+    """When the export hashes differ, say WHY -- per table, and whether the
+    difference survives dropping surrogate row ids.
+
+    This is diagnosis, not adjudication: it never changes the verdict. A gate
+    that relaxed its own rule after seeing the result would be worthless.
+    """
+    out = {"per_table": {}, "surrogate_id_candidates": ["file_id", "id", "rowid",
+                                                        "doc_id", "page_id"]}
+    ta, tb = (ca or {}).get("tables", {}), (cb or {}).get("tables", {})
+    for t in sorted(set(ta) | set(tb)):
+        ra, rb = ta.get(t, []), tb.get(t, [])
+        if ra == rb:
+            out["per_table"][t] = {"equal": True, "n_rows": len(ra)}
+            continue
+        entry = {"equal": False, "n_rows_a": len(ra), "n_rows_b": len(rb)}
+        cols = sorted(ra[0].keys()) if ra else []
+        entry["columns"] = cols
+        for drop in out["surrogate_id_candidates"]:
+            if drop not in cols:
+                continue
+
+            def strip(rows):
+                return sorted(json.dumps({k: v for k, v in r.items() if k != drop},
+                                         sort_keys=True) for r in rows)
+            if strip(ra) == strip(rb):
+                entry["identical_after_dropping"] = drop
+                same_rel = None
+                if "rel" in cols:
+                    ma = {r["rel"]: r[drop] for r in ra}
+                    mb = {r["rel"]: r[drop] for r in rb}
+                    same_rel = sum(1 for k in ma if ma[k] != mb[k])
+                entry["rows_with_same_rel_but_different_id"] = same_rel
+                break
+        out["per_table"][t] = entry
+    return out
+
+
 def compare_vectors(ma, mb):
     """sha equal -> deterministic; else classify, using what the manifest holds."""
     out = {}
@@ -185,7 +223,14 @@ def cmd_r1(a):
            "vector_class": vec,
            "canonical_sha256": {"A": sha_obj(ca) if ca else None,
                                 "B": sha_obj(cb) if cb else None},
-           "builder": {"A": ma.get("builder"), "B": mb.get("builder")}}
+           "builder": {"A": ma.get("builder"), "B": mb.get("builder")},
+           "canonical_diagnosis": (None if same_canon
+                                   else diagnose_canonical(ca, cb)),
+           "diagnosis_note": (
+               "Diagnosis explains a difference; it never excuses one. The "
+               "verdict above applies the gate line as written -- any canonical "
+               "difference fails -- because relaxing a rule after seeing the "
+               "result is how a gate stops meaning anything.")}
     (L.STATE / "phase10_gate_r1_result.json").write_text(
         json.dumps(rec, indent=1), encoding="utf-8")
     _print(rec)

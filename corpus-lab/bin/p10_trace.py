@@ -31,7 +31,16 @@ SITECUSTOMIZE = '''"""Gate R3 read tracer. Written by p10_trace.py; not part of 
 Every python process started from this venv inherits it, which is the point:
 the installer spawns children, and a tracer that only saw the parent would miss
 exactly the reads that matter.
+
+Two things this has to get right, both learned the hard way:
+
+  * `_note` must use the SAVED original open. Using the module-global `open`
+    means calling the wrapper from inside the wrapper, which recurses into the
+    lock it is already holding and hangs the whole install.
+  * one file-open per traced open is not a tracer. An indexing run makes
+    hundreds of thousands of them, so lines are buffered and flushed at exit.
 """
+import atexit
 import builtins
 import io
 import os
@@ -40,48 +49,80 @@ import threading
 
 _LOG = os.environ.get("P10_READS_LOG")
 _lock = threading.Lock()
+_local = threading.local()
+_buf = []
+_open = builtins.open          # saved BEFORE anything is replaced
 
 
-def _note(kind, path):
-    if not _LOG:
+def _flush():
+    if not _LOG or not _buf:
         return
+    with _lock:
+        lines, _buf[:] = list(_buf), []
     try:
-        p = os.path.abspath(str(path))
-    except Exception:
-        return
-    try:
-        with _lock:
-            with open(_LOG, "a", encoding="utf-8", errors="replace") as fh:
-                fh.write("%s\\t%s\\n" % (kind, p))
+        with _open(_LOG, "a", encoding="utf-8", errors="replace") as fh:
+            fh.writelines(lines)
     except Exception:
         pass
 
 
-_open = builtins.open
-def _traced_open(file, *a, **k):          # noqa: E302
-    if not (isinstance(file, int)):
+atexit.register(_flush)
+
+
+def _note(kind, path):
+    if not _LOG or getattr(_local, "busy", False):
+        return
+    _local.busy = True
+    try:
+        try:
+            p = os.path.abspath(str(path))
+        except Exception:
+            return
+        _buf.append("%s\\t%s\\n" % (kind, p))
+        if len(_buf) >= 2000:
+            _flush()
+    finally:
+        _local.busy = False
+
+
+def _traced_open(file, *a, **k):
+    if not isinstance(file, int):
         _note("open", file)
     return _open(file, *a, **k)
-builtins.open = _traced_open              # noqa: E305
+
+
+builtins.open = _traced_open
 io.open = _traced_open
 
 _connect = sqlite3.connect
-def _traced_connect(database, *a, **k):   # noqa: E302
+
+
+def _traced_connect(database, *a, **k):
     _note("sqlite", database)
     return _connect(database, *a, **k)
-sqlite3.connect = _traced_connect         # noqa: E305
+
+
+sqlite3.connect = _traced_connect
 
 _scandir = os.scandir
-def _traced_scandir(path="."):            # noqa: E302
+
+
+def _traced_scandir(path="."):
     _note("scandir", path)
     return _scandir(path)
-os.scandir = _traced_scandir              # noqa: E305
+
+
+os.scandir = _traced_scandir
 
 _listdir = os.listdir
-def _traced_listdir(path="."):            # noqa: E302
+
+
+def _traced_listdir(path="."):
     _note("listdir", path)
     return _listdir(path)
-os.listdir = _traced_listdir              # noqa: E305
+
+
+os.listdir = _traced_listdir
 '''
 
 
