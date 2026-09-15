@@ -1,0 +1,34 @@
+{
+ "gate": "R3",
+ "spec": "corpus-lab/state/phase10_gate_r_spec.md",
+ "evaluated_utc": "2026-09-15T17:24:48Z",
+ "verdict": "PASS",
+ "rows_failed": [],
+ "rows": [
+  {
+   "id": "R3.1",
+   "check": "no read under the development repo",
+   "pass": true,
+   "actual": "891 reads traced, none under the dev repo"
+  },
+  {
+   "id": "R3.2",
+   "check": "no read under the dev repo's claude project key",
+   "pass": true,
+   "actual": "none"
+  },
+  {
+   "id": "R3.3",
+   "check": "package grep for C:\\Users and Desktop is empty",
+   "pass": true,
+   "actual": "hits=0"
+  },
+  {
+   "id": "R3.4",
+   "check": "the traced install actually ran",
+   "pass": true,
+   "actual": "rc=0, 891 paths traced"
+  }
+ ],
+ "what_this_does_not_show": "A trace proves no dev-repo read ON THIS RUN, on this OS, for this corpus. It is a trace, not a proof about all inputs."
+}

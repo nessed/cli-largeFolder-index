@@ -1,0 +1,100 @@
+{
+ "id": "p10_gate_r2",
+ "schema": "run_record/1",
+ "started_at": "2026-09-15T22:24:46",
+ "finished_at": "2026-09-15T22:24:49",
+ "command": "p10_gate_r.py r2",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "p10_gate_r2",
+  "--out",
+  "corpus-lab/experiments/p10_portable_r2",
+  "--cmd",
+  "p10_gate_r.py r2",
+  "--spec",
+  "corpus-lab/state/phase10_gate_r_spec.md",
+  "--writes",
+  "corpus-lab/state/phase10_gate_r2_result.json",
+  "--rung",
+  "corpus_2000",
+  "--workers",
+  "8",
+  "--no-probe"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "8df11ee7b2efe60f249af2a7de6eb4cfdf243521",
+  "branch": "phase10-trust-and-repro",
+  "dirty": true,
+  "dirty_files": [
+   "?? corpus-lab/bin/p10_check_ask.py"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "<skipped>",
+  "workers": "8",
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": {
+  "name": "corpus_2000",
+  "path": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\harness\\corpus_2000",
+  "exists": true,
+  "n_files": 2000
+ },
+ "spec": {
+  "path": "corpus-lab/state/phase10_gate_r_spec.md",
+  "sha256": "6cd33e60e1ff30cacece74d9f00053c5fea2b7dc97be6487bf61fc78267299ba",
+  "commit": "c4dce542010b7181961da3e0ca016763be0ca5ce",
+  "commit_author_date": "2026-09-15T21:17:53+05:00"
+ },
+ "inputs": {},
+ "declared_outputs": [
+  "corpus-lab/state/phase10_gate_r2_result.json"
+ ],
+ "outputs_existed_at_start": {
+  "corpus-lab/state/phase10_gate_r2_result.json": false
+ },
+ "outputs": {
+  "corpus-lab/state/phase10_gate_r2_result.json": "f0c214bc0bc4ff7136911e9d84cf12e8e54c3ebb86127b6edd58d400dcc4234b"
+ },
+ "notes": [
+  "2026-09-15T22:24:48  corpus_2000 is another generated corpus from the same fixture ecosystem; this is not real-world validation; genuine cross-folder generalisation remains untested."
+ ],
+ "conclusion": "PASS. 2000 files installed in 375s from the portable package, 18/18 self-test, and the one headless Sonnet answer cited 1 page, which the transcript shows as OPENED. Guard did not fire. 0 memory files before and after.",
+ "adopted": "yes",
+ "supersedes": null
+}

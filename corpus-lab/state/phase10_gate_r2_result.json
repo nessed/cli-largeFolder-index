@@ -1,0 +1,46 @@
+{
+ "gate": "R2",
+ "spec": "corpus-lab/state/phase10_gate_r_spec.md",
+ "evaluated_utc": "2026-09-15T17:24:48Z",
+ "verdict": "PASS",
+ "rows_failed": [],
+ "rows": [
+  {
+   "id": "R2.1",
+   "check": "install exits 0",
+   "pass": true,
+   "actual": "rc=0"
+  },
+  {
+   "id": "R2.2",
+   "check": "wall <= 60 min",
+   "pass": true,
+   "actual": "375s"
+  },
+  {
+   "id": "R2.3",
+   "check": "self-test passes its applicable checks",
+   "pass": true,
+   "actual": "18 checks, failed: none"
+  },
+  {
+   "id": "R2.4",
+   "check": "answer ends with a Sources block naming only OPENED pages",
+   "pass": true,
+   "actual": "n_sources=1 n_opened=2 unopened=[]"
+  },
+  {
+   "id": "R2.5",
+   "check": "guard block count recorded",
+   "pass": true,
+   "actual": "guard_blocks=0"
+  },
+  {
+   "id": "R2.6",
+   "check": "memory files 0 before and after",
+   "pass": true,
+   "actual": "before=0 after=0"
+  }
+ ],
+ "what_this_does_not_show": "corpus_2000 is another generated corpus from the same fixture ecosystem; this is not real-world validation; genuine cross-folder generalisation remains untested."
+}

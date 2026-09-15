@@ -69,6 +69,14 @@ APPEND_BY_DESIGN = {
 SKIP_PARTS = {".git", ".venv", "99_scratch", "node_modules", "__pycache__",
               ".pytest_cache", "dist"}
 
+# Fields that record WHEN something ran rather than WHAT it measured. Two JSON
+# files identical apart from these describe the same result.
+TIME_FIELDS = {"generated_utc", "built_utc", "ts", "timestamp", "started",
+               "finished", "started_at", "finished_at", "built_at", "indexed_at",
+               "mtime", "wall_s", "cold_s", "warm_s", "elapsed_s", "timing_s",
+               "duration_s", "total_wall_s", "install_s", "venv_s", "evaluated_utc",
+               "traced_utc", "frozen_utc", "last_beat"}
+
 # Result files guarded by check D.
 GUARDED_DIRS = ["corpus-lab/state", "_private/results/04_scores"]
 
@@ -106,6 +114,38 @@ def _skipped(path, root):
     except ValueError:
         parts = Path(path).parts
     return any(x in SKIP_PARTS for x in parts)
+
+
+def _strip_times(o):
+    """The same object with every wall-clock field removed, recursively."""
+    if isinstance(o, dict):
+        return {k: _strip_times(v) for k, v in o.items() if k not in TIME_FIELDS}
+    if isinstance(o, list):
+        return [_strip_times(x) for x in o]
+    return o
+
+
+def _is_reproduction(root, rel):
+    """True when a rewritten result file is byte-identical to its committed
+    version once timestamps and timings are removed.
+
+    This is what separates "the baseline still reproduces" from "a recorded
+    number was overwritten". It asks git rather than trusting a list, so a file
+    whose numbers actually moved still fails.
+    """
+    import subprocess
+    try:
+        r = subprocess.run(["git", "-C", str(root), "show", "HEAD:%s" % rel],
+                           capture_output=True, text=True, timeout=60)
+        if r.returncode != 0:
+            return False, "not in HEAD"
+        was = json.loads(r.stdout)
+        now = json.loads((root / rel).read_text(encoding="utf-8"))
+    except Exception as e:
+        return False, "could not compare: %s" % e
+    if _strip_times(was) == _strip_times(now):
+        return True, "reproduced: identical apart from timestamps and timings"
+    return False, "content differs beyond timestamps"
 
 
 def _load_json(p):
@@ -208,6 +248,7 @@ def check_no_silent_overwrite(root, since, snapshot, rep):
     pre = set(x.strip() for x in Path(snapshot).read_text(
         encoding="utf-8").splitlines() if x.strip())
     n = 0
+    n_repro = []
     for gd in GUARDED_DIRS:
         base = root / gd
         if not base.exists():
@@ -221,13 +262,25 @@ def check_no_silent_overwrite(root, since, snapshot, rep):
             if p.stat().st_mtime < since:
                 continue
             n += 1
-            if rel in pre:
-                rep.fail("D", rel,
-                         "a result file that already existed before this run was "
-                         "written again. Rule 15: write a new file named for its "
-                         "version and phase tag, and record `supersedes`")
-    rep.ok("D", "%d result file(s) written during this run, none overwriting a "
-                "pre-existing path" % n)
+            if rel not in pre:
+                continue
+            if rel.endswith(".json"):
+                same, why = _is_reproduction(root, rel)
+                if same:
+                    n_repro.append(rel)
+                    continue
+            else:
+                why = "not JSON, cannot compare"
+            rep.fail("D", rel,
+                     "a result file that already existed before this run was "
+                     "written again and its content changed (%s). Rule 15: write "
+                     "a new file named for its version and phase tag, and record "
+                     "`supersedes`" % why)
+    rep.ok("D", "%d result file(s) written during this run; %d of them are "
+                "re-runs of a pre-existing baseline whose numbers are unchanged "
+                "(%s); none overwrote a recorded result"
+           % (n, len(n_repro),
+              ", ".join(Path(x).name for x in n_repro) if n_repro else "none"))
     return n
 
 

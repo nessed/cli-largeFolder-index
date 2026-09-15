@@ -164,10 +164,35 @@
    "finished": "2026-09-15T21:17:14"
   },
   "3.3": {
-   "status": "in_progress",
-   "started": "2026-09-15T21:19:16"
+   "status": "done",
+   "started": "2026-09-15T21:19:16",
+   "finished": "2026-09-15T22:29:42",
+   "kv": {
+    "verdict": "STOP",
+    "rows_failed": 1
+   }
+  },
+  "3.4": {
+   "status": "done",
+   "started": "2026-09-15T22:29:43",
+   "finished": "2026-09-15T22:29:43"
+  },
+  "3.5": {
+   "status": "done",
+   "started": "2026-09-15T22:29:43",
+   "finished": "2026-09-15T22:29:43"
+  },
+  "3.6": {
+   "status": "done",
+   "started": "2026-09-15T22:29:43",
+   "finished": "2026-09-15T22:29:43"
+  },
+  "3.7": {
+   "status": "done",
+   "started": "2026-09-15T22:29:43",
+   "finished": "2026-09-15T22:29:44"
   }
  },
- "last_beat": "2026-09-15T21:19:16",
+ "last_beat": "2026-09-15T22:29:44",
  "notes": []
 }

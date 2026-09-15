@@ -221,3 +221,68 @@ def test_E_nested_but_incomplete_still_fails(tmp_path):
     r = run(root, snap)
     assert r.returncode == 1
     assert "does not name its key_sha256" in r.stdout
+
+
+# --------------------------------------------------------------------------
+# check D: a reproduced baseline is not an overwritten result
+# --------------------------------------------------------------------------
+
+def _git(cwd, *args):
+    return subprocess.run(["git"] + list(args), cwd=str(cwd),
+                          capture_output=True, text=True, timeout=120)
+
+
+def _repo_with_committed_result(tmp_path, committed, rel="corpus-lab/state/c_base.json"):
+    """A real git repo, because check D asks git rather than trusting a list."""
+    root, snap = build_tree(
+        tmp_path, snapshot_rows=[rel],
+        scorer={"scorer_version": "v3", "key_sha256": "d" * 64})
+    p = root / rel
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(committed), encoding="utf-8")
+    _git(root, "init", "-q")
+    _git(root, "config", "user.email", "t@t")
+    _git(root, "config", "user.name", "t")
+    _git(root, "add", "-A")
+    _git(root, "commit", "-q", "-m", "baseline")
+    return root, snap, p
+
+
+def test_D_rerun_with_identical_numbers_is_a_reproduction(tmp_path):
+    """Phase 0 re-runs the self-tests to prove they still reproduce. Same
+    numbers, new timestamps -- that is evidence, not an overwrite."""
+    root, snap, p = _repo_with_committed_result(
+        tmp_path, {"generated_utc": "2026-09-01T00:00:00", "n_passed": 25,
+                   "wall_s": 4.8, "all_pass": True})
+    p.write_text(json.dumps({"generated_utc": "2026-09-16T03:00:00",
+                             "n_passed": 25, "wall_s": 0.7, "all_pass": True}),
+                 encoding="utf-8")
+    r = run(root, snap)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "re-runs of a pre-existing baseline" in r.stdout
+
+
+def test_D_rerun_with_a_changed_number_still_fails(tmp_path):
+    """The whole point of asking git: a real change must not slip through."""
+    root, snap, p = _repo_with_committed_result(
+        tmp_path, {"generated_utc": "2026-09-01T00:00:00", "n_passed": 25,
+                   "all_pass": True})
+    p.write_text(json.dumps({"generated_utc": "2026-09-16T03:00:00",
+                             "n_passed": 24, "all_pass": False}),
+                 encoding="utf-8")
+    r = run(root, snap)
+    assert r.returncode == 1, r.stdout
+    assert "content changed" in r.stdout
+    assert "c_base.json" in r.stdout
+
+
+def test_D_rerun_of_a_file_not_in_git_fails(tmp_path):
+    """No committed version to compare against means no reproduction claim."""
+    rel = "corpus-lab/state/c_base.json"
+    root, snap = build_tree(
+        tmp_path, snapshot_rows=[rel], state_files=[rel],
+        scorer={"scorer_version": "v3", "key_sha256": "d" * 64})
+    _git(root, "init", "-q")
+    r = run(root, snap)
+    assert r.returncode == 1, r.stdout
+    assert "content changed" in r.stdout
