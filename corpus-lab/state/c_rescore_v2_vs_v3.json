@@ -1,0 +1,1003 @@
+{
+ "generated_utc": "2026-09-15T16:00:44Z",
+ "what_this_is": "The same recordings read by two scorers. v2 is the pre-registered instrument that set every Phase 9 verdict; v3 corrects four parsing defects found by an independent audit. No verdict changes.",
+ "phases": {
+  "P5_live": {
+   "aggregate": {
+    "cited_right_page_strict": {
+     "v2": 0,
+     "v3": 0,
+     "delta": 0
+    },
+    "cited_right_page_equiv": {
+     "v2": 6,
+     "v3": 3,
+     "delta": -3
+    },
+    "cited_unopened_total": {
+     "v2": 5,
+     "v3": 0,
+     "delta": -5
+    },
+    "mentioned_unopened_total": {
+     "v2": null,
+     "v3": 5,
+     "delta": null
+    },
+    "n_answer_fragments": {
+     "v2": null,
+     "v3": 0,
+     "delta": null
+    },
+    "n_opens_loop_only_total": {
+     "v2": null,
+     "v3": 0,
+     "delta": null
+    },
+    "surfaced": {
+     "v2": 8,
+     "v3": 8,
+     "delta": 0
+    },
+    "opened_any": {
+     "v2": 2,
+     "v3": 2,
+     "delta": 0
+    },
+    "opened_right_page": {
+     "v2": 1,
+     "v3": 1,
+     "delta": 0
+    },
+    "absence_ok3_frozen3": {
+     "v2": 2,
+     "v3": 2,
+     "delta": 0
+    },
+    "value_correct": {
+     "v2": "3/17 (v2 used the wrong denominator)",
+     "v3": "3/5",
+     "n_keyed": 5,
+     "n_unscorable_value": 12
+    }
+   },
+   "n_questions_with_a_difference": 5,
+   "per_question_differences": [
+    {
+     "q_id": "cd_04",
+     "fields": {
+      "cited_unopened": {
+       "v2": 2,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "2 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 1,
+      "n_opens_from_command": 1,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 3,
+      "mentioned_unopened": 2,
+      "answer_was_fragment": false,
+      "value_scorable": true
+     }
+    },
+    {
+     "q_id": "mb_05",
+     "fields": {
+      "cited_right_page_equiv": {
+       "v2": true,
+       "v3": false
+      }
+     },
+     "why": {
+      "cited_right_page_equiv": "v3 requires the cited page to sit within 40 characters of the path (or in the `path | pN` form); v2 accepted the bare page number anywhere in the answer"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 5,
+      "n_opens_from_command": 5,
+      "n_opens_loop_only": 0,
+      "n_citations": 2,
+      "n_mentions": 0,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "sd_05",
+     "fields": {
+      "cited_unopened": {
+       "v2": 3,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "3 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 0,
+      "n_opens_from_command": 0,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 6,
+      "mentioned_unopened": 3,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "tr_10",
+     "fields": {
+      "cited_right_page_equiv": {
+       "v2": true,
+       "v3": false
+      }
+     },
+     "why": {
+      "cited_right_page_equiv": "v3 finds NO page citation in this answer at all (1 path mention(s), no page token beside any of them). v2 credited the pair because the page NUMBER appeared somewhere in the answer text; v3 requires the page beside the path."
+     },
+     "v3_detail": {
+      "n_opens_from_output": 2,
+      "n_opens_from_command": 2,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 1,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "tr_16",
+     "fields": {
+      "cited_right_page_equiv": {
+       "v2": true,
+       "v3": false
+      }
+     },
+     "why": {
+      "cited_right_page_equiv": "v3 finds NO page citation in this answer at all (1 path mention(s), no page token beside any of them). v2 credited the pair because the page NUMBER appeared somewhere in the answer text; v3 requires the page beside the path."
+     },
+     "v3_detail": {
+      "n_opens_from_output": 3,
+      "n_opens_from_command": 3,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 1,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    }
+   ],
+   "cited_unopened_by_question_v3": {},
+   "cited_unopened_by_question_v2": {
+    "cd_04": 2,
+    "sd_05": 3
+   },
+   "scorer_v3_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  },
+  "P6_live": {
+   "aggregate": {
+    "cited_right_page_strict": {
+     "v2": 2,
+     "v3": 2,
+     "delta": 0
+    },
+    "cited_right_page_equiv": {
+     "v2": 4,
+     "v3": 4,
+     "delta": 0
+    },
+    "cited_unopened_total": {
+     "v2": 8,
+     "v3": 2,
+     "delta": -6
+    },
+    "mentioned_unopened_total": {
+     "v2": null,
+     "v3": 6,
+     "delta": null
+    },
+    "n_answer_fragments": {
+     "v2": null,
+     "v3": 0,
+     "delta": null
+    },
+    "n_opens_loop_only_total": {
+     "v2": null,
+     "v3": 0,
+     "delta": null
+    },
+    "surfaced": {
+     "v2": 7,
+     "v3": 7,
+     "delta": 0
+    },
+    "opened_any": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "opened_right_page": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "absence_ok3_frozen3": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "value_correct": {
+     "v2": "4/17 (v2 used the wrong denominator)",
+     "v3": "4/5",
+     "n_keyed": 5,
+     "n_unscorable_value": 12
+    }
+   },
+   "n_questions_with_a_difference": 4,
+   "per_question_differences": [
+    {
+     "q_id": "cd_04",
+     "fields": {
+      "cited_unopened": {
+       "v2": 3,
+       "v3": 1
+      }
+     },
+     "why": {
+      "cited_unopened": "2 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 4,
+      "n_opens_from_command": 4,
+      "n_opens_loop_only": 0,
+      "n_citations": 1,
+      "n_mentions": 4,
+      "mentioned_unopened": 2,
+      "answer_was_fragment": false,
+      "value_scorable": true
+     }
+    },
+    {
+     "q_id": "rl_05",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 1,
+      "n_opens_from_command": 1,
+      "n_opens_loop_only": 0,
+      "n_citations": 2,
+      "n_mentions": 2,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "sd_03",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 0,
+      "n_opens_from_command": 0,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 1,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "tr_16",
+     "fields": {
+      "cited_unopened": {
+       "v2": 2,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "2 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 4,
+      "n_opens_from_command": 4,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 2,
+      "mentioned_unopened": 2,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    }
+   ],
+   "cited_unopened_by_question_v3": {
+    "cd_04": 1,
+    "pl_01": 1
+   },
+   "cited_unopened_by_question_v2": {
+    "cd_04": 3,
+    "pl_01": 1,
+    "rl_05": 1,
+    "sd_03": 1,
+    "tr_16": 2
+   },
+   "scorer_v3_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  },
+  "P7_live": {
+   "aggregate": {
+    "cited_right_page_strict": {
+     "v2": 1,
+     "v3": 1,
+     "delta": 0
+    },
+    "cited_right_page_equiv": {
+     "v2": 9,
+     "v3": 9,
+     "delta": 0
+    },
+    "cited_unopened_total": {
+     "v2": 10,
+     "v3": 6,
+     "delta": -4
+    },
+    "mentioned_unopened_total": {
+     "v2": null,
+     "v3": 4,
+     "delta": null
+    },
+    "n_answer_fragments": {
+     "v2": null,
+     "v3": 0,
+     "delta": null
+    },
+    "n_opens_loop_only_total": {
+     "v2": null,
+     "v3": 0,
+     "delta": null
+    },
+    "surfaced": {
+     "v2": 7,
+     "v3": 7,
+     "delta": 0
+    },
+    "opened_any": {
+     "v2": 4,
+     "v3": 4,
+     "delta": 0
+    },
+    "opened_right_page": {
+     "v2": 2,
+     "v3": 2,
+     "delta": 0
+    },
+    "absence_ok3_frozen3": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "value_correct": {
+     "v2": "4/17 (v2 used the wrong denominator)",
+     "v3": "4/5",
+     "n_keyed": 5,
+     "n_unscorable_value": 12
+    }
+   },
+   "n_questions_with_a_difference": 4,
+   "per_question_differences": [
+    {
+     "q_id": "cd_04",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 3,
+      "n_opens_from_command": 3,
+      "n_opens_loop_only": 0,
+      "n_citations": 1,
+      "n_mentions": 3,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": false,
+      "value_scorable": true
+     }
+    },
+    {
+     "q_id": "mb_04",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 2,
+      "n_opens_from_command": 2,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 1,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "sd_03",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 0,
+      "n_opens_from_command": 0,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 2,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "sd_05",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 0,
+      "n_opens_from_command": 0,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 1,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    }
+   ],
+   "cited_unopened_by_question_v3": {
+    "pl_01": 2,
+    "rc_07": 1,
+    "tr_04": 1,
+    "tr_07": 2
+   },
+   "cited_unopened_by_question_v2": {
+    "cd_04": 1,
+    "mb_04": 1,
+    "pl_01": 2,
+    "rc_07": 1,
+    "sd_03": 1,
+    "sd_05": 1,
+    "tr_04": 1,
+    "tr_07": 2
+   },
+   "scorer_v3_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  },
+  "P8_live": {
+   "aggregate": {
+    "cited_right_page_strict": {
+     "v2": 1,
+     "v3": 1,
+     "delta": 0
+    },
+    "cited_right_page_equiv": {
+     "v2": 4,
+     "v3": 3,
+     "delta": -1
+    },
+    "cited_unopened_total": {
+     "v2": 0,
+     "v3": 1,
+     "delta": 1
+    },
+    "mentioned_unopened_total": {
+     "v2": null,
+     "v3": 1,
+     "delta": null
+    },
+    "n_answer_fragments": {
+     "v2": null,
+     "v3": 5,
+     "delta": null
+    },
+    "n_opens_loop_only_total": {
+     "v2": null,
+     "v3": 11,
+     "delta": null
+    },
+    "surfaced": {
+     "v2": 6,
+     "v3": 6,
+     "delta": 0
+    },
+    "opened_any": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "opened_right_page": {
+     "v2": 1,
+     "v3": 1,
+     "delta": 0
+    },
+    "absence_ok3_frozen3": {
+     "v2": 2,
+     "v3": 2,
+     "delta": 0
+    },
+    "value_correct": {
+     "v2": "4/17 (v2 used the wrong denominator)",
+     "v3": "4/5",
+     "n_keyed": 5,
+     "n_unscorable_value": 12
+    }
+   },
+   "n_questions_with_a_difference": 4,
+   "per_question_differences": [
+    {
+     "q_id": "cd_04",
+     "fields": {
+      "cited_unopened": {
+       "v2": 0,
+       "v3": 1
+      }
+     },
+     "why": {
+      "cited_unopened": "the recorded answer was a post-guard fragment (1166 -> 2725 chars), so v2 scored only the confirmation reply -- the fuller answer contains a citation the fragment did not"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 4,
+      "n_opens_from_command": 4,
+      "n_opens_loop_only": 0,
+      "n_citations": 2,
+      "n_mentions": 4,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": true,
+      "value_scorable": true
+     }
+    },
+    {
+     "q_id": "rc_07",
+     "fields": {
+      "cited_right_page_equiv": {
+       "v2": false,
+       "v3": true
+      }
+     },
+     "why": {
+      "cited_right_page_equiv": "the recorded answer was a post-guard fragment (902 -> 3195 chars), so v2 scored only the confirmation reply"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 9,
+      "n_opens_from_command": 9,
+      "n_opens_loop_only": 0,
+      "n_citations": 6,
+      "n_mentions": 2,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": true,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "tr_10",
+     "fields": {
+      "cited_right_page_equiv": {
+       "v2": true,
+       "v3": false
+      }
+     },
+     "why": {
+      "cited_right_page_equiv": "v3 requires the cited page to sit within 40 characters of the path (or in the `path | pN` form); v2 accepted the bare page number anywhere in the answer"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 3,
+      "n_opens_from_command": 3,
+      "n_opens_loop_only": 0,
+      "n_citations": 5,
+      "n_mentions": 0,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "tr_16",
+     "fields": {
+      "cited_right_page_equiv": {
+       "v2": true,
+       "v3": false
+      }
+     },
+     "why": {
+      "cited_right_page_equiv": "v3 finds NO page citation in this answer at all (1 path mention(s), no page token beside any of them). v2 credited the pair because the page NUMBER appeared somewhere in the answer text; v3 requires the page beside the path."
+     },
+     "v3_detail": {
+      "n_opens_from_output": 3,
+      "n_opens_from_command": 3,
+      "n_opens_loop_only": 0,
+      "n_citations": 0,
+      "n_mentions": 1,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    }
+   ],
+   "cited_unopened_by_question_v3": {
+    "cd_04": 1
+   },
+   "cited_unopened_by_question_v2": {},
+   "scorer_v3_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  },
+  "P9S_live": {
+   "aggregate": {
+    "cited_right_page_strict": {
+     "v2": 1,
+     "v3": 2,
+     "delta": 1
+    },
+    "cited_right_page_equiv": {
+     "v2": 13,
+     "v3": 13,
+     "delta": 0
+    },
+    "cited_unopened_total": {
+     "v2": 1,
+     "v3": 1,
+     "delta": 0
+    },
+    "mentioned_unopened_total": {
+     "v2": null,
+     "v3": 2,
+     "delta": null
+    },
+    "n_answer_fragments": {
+     "v2": null,
+     "v3": 9,
+     "delta": null
+    },
+    "n_opens_loop_only_total": {
+     "v2": null,
+     "v3": 6,
+     "delta": null
+    },
+    "surfaced": {
+     "v2": 7,
+     "v3": 7,
+     "delta": 0
+    },
+    "opened_any": {
+     "v2": 4,
+     "v3": 4,
+     "delta": 0
+    },
+    "opened_right_page": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "absence_ok3_frozen3": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "value_correct": {
+     "v2": "5/17 (v2 used the wrong denominator)",
+     "v3": "5/5",
+     "n_keyed": 5,
+     "n_unscorable_value": 12
+    }
+   },
+   "n_questions_with_a_difference": 3,
+   "per_question_differences": [
+    {
+     "q_id": "mb_07",
+     "fields": {
+      "cited_unopened": {
+       "v2": 1,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "1 path(s) reclassified from citation to mention (named in prose, no page); 6 open(s) are visible only in tool output (opened inside a shell loop), which v2 could not see"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 10,
+      "n_opens_from_command": 4,
+      "n_opens_loop_only": 6,
+      "n_citations": 2,
+      "n_mentions": 4,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": true,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "rc_07",
+     "fields": {
+      "cited_unopened": {
+       "v2": 0,
+       "v3": 1
+      }
+     },
+     "why": {
+      "cited_unopened": "the recorded answer was a post-guard fragment (1923 -> 4927 chars), so v2 scored only the confirmation reply -- the fuller answer contains a citation the fragment did not"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 9,
+      "n_opens_from_command": 9,
+      "n_opens_loop_only": 0,
+      "n_citations": 7,
+      "n_mentions": 2,
+      "mentioned_unopened": 1,
+      "answer_was_fragment": true,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "tr_04",
+     "fields": {
+      "cited_right_page_strict": {
+       "v2": false,
+       "v3": true
+      }
+     },
+     "why": {
+      "cited_right_page_strict": "the recorded answer was a post-guard fragment (1156 -> 4942 chars), so v2 scored only the confirmation reply"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 6,
+      "n_opens_from_command": 6,
+      "n_opens_loop_only": 0,
+      "n_citations": 10,
+      "n_mentions": 0,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": true,
+      "value_scorable": false
+     }
+    }
+   ],
+   "cited_unopened_by_question_v3": {
+    "rc_07": 1
+   },
+   "cited_unopened_by_question_v2": {
+    "mb_07": 1
+   },
+   "scorer_v3_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  },
+  "P9O_live": {
+   "aggregate": {
+    "cited_right_page_strict": {
+     "v2": 3,
+     "v3": 3,
+     "delta": 0
+    },
+    "cited_right_page_equiv": {
+     "v2": 14,
+     "v3": 14,
+     "delta": 0
+    },
+    "cited_unopened_total": {
+     "v2": 7,
+     "v3": 4,
+     "delta": -3
+    },
+    "mentioned_unopened_total": {
+     "v2": null,
+     "v3": 2,
+     "delta": null
+    },
+    "n_answer_fragments": {
+     "v2": null,
+     "v3": 5,
+     "delta": null
+    },
+    "n_opens_loop_only_total": {
+     "v2": null,
+     "v3": 28,
+     "delta": null
+    },
+    "surfaced": {
+     "v2": 9,
+     "v3": 9,
+     "delta": 0
+    },
+    "opened_any": {
+     "v2": 5,
+     "v3": 5,
+     "delta": 0
+    },
+    "opened_right_page": {
+     "v2": 4,
+     "v3": 4,
+     "delta": 0
+    },
+    "absence_ok3_frozen3": {
+     "v2": 2,
+     "v3": 2,
+     "delta": 0
+    },
+    "value_correct": {
+     "v2": "5/17 (v2 used the wrong denominator)",
+     "v3": "5/5",
+     "n_keyed": 5,
+     "n_unscorable_value": 12
+    }
+   },
+   "n_questions_with_a_difference": 3,
+   "per_question_differences": [
+    {
+     "q_id": "mb_04",
+     "fields": {
+      "cited_unopened": {
+       "v2": 2,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "3 open(s) are visible only in tool output (opened inside a shell loop), which v2 could not see"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 7,
+      "n_opens_from_command": 4,
+      "n_opens_loop_only": 3,
+      "n_citations": 4,
+      "n_mentions": 0,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": true,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "mb_07",
+     "fields": {
+      "cited_unopened": {
+       "v2": 0,
+       "v3": 1
+      }
+     },
+     "why": {
+      "cited_unopened": "the recorded answer was a post-guard fragment (977 -> 6332 chars), so v2 scored only the confirmation reply -- the fuller answer contains a citation the fragment did not"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 9,
+      "n_opens_from_command": 11,
+      "n_opens_loop_only": 1,
+      "n_citations": 8,
+      "n_mentions": 0,
+      "mentioned_unopened": 0,
+      "answer_was_fragment": true,
+      "value_scorable": false
+     }
+    },
+    {
+     "q_id": "sd_05",
+     "fields": {
+      "cited_unopened": {
+       "v2": 2,
+       "v3": 0
+      }
+     },
+     "why": {
+      "cited_unopened": "2 path(s) reclassified from citation to mention (named in prose, no page)"
+     },
+     "v3_detail": {
+      "n_opens_from_output": 2,
+      "n_opens_from_command": 2,
+      "n_opens_loop_only": 0,
+      "n_citations": 2,
+      "n_mentions": 2,
+      "mentioned_unopened": 2,
+      "answer_was_fragment": false,
+      "value_scorable": false
+     }
+    }
+   ],
+   "cited_unopened_by_question_v3": {
+    "mb_07": 1,
+    "pl_01": 3
+   },
+   "cited_unopened_by_question_v2": {
+    "mb_04": 2,
+    "pl_01": 3,
+    "sd_05": 2
+   },
+   "scorer_v3_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  }
+ },
+ "historical_verdicts_unchanged": {
+  "P5_live": {
+   "scorer": "v2 (pre-registered)",
+   "gate_live5": "STOP",
+   "gate_live5_column": "equiv",
+   "note": "This verdict stands as recorded. v3 does not revisit it."
+  },
+  "P6_live": {
+   "scorer": "v2 (pre-registered)",
+   "gate_live5": "STOP",
+   "gate_live5_column": "equiv",
+   "note": "This verdict stands as recorded. v3 does not revisit it."
+  },
+  "P7_live": {
+   "scorer": "v2 (pre-registered)",
+   "gate_live5": "STOP",
+   "gate_live5_column": "equiv",
+   "note": "This verdict stands as recorded. v3 does not revisit it."
+  },
+  "P8_live": {
+   "scorer": "v2 (pre-registered)",
+   "gate_live5": "STOP",
+   "gate_live5_column": "equiv",
+   "note": "This verdict stands as recorded. v3 does not revisit it."
+  },
+  "P9S_live": {
+   "scorer": "v2 (pre-registered)",
+   "gate_live5": "STOP",
+   "gate_live5_column": "equiv",
+   "note": "This verdict stands as recorded. v3 does not revisit it."
+  },
+  "P9O_live": {
+   "scorer": "v2 (pre-registered)",
+   "gate_live5": "STOP",
+   "gate_live5_column": "equiv",
+   "note": "This verdict stands as recorded. v3 does not revisit it."
+  }
+ }
+}

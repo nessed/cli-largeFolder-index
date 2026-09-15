@@ -1,0 +1,101 @@
+{
+ "id": "p10_rescore_v2_vs_v3",
+ "schema": "run_record/1",
+ "started_at": "2026-09-15T20:56:20",
+ "finished_at": "2026-09-15T21:01:45",
+ "command": "c_score_live_v3.py --phase {P5,P6,P7,P8,P9S,P9O}_live ; p10_rescore_compare.py",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "p10_rescore_v2_vs_v3",
+  "--out",
+  "corpus-lab/experiments/p10_scorer_v3",
+  "--cmd",
+  "c_score_live_v3.py --phase {P5,P6,P7,P8,P9S,P9O}_live ; p10_rescore_compare.py",
+  "--spec",
+  "corpus-lab/state/phase10_gate_t_spec.md",
+  "--writes",
+  "corpus-lab/state/c_rescore_v2_vs_v3.json",
+  "--rung",
+  "corpus_15000",
+  "--workers",
+  "1",
+  "--no-probe"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "9da8744c7d64d3b2c35d786f0928b7d55fbfc4b8",
+  "branch": "phase10-trust-and-repro",
+  "dirty": true,
+  "dirty_files": [
+   "M corpus-lab/state/phase10_checkpoint.json"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "<skipped>",
+  "workers": "1",
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": {
+  "name": "corpus_15000",
+  "path": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\harness\\corpus_15000",
+  "exists": true,
+  "n_files": 15010
+ },
+ "spec": {
+  "path": "corpus-lab/state/phase10_gate_t_spec.md",
+  "sha256": "e4e79198135b0a62cda7d36b1872574f736381538775ef1f8efbe1afa9c1d337",
+  "commit": "9da8744c7d64d3b2c35d786f0928b7d55fbfc4b8",
+  "commit_author_date": "2026-09-15T20:56:12+05:00"
+ },
+ "inputs": {},
+ "declared_outputs": [
+  "corpus-lab/state/c_rescore_v2_vs_v3.json"
+ ],
+ "outputs_existed_at_start": {
+  "corpus-lab/state/c_rescore_v2_vs_v3.json": false
+ },
+ "outputs": {
+  "corpus-lab/state/c_rescore_v2_vs_v3.json": "a88d15a87839969ed5c74f6f157f2ba5724c10147b5f41d9b78a36fded174d61"
+ },
+ "notes": [
+  "2026-09-15T21:01:45  Gate T = GATE_T_STOP. Rows failed: T2, T3 (P8 is not the inert control the spec assumed: v3 finds 5 fragments and 11 loop-only opens in P8), T6 and T7 (v3 disagrees with the audit on WHICH sessions carry open-before-cite violations, in both directions).",
+  "2026-09-15T21:01:45  v3 is NOT modified in response (Plan E 1.6 and 7). Headline equivalence moved by 0 on both P9 batteries, so Phase 4 proceeds and scores with both v2 and v3."
+ ],
+ "conclusion": "v3 re-scores six recorded batteries. Equivalence headline unchanged (13 and 14). cited_unopened corrected to Sonnet 1 / Opus 4, not the audit's 0 / 2. Gate T STOP on T2,T3,T6,T7; recorded, not repaired.",
+ "adopted": "yes",
+ "supersedes": null
+}

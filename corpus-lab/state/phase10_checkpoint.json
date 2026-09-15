@@ -89,8 +89,30 @@
    "status": "done",
    "started": "2026-09-15T20:56:12",
    "finished": "2026-09-15T20:56:12"
+  },
+  "1.6": {
+   "status": "done",
+   "started": "2026-09-15T20:56:20",
+   "finished": "2026-09-15T21:03:05",
+   "kv": {
+    "gate_t": "STOP",
+    "rows_failed": 4,
+    "equiv_s": 13,
+    "equiv_o": 14,
+    "unopened_s": 1,
+    "unopened_o": 4
+   }
+  },
+  "1.7": {
+   "status": "done",
+   "started": "2026-09-15T21:03:05",
+   "finished": "2026-09-15T21:03:05"
+  },
+  "1.8": {
+   "status": "in_progress",
+   "started": "2026-09-15T21:03:06"
   }
  },
- "last_beat": "2026-09-15T20:56:12",
+ "last_beat": "2026-09-15T21:03:06",
  "notes": []
 }

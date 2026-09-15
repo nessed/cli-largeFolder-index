@@ -1,0 +1,67 @@
+{
+ "gate": "T",
+ "spec": "corpus-lab/state/phase10_gate_t_spec.md",
+ "spec_commit": "9da8744c7d64d3b2c35d786f0928b7d55fbfc4b8",
+ "evaluated_utc": "2026-09-15T16:01:32Z",
+ "verdict": "GATE_T_STOP",
+ "rows_failed": [
+  "T2",
+  "T3",
+  "T6",
+  "T7"
+ ],
+ "rows": [
+  {
+   "id": "T1",
+   "check": "all regression tests in test_score_live_v3.py pass",
+   "pass": true,
+   "actual": "14 passed in 0.14s"
+  },
+  {
+   "id": "T2",
+   "check": "v3 on P8_live reproduces v2 cited_right_page_equiv exactly",
+   "pass": false,
+   "actual": "v2=4 v3=3"
+  },
+  {
+   "id": "T3",
+   "check": "v3 on P8_live reproduces v2 cited_unopened_total exactly",
+   "pass": false,
+   "actual": "v2=0 v3=1"
+  },
+  {
+   "id": "T4",
+   "check": "v3 P9S_live cited_right_page_equiv within +/-1 of v2's 13",
+   "pass": true,
+   "actual": "v2=13 v3=13"
+  },
+  {
+   "id": "T5",
+   "check": "v3 P9O_live cited_right_page_equiv within +/-1 of v2's 14",
+   "pass": true,
+   "actual": "v2=14 v3=14"
+  },
+  {
+   "id": "T6",
+   "check": "v3 cited_unopened_total reads Sonnet 0, Opus 2",
+   "pass": false,
+   "actual": "Sonnet=1 Opus=4"
+  },
+  {
+   "id": "T7",
+   "check": "both Opus cited_unopened counts fall in mb_04",
+   "pass": false,
+   "actual": "Opus violations in: ['mb_07', 'pl_01']"
+  },
+  {
+   "id": "T8",
+   "check": "value_correct reads 5/5 for both P9 batteries, n_keyed == 5",
+   "pass": true,
+   "actual": "Sonnet=5/5 Opus=5/5 n_keyed=5/5"
+  }
+ ],
+ "headline_equivalence_moved_by": 0,
+ "skip_phase4": false,
+ "phase4_rule": "Plan E section 7: Phase 4 is skipped only if Gate T stops AND v3's equivalence count differs from v2 by more than +/-1 on either P9 battery. It moved by 0, so Phase 4 proceeds and scores with BOTH v2 and v3.",
+ "v3_is_not_modified": "Plan E section 1.6 and section 7: a failed Gate T row is recorded, not repaired. v3 is frozen as it stands."
+}
