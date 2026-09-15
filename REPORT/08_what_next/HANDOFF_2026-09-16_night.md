@@ -65,11 +65,25 @@ to 4–9 of 17 on transcripts nobody re-ran.
 
 ### Weak / unresolved
 
-<!-- PHASE5_BOXES -->
+- **LIVE-5 reads STOP on both models**, each on one condition: a citation of a file the session
+  never opened (Sonnet 1, Opus 7). Everything else on the gate passed, and the citation column
+  itself came in at 13 and 14 of 17 against a bar of 5. (F69)
+- **Finding the page is not reading it.** Both models: 13–14 of 17 on citation, **5 of 17 on the
+  number**. On decade-long trajectory questions Sonnet opened the right page 4 times of 4 and got
+  the figure wrong 4 times of 4. Largest open gap in the system, and not a retrieval problem.
+- **Opus cites carelessly.** 7 unopened citations to Sonnet's 1, 4 decoy citations to Sonnet's 1,
+  and the only ungrounded figure in either battery. It writes the better answer and is the looser
+  about provenance.
+- **No variance measurement.** Phase 5b was skipped on the clock, so every live number here is a
+  single sample and the project's own ±3 on 17 questions (F63) applies to all of it.
 
 ### Failed or not attempted tonight
 
-<!-- PHASE67_BOXES -->
+- **Shelf v2 rejected by Gate S** (above, F66). Built, measured, not shipped, not tuned.
+- **Phase 5b, the variance battery: skipped.** Budget allowed it — cumulative live spend was
+  $37.83 against a $40 threshold — the clock did not, and the plan ranks it first to sacrifice.
+  It remains the cheapest unspent measurement in the project.
+- **Holdout-2: untouched.** One look remains.
 
 ### Untested
 
@@ -99,13 +113,72 @@ is shown, what the guard catches, and what the scorer can see.
 
 ### Live
 
-<!-- PHASE5_TABLE -->
+Both batteries: the frozen 20, v1 shelf, CLAUDE.md v2, guard v2, `--max-turns 60 --timeout 900`,
+`--parallel 2`. Both models resolved to the exact id requested; all six probes passed.
+
+| | claude-sonnet-5 | claude-opus-5 | gate |
+|---|---|---|---|
+| cited_right_page_equiv | **13 / 17** | **14 / 17** | PASS ≥ 5 |
+| cited_right_page_strict | 1 / 17 | 3 / 17 | project record was 2/17 |
+| value_correct | 5 / 17 | 5 / 17 | reported |
+| value_wrong_confident | 0 | 0 | reported |
+| absence, frozen 3 | 3 / 3 | 2 / 3 | needs ≥ 2 |
+| sessions lost to caps | 0 | 0 | needs ≤ 1 |
+| **cited_unopened_total** | **1** | **7** | **needs 0 — the STOP** |
+| median / p90 wall | 99 s / 311 s | 118 s / 308 s | |
+| cost | $11.01 | $23.35 | caps $20 / $80 |
+
+**Verdict: STOP on both**, each on one unopened citation. 13–14 of 17 is nonetheless the best live
+citation reading the project has taken; the previous best was 9/17, itself a re-score of old
+transcripts performed tonight.
+
+Three changes could each explain it and this battery cannot separate them: the harness stopped
+killing sessions, the scorer stopped being stricter than its key, and the model started seeing 40
+candidates instead of 12. Two of those are measurement repairs, so part of the gain is removal of
+error rather than new capability.
+
+**The harness fix paid on the first run:** 6 of 20 Sonnet sessions and 5 of 20 Opus sessions ran
+past 25 turns or 300 seconds. All 11 produced full cited answers; all 11 would have been killed
+and scored as misses under the old limits.
+
+### Rehearsal, the professor's way (5c)
+
+Three questions, plain `claude.exe -p` from inside the rung, Opus, no harness, no caps:
+
+| question | wall | page citations | Sources block |
+|---|---|---|---|
+| wheat in Punjab 2015-16 (honest negative) | 181 s | 4 | yes |
+| tax-to-GDP over a decade (comparability) | 234 s | 9 | yes |
+| federal development spending 2019-20 (reconciliation) | 235 s | 10 | yes |
+
+Read by hand against the opened pages, no key involved: Q1 correctly refuses the Punjab
+breakdown, offers the national figure, catches two publications disagreeing (23.63 vs 23.29) and
+confirms the revised value is stable across three editions. Q2 states plainly that **no page in
+the folder prints a tax-to-GDP ratio**, that the division is its own work, and flags a
+Survey-vs-working-CSV conflict worth a quarter of a point. Q3 separates two different tables from
+two vintages of one table and quotes the reclassification note that explains the gap.
+
+Files: `corpus-lab/99_scratch/asks/professor_rehearsal/`.
 
 ---
 
 ## Run record
 
-<!-- RUN_RECORD -->
+- **Sessions:** 46 live. 40 battery (20 Sonnet + 20 Opus), 6 probes, plus 3 rehearsal and 2
+  portable cold-test sessions run outside the battery driver. Against a budget of 95.
+- **Reported cost:** $11.01 Sonnet battery (cap $20), $23.35 Opus battery (cap $80), $37.83
+  cumulative including probes. Rule-12 projection at 11 Opus sessions read $24.24 — CONTINUE.
+- **Holdout looks spent: 0.** Nothing ran with `--holdout`, `--holdout2` or `c_page_holdout.py`.
+- **Contamination events: 0.** Both isolation probes passed for both models with a freshly minted
+  16-hex token; neither model revealed the decoy or the private tree.
+- **Checksums:** `s7_phase9_pre` and `s7_phase9_live_pre`, 18 files each. Verified after the
+  batteries: **18 unchanged, 0 changed, 0 missing.**
+- **Transcripts:** 9 canary-bearing transcripts quarantined, 0 left in place.
+- **Memory files under the corpus project key: 0**, before and after.
+- **Rungs:** `corpus_15000` and `corpus_500` both clean at the start and at the end — neither
+  `CLAUDE.md` nor `.claude` present.
+- **Timeouts: 0. Suspended sessions: 0. Results discarded: 0.**
+- **Branch:** `phase9-production-hardening`, from `12de91b`. Nothing pushed.
 
 ---
 

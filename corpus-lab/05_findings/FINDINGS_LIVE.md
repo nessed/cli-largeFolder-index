@@ -2371,3 +2371,113 @@ is untouched and remains the reference.
 
 *Condition: recorded P5–P8 result files, the frozen 20, scorer v2 with the equivalence registry
 validated at 0.970. No holdout look was spent.*
+
+---
+
+## F69. LIVE-5 — 13 and 14 of 17, and both models STOP on one citation each
+
+NEW, 2026-09-16 night, Phase 9.5. Source: `state/c_live_battery_v2__P9S_live.json`,
+`…__P9O_live.json`, `state/c_live_forensics_p9s.json`, `…_p9o.json`,
+`state/phase9_probes__P9S.json`, `…__P9O.json`, `state/phase9_live_spec.md` (committed before
+any session ran).
+
+Two batteries of the frozen 20 on the production stack after Phases 1–3 — the **v1** shelf,
+because Gate S stopped v2 (F66) — with the harness limits raised to what the professor actually
+has: `--max-turns 60 --timeout 900`. Both models resolved to the exact id requested; all six
+isolation and auth probes passed.
+
+| | claude-sonnet-5 | claude-opus-5 | gate |
+|---|---|---|---|
+| `cited_right_page_equiv` | **13 / 17** | **14 / 17** | PASS ≥ 5 |
+| `cited_right_page_strict` | 1 / 17 | **3 / 17** | — |
+| `value_correct` | 5 / 17 | 5 / 17 | reported |
+| `value_wrong_confident` | 0 | 0 | reported |
+| absence, frozen 3 (`absence_ok3`) | 3 / 3 | 2 / 3 | needs ≥ 2 |
+| sessions lost to a cap or timeout | **0** | **0** | needs ≤ 1 |
+| **`cited_unopened_total`** | **1** | **7** | **needs 0** |
+| `cited_no_path` | 0 | 0 | reported |
+| median / p90 wall | 99 s / 311 s | 118 s / 308 s | — |
+| reported cost | $11.01 | $23.35 | caps $20 / $80 |
+
+**Gate LIVE-5: STOP for both models**, each on the single condition `cited_unopened_total = 0`.
+Recorded as written. The bar was chosen deliberately at zero — an open-before-cite system that
+cites something it never opened has failed at the one thing it claims — and it is not widened
+here because the other number next to it is good.
+
+### The result the gate does not capture
+
+**13 and 14 of 17 are the best live citation readings this project has produced.** The previous
+best was 9/17, and that was tonight's re-score of P7's recorded transcripts (F68); the best
+number ever recorded *at the time a battery ran* was 2/17. Even on the strict rule, Opus's 3/17
+is a project record.
+
+Three changes could each be responsible and this battery cannot separate them: the harness stopped
+killing sessions (F65), the scorer stopped being stricter than its own key (F68), and the model
+started seeing forty candidates instead of twelve (F67). **The honest statement is that the
+combination reads 13–14 of 17 and no single cause is isolated.** Two of the three are measurement
+repairs, so some of the apparent gain is the removal of error rather than new capability — and
+the re-scored P5–P8 numbers (4–9) are the fair comparison, not the 0–2 originally published.
+
+### Finding the page is not reading it
+
+`value_correct` is **5 of 17 for both models**, against 13–14 on citation. The breakdown for
+Sonnet is the sharpest thing in this battery:
+
+| question type | cited the right page | got the right number |
+|---|---|---|
+| point lookup | 3 / 3 | **3 / 3** |
+| trajectory (a figure across a decade) | 4 / 4 | **0 / 4** |
+| reconciliation | 2 / 2 | 0 / 2 |
+| multi-branch | 1 / 3 | 0 / 3 |
+| stale document | 0 / 2 | 0 / 2 |
+
+On a single-cell lookup it is essentially solved. On a decade-long series it opens **every right
+page and gets the total wrong every time.** That is not a retrieval failure and no retrieval
+change will fix it: it is reading a wide table with revision marks and base-year changes, picking
+a column, and arithmetic. It is now the largest single gap between what this system finds and
+what a user gets.
+
+`value_wrong_confident` is **0 on both models**: when it is wrong it is wrong quietly, not
+assertively. That matters more than the headline for whether the thing is safe to hand to someone.
+
+### The two citations that failed the gate
+
+Sonnet cited one unopened file, Opus seven. That is a large behavioural difference between the
+models on the property this project cares most about, and it runs opposite to the citation score:
+**the model that cites better cites less carefully.** Opus also named a `must_not_cite` decoy on
+4 questions against Sonnet's 1, and carried the battery's only ungrounded figure.
+
+Guard v2 was live on all 33 stop events and blocked 11 of them. Its three new rules all fired in
+practice — `page_ref_not_opened`, `sources_line_not_opened` and `figures_no_citation` — catching
+citations v1 could not see at all. The one that reached the final answer did so because the guard
+asks **at most once per session** by design (F61), and that design choice now has a measured
+cost of exactly one question on Sonnet and an unknown share of Opus's seven.
+
+### The harness change paid on the first run
+
+**Six of 20 Sonnet sessions and five of 20 Opus sessions ran past 25 turns or 300 seconds** — the
+old limits — and every one of them produced a full, cited answer. Under the old harness all eleven
+would have returned empty and been scored as misses. `no_answer_cause` is `answered` for all 40
+sessions in both batteries; zero timeouts, zero suspended, zero results discarded.
+
+### Where the two instruments disagree, and why both are right
+
+`c_live_forensics.py` classes **10 of 17 (Sonnet) and 8 of 17 (Opus) as L0 — "the gold family was
+never surfaced"** — on the same sessions equivalence scores as correct. Both are accurate. The
+forensics instrument asks *did the shelf surface the publication the key names*, and mostly it did
+not; equivalence asks *did the answer land on a page that prints the same cell*, and mostly it
+did. **The system is routinely answering from a different official publication than the key
+anticipated.** F68 measured that on historical transcripts; this is the live confirmation, and it
+means L0 should no longer be read as "retrieval failed" without checking the equivalence column
+beside it.
+
+### CLAUDE.md v2 decision table
+
+Pre-registered: revert if **both** models STOP **and** neither beats the best recorded strict
+number of 2/17. Both stopped; Opus's strict 3/17 beats 2/17. The revert condition is not met and
+**CLAUDE.md v2 is kept.**
+
+*Condition: one synthetic corpus, the frozen 20, one battery per model, v1 shelf, 60 turns / 900 s,
+scorer v2 with the equivalence registry validated at 0.970. No variance battery was run (Phase 5b
+skipped on the clock), so every number here is a single sample and the project's own measured
+±3 on 17 questions (F63) applies. Zero holdout looks spent.*

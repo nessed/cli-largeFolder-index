@@ -109,6 +109,9 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 | `HANDOFF_2026-09-15.md` | *(written here)* — the 2026-09-15 phase in thirteen answers | 15,914 | `8489faec6fe93b78` |
 | `HANDOFF_2026-09-15_pm.md` | *(written here)* — the afternoon forensics phase in seven answers | 11,772 | `84443c51113727c5` |
 | `HANDOFF_2026-09-15_evening.md` | *(written here)* — Experiment G, the production changes, chain v2 and the third live battery, in seven answers | 9,954 | `a4cd1678583c757c` |
+| `HANDOFF_2026-09-16_night.md` | *(written here)* — the production hardening night: latency, shelf v2's STOP, the two measurement repairs, and LIVE-5 on both models | 12,825 | `ff87c9a056b3d2d1` |
+| `DEMO_2026-09-16.md` | *(written here)* — the morning demo script, with measured timings and the caveats to volunteer unasked | 7,339 | `f785eb518c4f79c6` |
+| `CURRENT_WORKING_ARCHITECTURE_2026-09-16_night_addendum.md` | *(written here)* — addendum H: what is in production after the night, and why shelf v2 is not | 5,795 | `aa25c26ea0b93780` |
 | `HANDOFF_2026-09-16.md` | *(written here)* — the model as document selector, the citation guard, and the fourth live battery, in eight answers | 9,392 | `de8cfb8cec5d8a1c` |
 | `SESSION_LOG_2026-09-13_to_09-14.md` | *(written here)* — the full handover: six execution phases, the manual Sonnet/Opus sessions verbatim with timings and accuracy, the current state, and an operating manual | 58,819 | `c1094ee9ec4abc10` |
 | `EXECUTE_SHELF_V2.md` | `EXECUTE_SHELF_V2.md` *(notice added)* | 10,923 | `5d89454913c705d5` |
@@ -121,6 +124,36 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 | `FINDINGS_LIVE.md` | `corpus-lab/05_findings/FINDINGS_LIVE.md` | 118,352 | `950c5e66146e12d6` |
 | `RESUME.md` | `corpus-lab/RESUME.md` | 11,283 | `b9fe6c5fbce760f8` |
 | `progress.jsonl` | `corpus-lab/state/progress.jsonl` | 119,772 | `b1421e8ed9b0b2d5` |
+
+## Phase 9 state artefacts — 2026-09-16 production hardening night
+
+Not copied into `REPORT/`; listed with checksums so a reviewer can confirm the numbers in
+F64–F69 against the files that produced them. Paths are relative to the project root.
+
+| file | bytes | sha256[:16] |
+|---|---|---|
+| `corpus-lab/state/phase9_live_spec.md` | 4,180 | `461863316e709655` |
+| `corpus-lab/state/c_shelf_bench.json` | 17,516 | `68ff0967cabd3f38` |
+| `corpus-lab/state/c_open_equiv.json` | 204 | `fa7e842b6a8f2a59` |
+| `corpus-lab/state/c_caption_align.json` | 309 | `6737205f6809b7fc` |
+| `corpus-lab/state/c_inside_equiv.json` | 276 | `617cf490d00976fe` |
+| `corpus-lab/state/c_compact_depth.json` | 352 | `db0576b77146bc0c` |
+| `corpus-lab/state/c_shelf_build_v2.json` | 862 | `c02b58dcb451e509` |
+| `corpus-lab/state/c_shelf_v2_gate.json` | 2,762 | `33c7d000e3ff26b2` |
+| `corpus-lab/state/c_score_live_v2_selftest.json` | 625 | `632e69d641502d53` |
+| `corpus-lab/state/c_live_battery_v2__P9S_live.json` | 1,384 | `a5fd738720c7fa8f` |
+| `corpus-lab/state/c_live_battery_v2__P9O_live.json` | 1,384 | `28bade0b2b4ab2ed` |
+| `corpus-lab/state/c_live_forensics_p9s.json` | 4,999 | `0c8d31392a67b1b8` |
+| `corpus-lab/state/c_live_forensics_p9o.json` | 5,144 | `e4013d74dba26a41` |
+| `corpus-lab/state/phase9_probes__P9S.json` | 921 | `c4736c25430bb9cb` |
+| `corpus-lab/state/phase9_probes__P9O.json` | 925 | `258affc7ab14a934` |
+| `corpus-lab/state/phase9_rehearsal.json` | 781 | `fcda2ec03db6845f` |
+| `corpus-lab/state/c_selftest_corpus500.json` | 1,523 | `cc018e6816c9b8cf` |
+| `corpus-lab/state/phase9_checkpoint.json` | 5,962 | `51b8fa0c3076b1fd` |
+| `corpus-lab/state/checksums/s7_phase9_pre.json` | 4,789 | `7d5c03b54239bb76` |
+| `corpus-lab/state/checksums/s7_phase9_live_pre.json` | 4,794 | `1357036bc8400b71` |
+
+20 files, 59,692 bytes. Generated 2026-09-15 → 09-16.
 
 ---
 

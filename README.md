@@ -83,6 +83,26 @@ run-to-run variance all now limit how confidently the measured live numbers can 
 | **approach C, the model picks the publication from the top-100 pool (H)** | clean confirmation: **11/17** dev, **17/30** holdout-2 against frozen **10/17**, **14/30** — **WEAK**, not adopted. The earlier clean dev sample was 14/17, so identical runs spread by 3/17; this is a modest gain, not a breakthrough | 13/17 + holdout |
 | approach C, asking the model to *name* the publication instead | **1 of 17** — selecting from a list works, generating a title does not | — |
 | approach C, fourth live battery (citation guard on the answer) | citations of **unopened file paths**: **10 → 0**, six blocks in six of twenty sessions — the third attempt and first mechanical pass. Title/page-style citations can bypass the path matcher. **Right page still cited on 1 of 17** | see F62 + session-log Appendix A |
+| approach C, shelf latency (Phase 9.1) | `open` **2.95 s → 0.18 s**, `coverage` **2.89 → 0.17 s**, `find` 4.14 → 1.15 s, `series` 4.52 → 1.22 s — warm-vs-warm, old code restored from git. Rank-preserving and proved: 300/300 pages byte-identical, caption vectors 200/200 at cosine 1.0, `inside` top-5 identical on 57/57. NEW 2026-09-16 | Gate 1 PASS |
+| approach C, shelf v2 (family merge, year normalisation, consensus primary) | families 1,618 → 1,512; duplicate publications occupying top-40 slots **35 → 0** across 17 dev lists; every recall row held exactly. **Gate S STOP** on one structural row — gold files hidden as non-primary **20 → 31**, because giving 4,333 documents an edition flipped their clusters from “show every copy” to “one primary, hide the rest”. Not tuned; production stays on v1. NEW 2026-09-16 | see F66 |
+| approach C, showing the model 40 candidates instead of 12 (`find --compact`) | the gold publication is inside the list shown on **11/17 at depth 12** and **14/17 at depth 40** — the old display capped the whole chain at 11 before the model read a word. Experiment H's mechanism, shipped in-session at zero extra model calls. NEW 2026-09-16 | recorded, not gated |
+| approach C, the harness itself as a loss source | **1–5 sessions per battery produced no answer text at all** because a 25-turn cap or 300 s clock fired, and every one was scored a miss. Raised to 60/900: **0 of 40** sessions lost across both Phase 9 batteries, with 11 of them running past the old limits. CORRECTED 2026-09-16 | see F65 |
+| approach C, scorer v2 (equivalence to the same cell) | the key lists acceptable alternates on **45 of 135** questions and the scorer read none of them. Re-scoring P5–P8 on the same recorded transcripts: strict **0/2/1/1** → equivalence **6/4/9/4** of 17. Registry validated at 322/332 gold addresses (0.970). CORRECTED 2026-09-16 | see F68 |
+| **approach C, fifth live battery — realistic limits, both models (LIVE-5)** | **cited_right_page_equiv 13/17 (Sonnet) and 14/17 (Opus)**, the best live citation reading the project has taken; strict 1/17 and **3/17**, beating the old record of 2/17. But **value_correct is 5/17 for both** — it finds the page far better than it reads the number, and on decade-long questions it opened 4 of 4 right pages and got 0 of 4 totals right. **Gate STOP on both**, each on one condition: citing a file never opened (Sonnet 1, Opus 7). NEW 2026-09-16 | PASS ≥ 5 equiv **and** 0 unopened |
+| approach C, one-command installer on a fresh folder | cold install of a 500-file folder in **141 s** (bar 20 min); self-test **18/18** from inside it; one live question cited two pages it had opened, guard `n_cited_unopened=0`. **Gate P PASS**. NEW 2026-09-16 | see F64–F69 |
+
+> **Extended 2026-09-16 — production hardening night.** The tool got between 3 and 17 times
+> faster with every rank proved unchanged; two *measurement* defects were found and fixed (the
+> harness was killing 1–5 sessions a battery before they answered, and the scorer was stricter
+> than its own answer key); and the model is now shown 40 candidate publications instead of 12.
+> Under those conditions the fifth live battery reads **13 and 14 of 17** on cited-right-page
+> equivalence — the best the project has measured — while **both gates still STOP**, each on a
+> single citation of a file the session never opened, and the right *number* is still only
+> **5 of 17**. One planned change, shelf v2, was rejected by its own pre-registered gate and not
+> tuned. See
+> [`REPORT/08_what_next/HANDOFF_2026-09-16_night.md`](REPORT/08_what_next/HANDOFF_2026-09-16_night.md),
+> [`REPORT/08_what_next/DEMO_2026-09-16.md`](REPORT/08_what_next/DEMO_2026-09-16.md) and
+> [`INSTALL_FOR_SIR.md`](INSTALL_FOR_SIR.md).
 
 > **Extended 2026-09-15 — the first live battery, and the first end-to-end run.**
 > Six more pre-registered gates were read and **all six STOPped or FAILED**; no bar was moved.
