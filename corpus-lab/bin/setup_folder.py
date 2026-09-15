@@ -336,6 +336,16 @@ def ask(a):
 
     cmd = [str(L.CLAUDE), "-p", a.question, "--model", a.model,
            "--permission-mode", "bypassPermissions"]
+    # Phase 10.3.4: Gate R2 has to check every Sources line against the pages the
+    # session actually OPENED, and those lines are in tool output, not in the
+    # final prose. --stream-json records the transcript so that check is
+    # possible. Absent the flag the command is byte-for-byte what it was.
+    stream = getattr(a, "stream_json", None)
+    if stream:
+        cmd += ["--output-format", "stream-json", "--verbose"]
+        out_p = Path(stream)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        err_p = out_p.with_suffix(".err")
     print("asking (%s), output -> %s" % (a.model, out_p), flush=True)
     t0 = time.time()
     with open(out_p, "w", encoding="utf-8") as fo, open(err_p, "w", encoding="utf-8") as fe:
@@ -343,6 +353,10 @@ def ask(a):
                            stdout=fo, stderr=fe)
     wall = time.time() - t0
     text = out_p.read_text(encoding="utf-8", errors="replace")
+    if stream:
+        print("\n[stream-json transcript saved to %s]" % out_p)
+        print("[rc=%d  %.1fs]" % (p.returncode, wall))
+        return p.returncode
     # The answer is already safely on disk; echoing it must never be able to lose
     # it. A Windows console is cp1252, and a real answer contains non-breaking
     # hyphens and en-dashes, which raised UnicodeEncodeError and took the whole
@@ -397,6 +411,9 @@ def main():
     p.add_argument("question")
     p.add_argument("--model", default="claude-opus-5")
     p.add_argument("--slug", default=None)
+    p.add_argument("--stream-json", dest="stream_json", default=None,
+                   help="also record the stream-json transcript to this path, so "
+                        "citations can be checked against what was opened")
 
     a = ap.parse_args()
     if not a.cmd:

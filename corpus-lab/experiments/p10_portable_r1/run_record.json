@@ -1,0 +1,97 @@
+{
+ "id": "p10_gate_r1",
+ "schema": "run_record/1",
+ "started_at": "2026-09-15T21:19:16",
+ "finished_at": null,
+ "command": "p10_cleanroom.py build/probe --room A,B --package dist/retrieval-portable-1b217ff --corpus harness/corpus_500",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "p10_gate_r1",
+  "--out",
+  "corpus-lab/experiments/p10_portable_r1",
+  "--cmd",
+  "p10_cleanroom.py build/probe --room A,B --package dist/retrieval-portable-1b217ff --corpus harness/corpus_500",
+  "--spec",
+  "corpus-lab/state/phase10_gate_r_spec.md",
+  "--writes",
+  "corpus-lab/state/phase10_gate_r1_result.json",
+  "--rung",
+  "corpus_500",
+  "--workers",
+  "8",
+  "--no-probe"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "c4dce542010b7181961da3e0ca016763be0ca5ce",
+  "branch": "phase10-trust-and-repro",
+  "dirty": true,
+  "dirty_files": [
+   "M corpus-lab/state/phase10_checkpoint.json",
+   "?? corpus-lab/bin/p10_cleanroom.py"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "<skipped>",
+  "workers": "8",
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": {
+  "name": "corpus_500",
+  "path": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\harness\\corpus_500",
+  "exists": true,
+  "n_files": 500
+ },
+ "spec": {
+  "path": "corpus-lab/state/phase10_gate_r_spec.md",
+  "sha256": "6cd33e60e1ff30cacece74d9f00053c5fea2b7dc97be6487bf61fc78267299ba",
+  "commit": "c4dce542010b7181961da3e0ca016763be0ca5ce",
+  "commit_author_date": "2026-09-15T21:17:53+05:00"
+ },
+ "inputs": {},
+ "declared_outputs": [
+  "corpus-lab/state/phase10_gate_r1_result.json"
+ ],
+ "outputs_existed_at_start": {
+  "corpus-lab/state/phase10_gate_r1_result.json": false
+ },
+ "outputs": {},
+ "notes": [],
+ "conclusion": null,
+ "adopted": null,
+ "supersedes": null
+}
