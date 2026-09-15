@@ -201,3 +201,23 @@ def test_since_excludes_files_from_before_the_run(tmp_path):
     future = time.time() + 3600
     r = run(root, snap, since=future)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_E_scorer_metadata_nested_under_aggregate_is_accepted(tmp_path):
+    """Per-question score files carry the metadata block under "aggregate".
+    Rule 17 asks the output to NAME its version and key, not to put them at a
+    particular depth -- so a nested block must pass."""
+    root, snap = build_tree(
+        tmp_path,
+        scorer={"aggregate": {"scorer_version": "v3", "key_sha256": "d" * 64},
+                "answerable": []})
+    r = run(root, snap)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_E_nested_but_incomplete_still_fails(tmp_path):
+    root, snap = build_tree(
+        tmp_path, scorer={"aggregate": {"scorer_version": "v3"}, "answerable": []})
+    r = run(root, snap)
+    assert r.returncode == 1
+    assert "does not name its key_sha256" in r.stdout

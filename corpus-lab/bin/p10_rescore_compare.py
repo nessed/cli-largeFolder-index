@@ -91,8 +91,17 @@ def why(field, v2r, v3r):
 
 
 def main():
+    # This file is derived from scorer outputs, so rule 17 applies to it too:
+    # it must say which scorers and which key produced the numbers in it.
+    v3_ref = load(L.STATE / "c_live_battery_v3__P9S_live.json")
     out = {
         "generated_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "scorer_version": "v2+v3 comparison",
+        "scorers_compared": ["v2", "v3"],
+        "scorer_v3_sha256": v3_ref.get("scorer_sha256"),
+        "key_file": v3_ref.get("key_file"),
+        "key_sha256": v3_ref.get("key_sha256"),
+        "group_definition_sha256": v3_ref.get("group_definition_sha256"),
         "what_this_is": (
             "The same recordings read by two scorers. v2 is the pre-registered "
             "instrument that set every Phase 9 verdict; v3 corrects four parsing "

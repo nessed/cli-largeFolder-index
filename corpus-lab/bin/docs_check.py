@@ -250,8 +250,13 @@ def check_scorer_outputs(root, since, rep):
                 if "__error__" in d:
                     rep.fail("E", p, "unreadable: %s" % d["__error__"])
                     continue
+                # The aggregate files carry these at the top level; the
+                # per-question files carry the same block nested under
+                # "aggregate". Rule 17 asks that the output NAME its version and
+                # key, not that it put them at any particular depth.
+                agg = d.get("aggregate") if isinstance(d.get("aggregate"), dict) else {}
                 for f in ("scorer_version", "key_sha256"):
-                    if f not in d:
+                    if f not in d and f not in agg:
                         rep.fail("E", p, "scorer output does not name its %s "
                                          "(rule 17)" % f)
     rep.ok("E", "%d scorer output(s) name their version and key sha256" % n)
