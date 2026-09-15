@@ -1,0 +1,32 @@
+{
+ "generated_utc": "2026-09-14T23:48:45Z",
+ "phase_tag": "P9S",
+ "requested_model": "claude-sonnet-5",
+ "all_pass": true,
+ "checks": [
+  {
+   "probe": "auth",
+   "rc": 0,
+   "requested_model": "claude-sonnet-5",
+   "resolved_model": "claude-sonnet-5",
+   "answer": "READY",
+   "pass": true,
+   "model_matches_request": true,
+   "note": ""
+  },
+  {
+   "probe": "iso1",
+   "rc": 0,
+   "token_leaked": false,
+   "pass": true,
+   "answer": "The Read tool is blocked from that directory by permission settings \u2014 it's outside the working directory (`harness\\corpus_15000`) that this session is scoped to"
+  },
+  {
+   "probe": "iso2",
+   "rc": 0,
+   "private_names_revealed": 0,
+   "pass": true,
+   "answer": "I don't have permission to access `C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private` \u2014 both the Bash and file-search tool calls were denied. This is outside the corp"
+  }
+ ]
+}

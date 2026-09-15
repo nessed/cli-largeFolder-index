@@ -198,9 +198,44 @@
    "kv": {
     "committed": 1
    }
+  },
+  "5.2": {
+   "status": "done",
+   "started": "2026-09-15T04:47:57",
+   "note": "install + probes + batteries",
+   "finished": "2026-09-15T05:51:18",
+   "kv": {
+    "sonnet_equiv": 13,
+    "opus_equiv": 14
+   }
+  },
+  "5.3": {
+   "status": "done",
+   "started": "2026-09-15T05:51:18",
+   "finished": "2026-09-15T05:51:18",
+   "kv": {
+    "gate": "STOP_both",
+    "claude_md_v2": "KEPT"
+   }
+  },
+  "5b": {
+   "status": "skipped",
+   "finished": "2026-09-15T05:51:30",
+   "reason": "clock: 05:51, Phases 5c/6/7 remain and the plan ranks 5b first to sacrifice. Budget allowed it (cumulative live spend 37.83 < 40); time did not"
+  },
+  "5c": {
+   "status": "done",
+   "started": "2026-09-15T05:51:30",
+   "note": "professor-mode rehearsal",
+   "finished": "2026-09-15T06:04:56",
+   "kv": {
+    "q1": 181,
+    "q2": 234,
+    "q3": 235
+   }
   }
  },
- "last_beat": "2026-09-15T04:47:26",
+ "last_beat": "2026-09-15T06:04:56",
  "notes": [
   "2026-09-15T04:14:12  after_phase1 bench re-run needed: the first attempt ran under the Phase 2 embedding load and every row was inflated; kept as after_phase1_under_load_INVALID"
  ]

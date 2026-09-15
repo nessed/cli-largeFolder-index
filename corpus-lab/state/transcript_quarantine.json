@@ -1,7 +1,36 @@
 {
- "cutoff": "2026-09-14T19:27:00",
+ "cutoff": "2026-09-15T06:30:00",
  "n_phrases": 18,
- "moved": [],
+ "moved": [
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\40968c4e-3579-4012-bc46-301999e07734.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-15T05:45:42",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\40968c4e-3579-4012-bc46-301999e07734.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\78985e14-19b6-4820-be63-efa7d4b9043a.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 2,
+   "mtime": "2026-09-15T05:11:16",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\78985e14-19b6-4820-be63-efa7d4b9043a.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c631b4f6-9377-45a1-8d8f-fa9247e06722.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 2,
+   "mtime": "2026-09-15T05:21:37",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\c631b4f6-9377-45a1-8d8f-fa9247e06722.jsonl"
+  },
+  {
+   "file": "C:\\Users\\Ali\\.claude\\projects\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\fe297b6e-b19a-4ca6-b1fe-1a4984f3d973.jsonl",
+   "project_key": "C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000",
+   "phrases": 1,
+   "mtime": "2026-09-15T05:23:15",
+   "moved_to": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\results\\_transcript_quarantine\\C--Users-Ali-Desktop-retrieval-lab-harness-corpus-15000\\fe297b6e-b19a-4ca6-b1fe-1a4984f3d973.jsonl"
+  }
+ ],
  "left_open": [],
- "scanned": 639
+ "scanned": 759
 }

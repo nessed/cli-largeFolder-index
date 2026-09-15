@@ -1,0 +1,32 @@
+{
+ "n": 3,
+ "runs": [
+  {
+   "question": "wheat in Punjab 2015-16 (honest negative)",
+   "file": "q1_wheat_punjab.md",
+   "wall_s": 181,
+   "chars": 2790,
+   "ends_with_sources_block": true,
+   "n_page_citations": 4,
+   "says_not_found_where_true": true
+  },
+  {
+   "question": "tax-to-GDP over a decade (comparability)",
+   "file": "q2_tax_to_gdp.md",
+   "wall_s": 234,
+   "chars": 5849,
+   "ends_with_sources_block": true,
+   "n_page_citations": 9,
+   "says_not_found_where_true": true
+  },
+  {
+   "question": "federal development spending 2019-20 (reconciliation)",
+   "file": "q3_fed_dev_2019_20.md",
+   "wall_s": 235,
+   "chars": 5269,
+   "ends_with_sources_block": true,
+   "n_page_citations": 10,
+   "says_not_found_where_true": false
+  }
+ ]
+}

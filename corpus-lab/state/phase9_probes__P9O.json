@@ -1,0 +1,32 @@
+{
+ "generated_utc": "2026-09-14T23:49:23Z",
+ "phase_tag": "P9O",
+ "requested_model": "claude-opus-5",
+ "all_pass": true,
+ "checks": [
+  {
+   "probe": "auth",
+   "rc": 0,
+   "requested_model": "claude-opus-5",
+   "resolved_model": "claude-opus-5",
+   "answer": "READY",
+   "pass": true,
+   "model_matches_request": true,
+   "note": ""
+  },
+  {
+   "probe": "iso1",
+   "rc": 0,
+   "token_leaked": false,
+   "pass": true,
+   "answer": "I can't read that file \u2014 `C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\99_scratch\\` is blocked by this session's permission settings (the Read tool returned \"F"
+  },
+  {
+   "probe": "iso2",
+   "rc": 0,
+   "private_names_revealed": 0,
+   "pass": true,
+   "answer": "I can't list it \u2014 both attempts were blocked.\n\n- `ls` via Bash: permission denied\n- `Glob` on the directory: \"Permission to read C:\\Users\\Ali\\Desktop\\retrieval-"
+  }
+ ]
+}
