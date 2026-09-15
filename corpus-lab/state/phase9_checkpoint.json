@@ -233,9 +233,37 @@
     "q2": 234,
     "q3": 235
    }
+  },
+  "6.2": {
+   "status": "done",
+   "started": "2026-09-15T06:20:48",
+   "note": "cold install on corpus_500",
+   "finished": "2026-09-15T06:29:15",
+   "kv": {
+    "install_s": 141,
+    "selftest": 18,
+    "guard_unopened": 0,
+    "attempts": 2
+   }
+  },
+  "6.1": {
+   "status": "done",
+   "started": "2026-09-15T06:29:14",
+   "finished": "2026-09-15T06:29:14",
+   "kv": {
+    "built": 1
+   }
+  },
+  "6.3": {
+   "status": "done",
+   "started": "2026-09-15T06:29:15",
+   "finished": "2026-09-15T06:29:15",
+   "kv": {
+    "written": 1
+   }
   }
  },
- "last_beat": "2026-09-15T06:04:56",
+ "last_beat": "2026-09-15T06:29:15",
  "notes": [
   "2026-09-15T04:14:12  after_phase1 bench re-run needed: the first attempt ran under the Phase 2 embedding load and every row was inflated; kept as after_phase1_under_load_INVALID"
  ]

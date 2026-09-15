@@ -1,0 +1,88 @@
+{
+ "coverage": {
+  "pass": true,
+  "pages": 39647
+ },
+ "find_budget": {
+  "pass": true,
+  "n_families": 66,
+  "cold_s": 2.01,
+  "warm_s": 0.02,
+  "warm_le_5s": true
+ },
+ "have_economic_survey": {
+  "pass": true,
+  "best_family_n_editions": 15
+ },
+ "have_fy_absent": {
+  "pass": true,
+  "status": "NO_EDITION_FOR"
+ },
+ "have_fy_present": {
+  "pass": true,
+  "status": "EDITION_PRESENT",
+  "fy_tested": "2011-12"
+ },
+ "have_no_match": {
+  "pass": true
+ },
+ "inside_contents": {
+  "pass": true,
+  "n_hits": 2,
+  "wall_s": 0.3
+ },
+ "tables": {
+  "pass": true,
+  "n_captions": 142
+ },
+ "series": {
+  "pass": true,
+  "n_editions": 15,
+  "matched": 15
+ },
+ "copies": {
+  "pass": true,
+  "n_members": 2
+ },
+ "exact_no_match": {
+  "pass": true,
+  "total": 0
+ },
+ "open_notes": {
+  "pass": true,
+  "opened_found": true,
+  "n_opened_in_notes": 1
+ },
+ "note_requires_open": {
+  "pass": true,
+  "no_tail": "NOTE_REFUSED_NO_CITATION",
+  "before_open": "NOTE_REFUSED_PAGE_NOT_OPENED",
+  "recorded_before_open": false,
+  "after_open_ok": true
+ },
+ "cli_caption_default_is_b2c": {
+  "pass": true,
+  "n_cli": 8,
+  "n_inprocess": 8
+ },
+ "stop_guard_behaviour": {
+  "pass": true,
+  "n_checks": 24,
+  "n_passed": 24
+ },
+ "find_compact_prints_n_lines": {
+  "pass": true,
+  "n_card_lines": 10
+ },
+ "find_show_matches_compact_rank": {
+  "pass": true,
+  "matched": true
+ },
+ "bogus_subcommand": {
+  "pass": true,
+  "rc": 2
+ },
+ "_overall": {
+  "pass": true
+ }
+}

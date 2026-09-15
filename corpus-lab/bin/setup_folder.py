@@ -276,9 +276,26 @@ def ask(a):
                            stdout=fo, stderr=fe)
     wall = time.time() - t0
     text = out_p.read_text(encoding="utf-8", errors="replace")
-    print("\n" + text)
+    # The answer is already safely on disk; echoing it must never be able to lose
+    # it. A Windows console is cp1252, and a real answer contains non-breaking
+    # hyphens and en-dashes, which raised UnicodeEncodeError and took the whole
+    # command down AFTER the model had been paid for. Found by the Phase 6 cold
+    # test on corpus_500.
+    _echo(text)
     print("\n[rc=%d  %.1fs  answer saved to %s]" % (p.returncode, wall, out_p))
     return p.returncode
+
+
+def _echo(text):
+    """Print text without ever raising on a console that cannot encode it."""
+    try:
+        print("\n" + text)
+        return
+    except UnicodeEncodeError:
+        pass
+    enc = (getattr(sys.stdout, "encoding", None) or "utf-8")
+    sys.stdout.write("\n" + text.encode(enc, errors="replace").decode(enc, errors="replace"))
+    sys.stdout.write("\n")
 
 
 def main():

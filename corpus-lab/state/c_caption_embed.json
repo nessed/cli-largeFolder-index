@@ -1,7 +1,7 @@
 {
- "n_captions": 89380,
+ "n_captions": 4483,
  "dim": 384,
  "batch": 256,
- "wall_s": 612.9,
- "rate_per_s": 145.83
+ "wall_s": 42.7,
+ "rate_per_s": 104.99
 }

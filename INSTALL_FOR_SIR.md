@@ -62,8 +62,7 @@ prints how long each took:
 | caption vectors | about 14 minutes |
 | **total, 15,000 files** | **about an hour** |
 
-Budget roughly **8 GB of disk** for a folder that size. A few hundred files takes minutes,
-not an hour. If it is interrupted, run the identical command again — each stage checks for
+Budget roughly **8 GB of disk** for a folder that size. A 500-file folder was measured end to end at **2 minutes 21 seconds** (26s to read the pages, 71s for the publication vectors, 43s for the caption vectors). If it is interrupted, run the identical command again — each stage checks for
 its own output and picks up where it stopped.
 
 It **will refuse** to run on a folder that already has a `CLAUDE.md`, so it can never
@@ -144,9 +143,24 @@ If an answer seems to be missing an obvious document, that line is the first pla
 
 Measured on a test folder of 15,000 files, on 17 questions with known answers:
 
-<!-- PHASE5_NUMBERS -->
-*(filled in from the Phase 5 live battery: cited the right page on N of 17, refused honestly
-on M of 3, with the model ids the account resolved.)*
+| | claude-sonnet-5 | claude-opus-5 |
+|---|---|---|
+| pointed at a page that really prints the figure | **13 of 17** | **14 of 17** |
+| gave the right number | 5 of 17 | 5 of 17 |
+| correctly said "not here" when it wasn't | 3 of 3 | 2 of 3 |
+| quoted a file it had not actually opened | 1 | 7 |
+| typical time per question | 1m 39s | 1m 58s |
+
+Read those honestly, because the two rows disagree with each other. It is good at finding
+**where** a figure lives and much weaker at **reading it off correctly** — on questions that
+track a number across a decade it found the right pages nearly every time and still got the
+total wrong. Treat it as something that takes you to the page, not something that does your
+arithmetic.
+
+The last row is the one to watch in practice. Sonnet quoted a file it had not opened once in
+twenty questions; Opus did it seven times. Opus writes the more fluent answer and is the looser
+about where its numbers came from, so if you are checking its work, check the Sources lines
+first.
 
 Honest about the limits: the test folder is **synthetic**. The documents look and are shaped
 like Pakistani fiscal publications, and the figures in them were generated, not published.
