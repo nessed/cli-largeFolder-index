@@ -85,26 +85,40 @@ def _run(cmd, cwd, env, log=None, timeout=4800):
     return p.returncode, wall, (p.stdout or ""), (p.stderr or "")
 
 
+def project_key(folder):
+    """The directory name Claude Code uses for a folder's own project state.
+
+    Read off the real layout of ~/.claude/projects: the absolute path with the
+    drive colon, both slash characters and the underscore each replaced by a
+    hyphen, case preserved. A path ending `retrieval-lab` becomes a directory
+    named `C--Users-Ali-Desktop-retrieval-lab`.
+    """
+    p = str(Path(folder).resolve())
+    for ch in (":", chr(92), "/", "_"):
+        p = p.replace(ch, "-")
+    return p
+
+
 def project_key_memory_count(folder):
-    """How many auto-memory files exist for this folder's project key.
+    """How many auto-memory files exist under this folder's own project key.
 
     A clean room that accumulates memory is a clean room that is learning the
     corpus between runs, which would make every later number meaningless.
+
+    The match is EXACT on the project directory name, for the reason in this
+    module's history: a substring match reported memory for a folder that had
+    never been opened, because a shorter project key was a prefix of its path.
     """
-    base = Path.home() / ".claude" / "projects"
-    if not base.exists():
+    d = Path.home() / ".claude" / "projects" / project_key(folder)
+    if not d.is_dir():
         return 0, []
-    key = str(Path(folder).resolve()).replace(":", "-").replace("\\", "-").replace("/", "-")
-    key = key.lstrip("-")
     hits = []
-    for d in base.iterdir():
-        if not d.is_dir():
+    for f in sorted(d.rglob("*")):
+        if not f.is_file():
             continue
-        if key.lower().endswith(d.name.lower().lstrip("-")) or \
-           d.name.lower().lstrip("-") in key.lower():
-            for f in d.rglob("*"):
-                if f.is_file() and f.suffix in (".md", ".json") and "memory" in str(f).lower():
-                    hits.append(str(f))
+        rel = f.relative_to(d).as_posix().lower()
+        if rel.startswith("memory/") or rel == "memory.md":
+            hits.append(str(f))
     return len(hits), hits
 
 
@@ -191,6 +205,10 @@ def cmd_build(a):
     rc, w, out, _e = _run([str(py), str(pkg / "bin" / "c_selftest.py"),
                            "--db", str(art / "pages.db"),
                            "--shelf", str(art / "shelf" / "shelf.db"),
+                           # 0 = do not assert a page count. The default is the
+                           # 15,000 rung's 1,206,260 pages, which no other corpus
+                           # can match; the flag exists for exactly this case.
+                           "--expect-pages", "0",
                            "--out", str(room / "selftest.json")],
                           corpus, env, log=room / "selftest.log")
     rec["selftest_rc"] = rc

@@ -43,6 +43,10 @@ ALLOWLIST = [
     "labpaths.py", "scoring.py", "index_build.py", "c_shelf.py",
     "c_shelf_build.py", "c_shelf_build_v2.py", "c_caption_index.py",
     "c_caption_embed.py", "c_stack.py", "c_stop_guard.py", "c_selftest.py",
+    # c_selftest.py shells out to this one and reads the JSON it writes. Gate R1
+    # found its absence: stop_guard_behaviour came back {pass: false, n_checks:
+    # null} in the clean room, because the script simply was not there.
+    "c_stop_guard_selftest.py",
     "setup_folder.py", "run_record.py", "build_manifest.py",
 ]
 
