@@ -116,8 +116,40 @@
     "tag": 1,
     "sha_recorded": 1
    }
+  },
+  "2.1": {
+   "status": "done",
+   "started": "2026-09-15T21:05:46",
+   "finished": "2026-09-15T21:07:43",
+   "kv": {
+    "vectored": 50,
+    "frozen_vectored": 9,
+    "text": 25
+   }
+  },
+  "2.2": {
+   "status": "done",
+   "started": "2026-09-15T21:07:52",
+   "finished": "2026-09-15T21:07:52"
+  },
+  "2.3": {
+   "status": "done",
+   "started": "2026-09-15T21:07:52",
+   "finished": "2026-09-15T21:09:22",
+   "kv": {
+    "vector_full_s": 6,
+    "vector_full_o": 6,
+    "n_vector": 9,
+    "traj_mb_s": 4,
+    "traj_mb_o": 4
+   }
+  },
+  "2.4": {
+   "status": "done",
+   "started": "2026-09-15T21:09:22",
+   "finished": "2026-09-15T21:09:23"
   }
  },
- "last_beat": "2026-09-15T21:04:24",
+ "last_beat": "2026-09-15T21:09:23",
  "notes": []
 }
