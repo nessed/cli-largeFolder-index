@@ -66,7 +66,7 @@ v3's interface before the freeze, not a change after it.
 
 | path | sha256 / note |
 |---|---|
-| `_private/harness_keys/answer_key_v2_2026-09-16.json` | `73c0d9eb79e8e9a4…` |
+| `_private/harness_keys/answer_key_v2_2026-09-16.json` | `773ab75e5018ec58…` |
 | `corpus-lab/bin/c_key_v2_build.py` | the only thing that read the key |
 | `corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json` | aggregate |
 | `corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json` | aggregate |
@@ -87,7 +87,7 @@ The sentence Plan E §2.3 permits, filled in:
 
 > On the 7 trajectory and multi-branch questions, the answer carried every expected
 > year's value on **4 of 7** (Sonnet) and **4 of 7** (Opus), scored by v3 against key v2
-> (sha `73c0d9eb79e8e9a4…`). This is the project's first measurement of table reading;
+> (sha `773ab75e5018ec58…`). This is the project's first measurement of table reading;
 > there is no earlier number to compare it with.
 
 Including the 2 reconciliation questions, both models read **6 of 9** complete, with a

@@ -1,9 +1,9 @@
 {
  "id": "p10_key_v2",
  "schema": "run_record/1",
- "started_at": "2026-09-15T21:09:21",
- "finished_at": null,
- "command": "c_key_v2_build.py ; c_score_live_v3.py --key answer_key_v2_2026-09-16.json --tag keyv2 --phase P9{S,O}_live",
+ "started_at": "2026-09-15T21:09:45",
+ "finished_at": "2026-09-15T21:10:13",
+ "command": "c_key_v2_build.py ; c_score_live_v3.py --key answer_key_v2_2026-09-16.json --tag keyv2 --phase P9S_live,P9O_live",
  "recorder_argv": [
   "corpus-lab/bin/run_record.py",
   "start",
@@ -12,7 +12,7 @@
   "--out",
   "corpus-lab/experiments/p10_key_v2",
   "--cmd",
-  "c_key_v2_build.py ; c_score_live_v3.py --key answer_key_v2_2026-09-16.json --tag keyv2 --phase P9{S,O}_live",
+  "c_key_v2_build.py ; c_score_live_v3.py --key answer_key_v2_2026-09-16.json --tag keyv2 --phase P9S_live,P9O_live",
   "--writes",
   "_private/harness_keys/answer_key_v2_2026-09-16.json",
   "corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json",
@@ -25,15 +25,13 @@
  ],
  "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
  "git": {
-  "head": "5bbbe10a6d4da46ecde9c278ff1013b8214793cb",
+  "head": "527ef66aba10519f64c49bec980d3c4b18eea355",
   "branch": "phase10-trust-and-repro",
   "dirty": true,
   "dirty_files": [
-   "M corpus-lab/state/phase10_checkpoint.json",
-   "?? corpus-lab/bin/c_key_v2_build.py",
-   "?? corpus-lab/experiments/p10_key_v2/",
-   "?? corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json",
-   "?? corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json"
+   "D corpus-lab/experiments/p10_key_v2/run_record.json",
+   " D corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json",
+   " D corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json"
   ]
  },
  "env_overrides": {
@@ -87,15 +85,20 @@
   "corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json"
  ],
  "outputs_existed_at_start": {
-  "_private/harness_keys/answer_key_v2_2026-09-16.json": true,
-  "corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json": true,
-  "corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json": true
+  "_private/harness_keys/answer_key_v2_2026-09-16.json": false,
+  "corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json": false,
+  "corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json": false
  },
- "outputs": {},
+ "outputs": {
+  "_private/harness_keys/answer_key_v2_2026-09-16.json": "773ab75e5018ec5889af00bdc7a105b78a00813a06dc26b9aa718f74e4787a09",
+  "corpus-lab/state/c_live_battery_v3__P9S_live__keyv2.json": "3f4ab9b7247a3eba3b489ee495f27f4114d52b0ec70ac74db69c14260fe8c2e8",
+  "corpus-lab/state/c_live_battery_v3__P9O_live__keyv2.json": "aee05a2be3e19838837c2c41a4f1ef84e7b060f47a2f180c588b5652b124cc98"
+ },
  "notes": [
-  "2026-09-15T21:09:22  Vector metric is permissive by construction: multi-branch cells accept up to 16 distinct values (11 at the cited vintage), trajectory cells up to 10. Both the permissive and vintage-restricted vectors are recorded per question."
+  "2026-09-15T21:10:13  Process deviation, recorded: Phase 2's work was first run BEFORE its run record was opened, and run_record.py finish correctly refused to close a record whose declared outputs already existed. The artefacts (minutes old, tonight's own, deterministic) were deleted and the whole phase re-run under this record. The numbers reproduced exactly: 6/9 and 0.7407 for both models. Only the key's sha256 changed, because the file carries its generation timestamp.",
+  "2026-09-15T21:10:13  Vector metric is permissive by construction: multi-branch cells accept up to 16 distinct values (11 at the cited vintage), trajectory cells up to 10. Both permissive and vintage-restricted vectors are stored per question."
  ],
- "conclusion": null,
- "adopted": null,
+ "conclusion": "Key v2 derived from the generator's placement records; no hand-written values; answer_key.json unchanged. Trajectory+multi-branch complete: 4/7 both models. Including reconciliation 6/9 both. Trajectories complete, multi-branch 0-0.333 for both.",
+ "adopted": "yes",
  "supersedes": null
 }
