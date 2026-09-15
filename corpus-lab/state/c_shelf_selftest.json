@@ -6,7 +6,7 @@
  "find_budget": {
   "pass": true,
   "n_families": 45,
-  "cold_s": 0.69,
+  "cold_s": 0.67,
   "warm_s": 0.01,
   "warm_le_5s": true
  },

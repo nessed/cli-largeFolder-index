@@ -79,3 +79,4 @@ corpus-lab/state/c_queries_holdout2.json
 # publishing them leaks benchmark answers. 2026-09-14.
 corpus-lab/state/checksums/s7_live*.json
 corpus-lab/state/checksums/verify__*.json
+dist/

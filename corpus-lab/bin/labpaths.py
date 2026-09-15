@@ -44,14 +44,19 @@ def _first_existing(*cands):
 CORPUS_LAB = _env_path("CORPUS_LAB_ROOT") or Path(__file__).resolve().parent.parent
 RETRIEVAL_LAB = _env_path("RETRIEVAL_LAB_ROOT") or CORPUS_LAB.parent
 
-# Back-compat: pre-move, `harness` and `corpus-lab` are Desktop siblings; post-move
-# they are siblings inside retrieval-lab. Both resolve to RETRIEVAL_LAB/harness.
+# Back-compat: pre-move, `harness` and `corpus-lab` were siblings one level
+# above; post-move they are siblings inside retrieval-lab. Both resolve to
+# RETRIEVAL_LAB/harness.
 PRIVATE = _env_path("LAB_PRIVATE") or (RETRIEVAL_LAB / "_private")
-HARNESS = _env_path("HARNESS_ROOT") or _first_existing(
-    RETRIEVAL_LAB / "harness",
-    Path(r"C:\Users\Ali\Desktop\harness"),
-)
-RASHIP = _env_path("RASHIP_ROOT") or Path(r"C:\Users\Ali\Desktop\Projects\Code\ra-ship")
+# The pre-move sibling location was an absolute path on the development
+# machine. It has not been taken since the phase 1/2 moves completed, and the
+# portable package must contain no absolute user path at all (Gate R3 greps
+# for them), so it is gone.
+HARNESS = _env_path("HARNESS_ROOT") or (RETRIEVAL_LAB / "harness")
+# The ra-ship fixture corpus is development-only. Absent the env var there is
+# simply no RASHIP root -- callers that need one already fail loudly, and a
+# hard-coded default would put an absolute user path into the package.
+RASHIP = _env_path("RASHIP_ROOT")
 
 # --- derived dirs ------------------------------------------------------------
 BIN = CORPUS_LAB / "bin"

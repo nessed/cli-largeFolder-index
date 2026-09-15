@@ -18,6 +18,27 @@ Every index artefact lives under corpus-lab/02_stacks/portable/<label>/.
 
 Each install stage checks for its own output first, so an interrupted install is
 resumed by re-running the identical command.
+
+Phase 10.3 (Plan E):
+  --builder v1|v2   which shelf builder to use. **Default v1** -- the builder
+                    that every measured number in the report was produced with,
+                    and the one the demo runs. v2 is the experimental builder
+                    that FAILED Gate S on 2026-09-15; selecting it prints a
+                    warning and stamps `builder: v2 (experimental)` into the
+                    manifest, so it can never be used silently. Until this flag
+                    existed the installer shipped v2 unconditionally, which meant
+                    the portable was not the thing that had been measured.
+  --artefacts <dir> where the index and shelf go. Default: the old location, so
+                    existing installs are untouched. A portable install points
+                    this inside its own directory, which is what makes it
+                    portable at all.
+  --seed-env        set and record PYTHONHASHSEED=0 and OMP_NUM_THREADS=4, so
+                    two installs of the same corpus are comparable.
+
+At the end of a successful install the artefacts directory gets
+`build_manifest.json` (machine-readable), `BUILD_REPORT.md` (one page, plain
+English) and `canonical_export.json` (sorted logical rows with every wall-clock
+field removed) -- the three files Gate R1 compares two clean-room builds on.
 """
 import argparse
 import json
@@ -37,6 +58,17 @@ RUNTIME_PACKAGES = ("numpy", "fastembed", "onnxruntime", "pdfplumber")
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 # The 15,000 rung's artefacts are the frozen ones every recorded number rests on.
 PROTECTED = ("corpus_15000",)
+
+BUILDERS = {
+    "v1": ("c_shelf_build.py",
+           "the builder every measured number in the report rests on"),
+    "v2": ("c_shelf_build_v2.py",
+           "EXPERIMENTAL -- family merge, year normalisation, consensus primary"),
+}
+V2_WARNING = ("EXPERIMENTAL SHELF V2 -- failed Gate S 2026-09-15; not production")
+
+# Deterministic defaults, recorded rather than assumed (Plan E section D).
+SEED_ENV = {"PYTHONHASHSEED": "0", "OMP_NUM_THREADS": "4"}
 
 
 def _py():
@@ -112,8 +144,13 @@ def doctor(a):
 # --------------------------------------------------------------------- #
 # install
 # --------------------------------------------------------------------- #
-def artefacts(label):
-    d = PORTABLE / label
+def artefacts(label, root=None):
+    """Where the index and shelf live.
+
+    `root` is Plan E 3.1's --artefacts. With no root the old location is used
+    unchanged, so every existing install and every recorded path still resolves.
+    """
+    d = Path(root).resolve() if root else (PORTABLE / label)
     return {"dir": d, "db": d / "pages.db", "shelf_dir": d / "shelf",
             "shelf": d / "shelf" / "shelf.db",
             "cards": d / "shelf" / "cards.f16.npy",
@@ -136,9 +173,24 @@ def install(a):
         return 3
 
     label = a.label or folder.name
-    art = artefacts(label)
+    builder = getattr(a, "builder", "v1")
+    art = artefacts(label, getattr(a, "artefacts", None))
     art["shelf_dir"].mkdir(parents=True, exist_ok=True)
     timings = {}
+
+    env = dict(os.environ)
+    if getattr(a, "seed_env", False):
+        env.update(SEED_ENV)
+        for k, v in SEED_ENV.items():
+            os.environ[k] = v
+        print("SEED_ENV %s" % json.dumps(SEED_ENV))
+
+    builder_script, builder_desc = BUILDERS[builder]
+    if builder == "v2":
+        print("!" * 72)
+        print(V2_WARNING)
+        print("!" * 72, flush=True)
+    print("BUILDER %s (%s) -> %s" % (builder, builder_desc, builder_script))
 
     # 1. page index
     if art["db"].exists():
@@ -149,21 +201,24 @@ def install(a):
               flush=True)
         rc, s = _run([_py(), "-u", str(L.BIN / "index_build.py"),
                       "--corpus", str(folder), "--db", str(art["db"]),
-                      "--workers", str(a.workers)])
+                      "--workers", str(a.workers)], env=env)
         timings["index_s"] = round(s, 1)
         print("      %.0fs" % s, flush=True)
         if rc != 0:
             print("INDEX_FAILED rc=%d" % rc, file=sys.stderr)
             return 4
 
-    # 2. shelf (v2 builder: merged families, normalised years, consensus primary)
+    # 2. shelf -- v1 by default (Plan E decision 4): the portable must build the
+    # same shelf that was measured, not the experimental one that failed Gate S.
     if art["cards"].exists() and art["shelf"].exists():
         print("[2/5] shelf: already built -- skipping")
         timings["shelf_s"] = 0
     else:
-        print("[2/5] building the shelf (card vectors take the longest)", flush=True)
-        rc, s = _run([_py(), "-u", str(L.BIN / "c_shelf_build_v2.py"),
-                      "--db", str(art["db"]), "--out", str(art["shelf_dir"])])
+        print("[2/5] building the shelf with builder %s (card vectors take the "
+              "longest)" % builder, flush=True)
+        rc, s = _run([_py(), "-u", str(L.BIN / builder_script),
+                      "--db", str(art["db"]), "--out", str(art["shelf_dir"])],
+                     env=env)
         timings["shelf_s"] = round(s, 1)
         print("      %.0fs" % s, flush=True)
         if rc != 0:
@@ -177,7 +232,7 @@ def install(a):
     else:
         print("[3/5] caption index", flush=True)
         rc, s = _run([_py(), "-u", str(L.BIN / "c_caption_index.py"),
-                      "--out-dir", str(art["shelf_dir"])])
+                      "--out-dir", str(art["shelf_dir"])], env=env)
         timings["caption_index_s"] = round(s, 1)
         if rc != 0:
             print("CAPTION_INDEX_FAILED rc=%d" % rc, file=sys.stderr)
@@ -189,7 +244,7 @@ def install(a):
     else:
         print("[4/5] caption vectors", flush=True)
         rc, s = _run([_py(), "-u", str(L.BIN / "c_caption_embed.py"),
-                      "--out-dir", str(art["shelf_dir"])])
+                      "--out-dir", str(art["shelf_dir"])], env=env)
         timings["caption_embed_s"] = round(s, 1)
         print("      %.0fs" % s, flush=True)
         if rc != 0:
@@ -213,6 +268,18 @@ def install(a):
     n_docs = ctx.shelf.execute("SELECT COUNT(*) FROM docs").fetchone()[0]
     print("SHELF families=%d documents=%d" % (n_fam, n_docs))
     print("TIMINGS %s" % json.dumps(timings))
+
+    try:
+        import build_manifest as BM
+        BM.write_all(art, folder, label, builder, timings,
+                     workers=a.workers,
+                     seed_env=SEED_ENV if getattr(a, "seed_env", False) else {})
+        print("MANIFEST %s" % (art["dir"] / "build_manifest.json"))
+        print("REPORT   %s" % (art["dir"] / "BUILD_REPORT.md"))
+        print("CANON    %s" % (art["dir"] / "canonical_export.json"))
+    except Exception as e:
+        print("MANIFEST_FAILED %s" % e, file=sys.stderr)
+        return 5
     print("\nReady. Ask it something:")
     print('  cd "%s"' % folder)
     print("  claude --model claude-opus-5")
@@ -244,7 +311,7 @@ def uninstall(a):
         print("registry cleanup skipped: %s" % e, file=sys.stderr)
     if a.purge:
         label = a.label or folder.name
-        d = artefacts(label)["dir"]
+        d = artefacts(label, getattr(a, "artefacts", None))["dir"]
         if d.exists():
             shutil.rmtree(d, ignore_errors=True)
             print("PURGED %s" % d)
@@ -308,6 +375,13 @@ def main():
     p.add_argument("--folder", required=True)
     p.add_argument("--label", default=None)
     p.add_argument("--workers", type=int, default=12)
+    p.add_argument("--builder", choices=["v1", "v2"], default="v1",
+                   help="shelf builder. v1 (default) is the one every measured "
+                        "number rests on; v2 is experimental and failed Gate S")
+    p.add_argument("--artefacts", default=None,
+                   help="where the index and shelf go (default: the old location)")
+    p.add_argument("--seed-env", dest="seed_env", action="store_true",
+                   help="set and record PYTHONHASHSEED=0 and OMP_NUM_THREADS=4")
 
     p = sub.add_parser("status")
     p.add_argument("--folder", required=True)
@@ -315,6 +389,7 @@ def main():
     p = sub.add_parser("uninstall")
     p.add_argument("--folder", required=True)
     p.add_argument("--label", default=None)
+    p.add_argument("--artefacts", default=None)
     p.add_argument("--purge", action="store_true")
 
     p = sub.add_parser("ask")

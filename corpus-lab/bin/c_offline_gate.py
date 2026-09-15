@@ -38,9 +38,10 @@ FY_RE = re.compile(r"\b(20[0-3]\d-\d\d)\b")
 _ROW_SEP_RE = re.compile(
     r"--\s*(.+?)(?:\s+(?:look|looks|across|over|since|through|trend|trends)\b|$)",
     re.IGNORECASE)
-_TRAJECTORY_FILLER = set("""
-    has have gone period much decade so trajectory years we me give
-""".split())
+# Plan E 3.1: the set itself now lives in trajectory_filler.py so that c_shelf
+# can have it without the portable package having to ship this gate, which opens
+# the answer key. Still exactly one definition; this name still resolves here.
+from trajectory_filler import _TRAJECTORY_FILLER  # noqa: E402,F401
 
 
 # --------------------------------------------------------------------- #

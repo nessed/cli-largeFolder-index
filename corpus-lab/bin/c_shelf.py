@@ -322,12 +322,15 @@ def _label_words(query):
     """The query reduced to the words a caption would plausibly print: content
     words, minus fiscal-year tokens, minus the trajectory scaffolding words.
 
-    The two exclusion rules are imported from c_offline_gate rather than
-    restated, so there is exactly one definition of each in the repository and
-    no chance of quietly widening either. The import is deferred to call time
-    because c_offline_gate imports this module.
+    The two exclusion rules are imported rather than restated, so there is
+    exactly one definition of each in the repository and no chance of quietly
+    widening either. The filler set used to be imported from c_offline_gate --
+    deferred to call time, because that module imports this one. It now lives in
+    trajectory_filler.py, which imports nothing and opens nothing, so the
+    portable package can carry it without carrying a script that reads the
+    answer key (Plan E Phase 3.1). Same set, same behaviour.
     """
-    from c_offline_gate import _TRAJECTORY_FILLER
+    from trajectory_filler import _TRAJECTORY_FILLER
     stripped = FY_RE.sub(" ", query or "")
     return [w for w in content_words(stripped) if w not in _TRAJECTORY_FILLER]
 
