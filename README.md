@@ -15,6 +15,12 @@ This repository is the full record — code, measurements, failures, and the dia
 >
 > ### 👉 Picking up the work? Start at [`REPORT/08_what_next/SESSION_LOG_2026-09-13_to_09-14.md`](REPORT/08_what_next/SESSION_LOG_2026-09-13_to_09-14.md)
 >
+> ### 👉 Want to know how the machine actually works? [`ENGINE.md`](ENGINE.md)
+>
+> One question traced from the folder to the answer: what each step takes in, what it does,
+> what it hands on, and which file does it — read off the production code, not the design
+> documents, with a real end-to-end trace.
+>
 > That file is the full handover: six execution phases, twelve pre-registered gates, the
 > Claude session transcripts verbatim with timings and accuracy, the current state of every
 > box, and an operating manual (Appendix C) with a runnable command for every number below.
@@ -205,12 +211,12 @@ REPORT/              the walkthrough + copies of every report, in reading order.
   07_approach_b_planned/  hybrid multi-query — specified, never built
   08_what_next/        the research pass AND the correction that supersedes it
   09_ledgers/          every finding, every step, and the cold-start guide
+ENGINE.md            how the shipped engine works, step by step, read off the code
+INSTALL_FOR_SIR.md   how to point it at a folder and ask it something
 INDEX.md             the original repo map and ground rules
-SOLUTION.md          the evidence_v1 design rationale
-BUILD_PROMPT.md      the staged contract evidence_v1 was executed against
-RESEARCH_2026-09-13.md   the research pass (recommendation superseded — see above)
-EXECUTE_SHELF_V2.md  its build contract (likewise superseded; kept for the reasoning)
 00_brief/            the task as given, incl. SOLVE_BRIEF.md for an outside designer
+00_archive/          superseded originals: the evidence_v1 design and contract, the
+                     Shelf V2 research pass and its contract. Nothing current.
 plans_fable/         two further approaches; C was built, B never was
 corpus-lab/          all code, findings and run state
   bin/                 the instruments (measurement primitives, index builder, scorers)
@@ -226,9 +232,9 @@ corpus-lab/          all code, findings and run state
 - **`harness/`** — the four generated fixture corpora *and* their generator. The generator
   (`finalize_key.py`, `canary_slots.py`, `plant_canaries.py`, `plan.py`) manufactures the
   answer key, so shipping it ships the key.
-- **`ACCEPTANCE.md`** — an oracle in prose: gold source paths, literal cell values, page
-  indices. Its *criteria* are fully described in `BUILD_PROMPT.md` and `SOLUTION.md`, both
-  published here; only the expected answers are withheld.
+- **`00_archive/ACCEPTANCE.md`** — an oracle in prose: gold source paths, literal cell values,
+  page indices. Its *criteria* are fully described in `00_archive/BUILD_PROMPT.md` and
+  `00_archive/SOLUTION.md`, both published here; only the expected answers are withheld.
 - **Derived indexes** — a ~7 GB FTS5 page index, the shelf database, card vectors. All
   rebuildable from code that *is* here.
 

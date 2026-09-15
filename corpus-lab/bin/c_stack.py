@@ -165,8 +165,14 @@ EXTRA_READ_DENY_DIRS = [
     ("corpus-lab", "05_findings"),
     ("REPORT",),
     ("plans_fable",),
+    # 2026-09-15: the superseded originals moved out of the root into 00_archive/,
+    # ACCEPTANCE.md among them. The whole directory is denied so the oracle stays
+    # unreadable whatever it is renamed to, and the explicit file deny below is
+    # kept as well -- two independent rules, because this one is the reason the
+    # move was safe to make at all.
+    ("00_archive",),
 ]
-EXTRA_READ_DENY_FILES = [("ACCEPTANCE.md",)]
+EXTRA_READ_DENY_FILES = [("00_archive", "ACCEPTANCE.md")]
 EXTRA_BASH_DENY = [
     "Bash(*c_card_sample*)",
     "Bash(*frozen20_key*)",

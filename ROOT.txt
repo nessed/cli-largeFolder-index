@@ -1,3 +1,7 @@
 retrieval-lab project root.
-Read INDEX.md in this directory for the map and the entry points.
-Deliverable: corpus-lab/05_findings/NIGHT2_FULL_REPORT.md
+
+README.md   what the project is, what works, what does not
+ENGINE.md   how the engine works, step by step
+INSTALL_FOR_SIR.md   how to point it at a folder and ask it something
+INDEX.md    the original repo map and ground rules (night 1-2, historical)
+REPORT/     the full record: every night, every gate, every number

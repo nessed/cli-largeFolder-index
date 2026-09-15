@@ -5,6 +5,12 @@ project root (`C:\Users\Ali\Desktop\retrieval-lab\`). The short hash is the firs
 16 hex characters of the copy's SHA-256, so a reviewer can confirm a copy still
 matches its original.
 
+> **Path note, 2026-09-15.** Five originals moved out of the project root into
+> `00_archive/` when the root was tidied: `SOLUTION.md`, `BUILD_PROMPT.md`,
+> `ACCEPTANCE.md`, `RESEARCH_2026-09-13.md` and `EXECUTE_SHELF_V2.md`. The `original`
+> column below still names them by their old root-relative path; prefix any of those five
+> with `00_archive/` to find them. Contents and hashes are unchanged — this was a move.
+
 Two kinds of entry are not plain copies, and are marked in the table:
 
 - **(notice added)** — the copy carries a superseded-recommendation notice that the
