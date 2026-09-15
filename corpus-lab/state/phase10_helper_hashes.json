@@ -1,0 +1,17 @@
+{
+ "phase": "P10 Phase 0",
+ "files": {
+  "corpus-lab/bin/run_record.py": "d17f1f1a70c68db80144c8ad473f6b252f3e89c55cd18d859abb4c861dc7f43c",
+  "corpus-lab/bin/docs_check.py": "d3233809e3b50e459a7b4bf8d149fcfd756d8f6527f293c5e2c1a97048f0c893",
+  "corpus-lab/bin/p10_pins.py": "881b0155c3e6becf76a08a72bd80847d22b21ee64d0b4c563dbede5593b73ac7",
+  "corpus-lab/bin/p10_snapshot_files.py": "479523f1c1056106b256c647284f0551ea43e68d3e9e597743f91a1eec324109",
+  "corpus-lab/bin/p9_checkpoint.py": "92aa2ccb8c6f82556ebb02de34c64785ff86091b3697cbdc544a0008e2101df4",
+  "corpus-lab/bin/checksums.py": "3485c8544b2d6f02e6a5fe30068dfb98bdc310d5897c40d5c2c10b115a9ebf78",
+  "corpus-lab/requirements-portable.txt": "eef6cf377a7e1556ab14dda7ad5f1a20890585081c8dfc943d173ac35f964ee8",
+  "corpus-lab/state/phase10_preexisting_files.txt": "21eb36abf5c2acde90edcd15318e6cee0d3fbc9f28def43661c54d917d937e42",
+  "corpus-lab/state/checksums/s7_phase10_pre.json": "f5fea41a25e25aaf60d495a77a0ebb90de2ea358e6be0a7ecd5e702744e73811",
+  "corpus-lab/tests/test_run_record.py": "b3057a5bdd09181aec83e14af487ed9f634fd8686a2fefb8ddb400777651c824",
+  "corpus-lab/tests/test_docs_check.py": "0fee1775f783f8542368c1c6206b33f8edd08d6e8c1afac191fc4003d28d1cc4",
+  "corpus-lab/tests/conftest.py": "ca8944579060fdb12791d1634a6cb27c0dcb06506637b2ad99d10d54909ac561"
+ }
+}

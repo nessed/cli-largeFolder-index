@@ -1,0 +1,71 @@
+{
+ "run_id": "P10-2026-09-16",
+ "branch": "phase10-trust-and-repro",
+ "steps": {
+  "0.1": {
+   "status": "done",
+   "started": "2026-09-15T20:41:24",
+   "finished": "2026-09-15T20:41:24",
+   "kv": {
+    "stack_selftest": 25,
+    "provenance": 10,
+    "guard": 24,
+    "rung_selftest": 18,
+    "caption_top10": 10,
+    "caption_pool100": 16,
+    "b2c": 52,
+    "route_doc": 11,
+    "route_id": 4
+   }
+  },
+  "0.2": {
+   "status": "done",
+   "started": "2026-09-15T20:41:24",
+   "finished": "2026-09-15T20:41:25",
+   "kv": {
+    "default_preserved": 1
+   }
+  },
+  "0.3": {
+   "status": "done",
+   "started": "2026-09-15T20:44:52",
+   "finished": "2026-09-15T20:44:52",
+   "kv": {
+    "tests_passed": 67,
+    "selftests": 6
+   }
+  },
+  "0.4": {
+   "status": "done",
+   "started": "2026-09-15T20:44:52",
+   "finished": "2026-09-15T20:50:42",
+   "kv": {
+    "selftests": 14
+   }
+  },
+  "0.5": {
+   "status": "done",
+   "started": "2026-09-15T20:50:42",
+   "finished": "2026-09-15T20:50:42",
+   "kv": {
+    "pinned": 36
+   }
+  },
+  "0.6": {
+   "status": "done",
+   "started": "2026-09-15T20:50:42",
+   "finished": "2026-09-15T20:50:42",
+   "kv": {
+    "hashed": 26,
+    "verify_changed": 0
+   }
+  },
+  "0.7": {
+   "status": "done",
+   "started": "2026-09-15T20:50:42",
+   "finished": "2026-09-15T20:50:43"
+  }
+ },
+ "last_beat": "2026-09-15T20:50:43",
+ "notes": []
+}

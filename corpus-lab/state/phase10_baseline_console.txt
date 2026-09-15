@@ -1,0 +1,37 @@
+=== phase10 baseline console, 2026-09-15T15:39:39Z ===
+--- c_caption_gate --channel lex (expect doc top-10 10/17, pool@100 16/17) ---
+dev lex      le10=10 curve={'recall_at_10': 10, 'recall_at_20': 12, 'recall_at_50': 14, 'recall_at_100': 16, 'recall_at_200': 16}
+  caption lists empty for every query on 1 question(s)
+  joint: gold (file,page) in top-20 caption union on 1 of 13
+WROTE state/c_caption_family_gate.json [lex]  wall=4.8s
+
+--- c_offline_gate --v2 --page-only --query-mode row --caption-channel dense_first (expect 52/57) ---
+{
+ "generated_utc": "2026-09-15T15:39:50Z",
+ "n_answerable": 17,
+ "dupe_mapping": {
+  "n_evidence_mapped_via_dupes": 3,
+  "n_questions_rescued": 2,
+  "n_excluded_legacy": 2,
+  "n_excluded_corrected": 0
+ },
+ "wall_s": 1.8
+}
+row+caption_dense_first micro = 52/57 (from corpus-lab/state/c_page_gate.json)
+
+--- c_route_gate (expect 11/11 and 4/4) ---
+ "frozen_sample": {
+  "routed_absent": 3,
+  "n": 3
+ },
+ "all_absence": {
+  "routed_absent": 15,
+  "n": 15
+ },
+ "overnight_chain_equivalent_on_frozen": {
+  "routed_absent": 1,
+  "n": 3
+ },
+ "note": "The overnight chain (F52) scored 1 of 3 because 2 of the 3 frozen absence questions are identifier level and its ROUTE had no exact path. That is a chain implementation gap, not a ROUTE failure.",
+ "wall_s": 0.3
+}

@@ -65,10 +65,24 @@ def manifest_files():
     return out
 
 
-def snapshot(label):
+def _also_files(dirs):
+    """Every file under each --also-dir, sorted, as absolute paths."""
+    out = []
+    for d in dirs or []:
+        base = Path(d)
+        if not base.is_absolute():
+            base = (L.RETRIEVAL_LAB / d)
+        if not base.exists():
+            print(f"ERROR: --also-dir not found: {base}", file=sys.stderr)
+            sys.exit(2)
+        out.extend(str(p) for p in sorted(base.rglob("*")) if p.is_file())
+    return out
+
+
+def snapshot(label, also_dirs=None):
     rows = {}
     missing = []
-    for ap in manifest_files():
+    for ap in manifest_files() + _also_files(also_dirs):
         p = Path(ap)
         if not p.exists():
             missing.append(ap)
@@ -81,6 +95,7 @@ def snapshot(label):
     dest.write_text(json.dumps(
         {"label": label, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
          "manifest": str(L.canary_manifest()), "n_files": len(rows),
+         "also_dirs": [str(x) for x in (also_dirs or [])],
          "missing": missing, "files": rows}, indent=1), encoding="utf-8")
     print(f"snapshot {label}: {len(rows)} files hashed, {len(missing)} missing -> {dest}")
     if missing:
@@ -123,8 +138,11 @@ if __name__ == "__main__":
     ap.add_argument("action", choices=["snapshot", "verify"])
     ap.add_argument("--label", default="pre")
     ap.add_argument("--against", default="pre")
+    ap.add_argument("--also-dir", action="append", default=None,
+                    help="also hash every file under this directory "
+                         "(repeatable; default: none, behaviour unchanged)")
     a = ap.parse_args()
     if a.action == "snapshot":
-        snapshot(a.label)
+        snapshot(a.label, a.also_dir)
         sys.exit(0)
     sys.exit(verify(a.against))
