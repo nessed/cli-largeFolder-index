@@ -1,0 +1,86 @@
+{
+ "id": "P11A_package",
+ "schema": "run_record/1",
+ "started_at": "2026-09-17T04:49:40",
+ "finished_at": null,
+ "command": "pytest corpus-lab/tests; python corpus-lab/bin/make_portable.py --out dist",
+ "recorder_argv": [
+  "corpus-lab\\bin\\run_record.py",
+  "start",
+  "--id",
+  "P11A_package",
+  "--out",
+  "corpus-lab\\experiments\\p11_fresh_folder\\A_package",
+  "--cmd",
+  "pytest corpus-lab/tests; python corpus-lab/bin/make_portable.py --out dist",
+  "--reads",
+  "corpus-lab\\bin",
+  "--writes",
+  "dist\\retrieval-portable-c334c5e"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "c334c5ee96a2252394adc9a112df3edf48283e14",
+  "branch": "phase11-fresh-folder",
+  "dirty": true,
+  "dirty_files": [
+   "?? corpus-lab/experiments/p11_fresh_folder/",
+   "?? plans_fable/F_FRESH_FOLDER_ACCEPTANCE/"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+  "packages": {
+   "fastembed": "importlib.metadata.PackageNotFoundError: No package metadata was found for fastembed",
+   "onnxruntime": "importlib.metadata.PackageNotFoundError: No package metadata was found for onnxruntime",
+   "numpy": "importlib.metadata.PackageNotFoundError: No package metadata was found for numpy",
+   "pdfplumber": "importlib.metadata.PackageNotFoundError: No package metadata was found for pdfplumber"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": null,
+ "spec": null,
+ "inputs": {
+  "corpus-lab\\bin": "<dir>"
+ },
+ "declared_outputs": [
+  "dist\\retrieval-portable-c334c5e"
+ ],
+ "outputs_existed_at_start": {
+  "dist\\retrieval-portable-c334c5e": false
+ },
+ "outputs": {},
+ "notes": [
+  "2026-09-17T04:50:38  Test suite at HEAD c334c5e (repo venv): 105 passed, 1 failed. Failure is pre-existing and unrelated to Plan F: corpus-lab/tests/evidence_v1/test_inventory.py::TestInventory::test_08_partially_readable_pdf expects 'partially_readable', gets 'parser_failed'. Baseline count for Phase D arithmetic: 106 collected / 105 passing."
+ ],
+ "conclusion": null,
+ "adopted": null,
+ "supersedes": null
+}
