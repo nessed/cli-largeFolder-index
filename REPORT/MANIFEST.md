@@ -119,6 +119,9 @@ file is absent on GitHub: `ACCEPTANCE.md` is an oracle and is excluded by `.giti
 | `DEMO_2026-09-16.md` | *(written here)* — the morning demo script, with measured timings and the caveats to volunteer unasked | 7,339 | `f785eb518c4f79c6` |
 | `CURRENT_WORKING_ARCHITECTURE_2026-09-16_night_addendum.md` | *(written here)* — addendum H: what is in production after the night, and why shelf v2 is not | 5,795 | `aa25c26ea0b93780` |
 | `HANDOFF_2026-09-16.md` | *(written here)* — the model as document selector, the citation guard, and the fourth live battery, in eight answers | 9,392 | `de8cfb8cec5d8a1c` |
+| `CORRECTION_2026-09-16.md` | *(written here)* — three wrong numbers withdrawn or restated after three faults were found in the scoring program; every superseded sentence with its replacement | 11,588 | `a5b19fb59895c086` |
+| `MORNING_2026-09-17.md` | *(written here)* — one screen, sixteen lines: every gate verdict, every number with its denominator, every cut, for the morning after the trust-and-reproducibility night | 7,532 | `bb5d3c8e73ff6f78` |
+| `HANDOFF_2026-09-17.md` | *(written here)* — the trust-and-reproducibility night: the variance table that retires the Sonnet-versus-Opus reading, the budget reconciled line by line, and the next moves | 11,533 | `43b4cb5226309537` |
 | `SESSION_LOG_2026-09-13_to_09-14.md` | *(written here)* — the full handover: six execution phases, the manual Sonnet/Opus sessions verbatim with timings and accuracy, the current state, and an operating manual | 58,819 | `c1094ee9ec4abc10` |
 | `EXECUTE_SHELF_V2.md` | `EXECUTE_SHELF_V2.md` *(notice added)* | 10,923 | `5d89454913c705d5` |
 | `RESEARCH_2026-09-13.md` | `RESEARCH_2026-09-13.md` *(notice added)* | 12,302 | `314fd7ed6cf90162` |

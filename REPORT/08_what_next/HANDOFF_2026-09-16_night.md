@@ -1,5 +1,7 @@
 # Handoff — production hardening night, 2026-09-15 → 09-16
 
+> **Corrected 2026-09-16.** Some numbers below were withdrawn or restated after three faults were found in the scoring program. See [`REPORT/08_what_next/CORRECTION_2026-09-16.md`](CORRECTION_2026-09-16.md). The gate verdicts are unchanged.
+
 One agent, one night, running `plans_fable/D_PRODUCTION_HARDENING/EXECUTE_2026-09-15_NIGHT.md`
 top to bottom. Branch `phase9-production-hardening`, off `master` at `12de91b`. Nothing pushed.
 

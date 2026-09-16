@@ -1,5 +1,7 @@
 # Orchestrator brief — what the 2026-09-15 night run did, and what is now decidable
 
+> **Corrected 2026-09-16.** Some numbers below were withdrawn or restated after three faults were found in the scoring program. See [`REPORT/08_what_next/CORRECTION_2026-09-16.md`](CORRECTION_2026-09-16.md). The gate verdicts are unchanged.
+
 For a planning agent deciding the next session. This is the complete account, not the demo
 version. Everything below is measured unless it says otherwise; where a number is soft it
 says so.

@@ -1,5 +1,7 @@
 # retrieval-lab
 
+> **Corrected 2026-09-16.** Some numbers below were withdrawn or restated after three faults were found in the scoring program. See [`REPORT/08_what_next/CORRECTION_2026-09-16.md`](REPORT/08_what_next/CORRECTION_2026-09-16.md). The gate verdicts are unchanged.
+
 **The question:** can you point Claude Code at a folder of ~15,000 research PDFs, ask a
 vague question in ordinary language, and get back the actual number with the file and page
 it came from — and an honest "not in here" when the answer genuinely isn't?
