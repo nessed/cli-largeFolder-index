@@ -1,6 +1,10 @@
 # retrieval-lab
 
-> **Corrected 2026-09-16.** Some numbers below were withdrawn or restated after three faults were found in the scoring program. See [`REPORT/08_what_next/CORRECTION_2026-09-16.md`](REPORT/08_what_next/CORRECTION_2026-09-16.md). The gate verdicts are unchanged.
+> **Corrected 2026-09-16, and read this first.** Three faults were found in the **scoring program** and the numbers below were restated accordingly — see
+> [`REPORT/08_what_next/CORRECTION_2026-09-16.md`](REPORT/08_what_next/CORRECTION_2026-09-16.md). Then, on 2026-09-17, the same battery was run
+> four times with nothing changed, and **the score moved by 2 questions under the current scorer and 5 under the one that
+> adjudicated every gate.** Differences smaller than that — including the Sonnet-versus-Opus gap of 1 quoted throughout
+> this project — cannot be interpreted. **No gate verdict changed.** Summary: [`MORNING_2026-09-17.md`](REPORT/08_what_next/MORNING_2026-09-17.md).
 
 **The question:** can you point Claude Code at a folder of ~15,000 research PDFs, ask a
 vague question in ordinary language, and get back the actual number with the file and page
@@ -8,10 +12,21 @@ it came from — and an honest "not in here" when the answer genuinely isn't?
 
 **Answer so far: structural honest refusal works, and B2c can find the right page once the
 right document is known. The unresolved end-to-end problem is selecting that document from a
-vague question.** Six nights, twelve pre-registered gates, and five live Claude Code batteries
+vague question.** Seven nights, every gate pre-registered before its numbers existed, and ten live Claude Code batteries
 produced one full holdout-confirmed pass (B2c), a passing citation-guard sub-arm, and a WEAK
-Experiment H result; timeout, evaluator, and variance findings qualify the live headline metrics.
-This repository is the full record — code, measurements, failures, and the diagnosis.
+Experiment H result.
+
+**The most useful finding is about the measuring, not the retrieval.** Repeating one battery four
+times, unchanged, moves the headline by 2 questions of 17 under the corrected scorer and by 5 under
+the scorer the gates were read with — so most single-battery comparisons in this repository,
+including every model-versus-model one, are smaller than their own noise and are marked as such.
+Three separate scoring faults, a harness that silently killed sessions, and a portable package
+that was not the thing being measured were all found the same way: by re-reading recordings
+rather than by running anything new.
+
+This repository is the full record — code, measurements, failures, and the diagnosis. Nothing
+that was published and later found wrong has been deleted; it is superseded in place, with the
+replacement wording beside it.
 
 > ### 👉 New here? Start at [`REPORT/README.md`](REPORT/README.md)
 >
@@ -44,7 +59,7 @@ This repository is the full record — code, measurements, failures, and the dia
 | ✅ **Solved** | Getting the model to *use* a tool you give it. One line in `CLAUDE.md` moved index adoption from 0 of 38 sessions to 38 of 38. A hook that *forced* the same thing scored slightly worse. |
 | ✅ **Solved** (disputed 2026-09-15 am, **restored the same day** — see F53) | Knowing when material genuinely isn't there — **11/11** on absent editions and **4/4** on absent identifiers, via a structural check ("do I hold any edition of this publication for that year?"). Every earlier approach scored **0/3**. Note this is a property of approach C's shelf, not of a shipped system. **2026-09-15, and this is the useful part of the story:** an overnight live battery scored this 1 of 15 and the deterministic chain 1 of 3, putting the whole claim in doubt. Both were measurement defects. The scorer counted the shelf's own quoted edition lists as invented figures — no absence session invented a number, not once in fifteen — and the chain had no path for identifier-level absence, which is 2 of the 3 questions it scored. Repaired: **11 of 15 live**, and ROUTE re-derives **11/11 and 4/4** from a second implementation. Both numbers are published; the old one is labelled SUPERSEDED-BY-SCORER-REPAIR, not deleted (F53). |
 | 🟡 **Built, trustworthy, retrieval-independent** | Coverage accounting over 15,010 files, content hashing, provenance records, geometry-aware table-cell verification, a typed evidence compiler, safe install/teardown, and test suites. None of it depends on which retrieval idea eventually wins. |
-| ❌ **Not solved** | Putting the right page in front of the model for a vague question. The primary retrieval loss is still document selection: across four Sonnet live batteries, the right publication did not surface on **9 to 11 of 17** questions and the right page was cited on **0 to 2**. Those live headline metrics need qualification: the 300-second harness cap can turn a found answer into a miss, strict single-gold-address scoring can reject credible official alternatives, and direct Sonnet/Opus probes were qualitatively stronger. Two sub-problems are solved — the right *page* inside a known-right document (82.7% on a holdout) and preventing citations of unopened **file paths** (10 → 0) — and neither has yet moved the measured live outcome. Experiment H's clean confirmation is a **WEAK** document-selection gain: **11/17** dev and **17/30** holdout-2, against frozen **10/17** and **14/30**; it is not adopted. |
+| ❌ **Not solved** | Putting the right page in front of the model for a vague question. The primary retrieval loss is still document selection: across four Sonnet live batteries, the right publication did not surface on **9 to 11 of 17** questions and the right page was cited on **0 to 2**. Those live headline metrics need qualification: the 300-second harness cap can turn a found answer into a miss, strict single-gold-address scoring can reject credible official alternatives, and direct Sonnet/Opus probes were qualitatively stronger. Two sub-problems are solved — the right *page* inside a known-right document (82.7% on a holdout) and preventing citations of unopened **file paths** (10 → 0) — and neither has yet moved the measured live outcome. Experiment H's clean confirmation is a **WEAK** document-selection gain: **11/17** dev and **17/30** holdout-2, against frozen **10/17** and **14/30**; it is not adopted. **Read all of these against the measured noise floor: four identical reruns of the same battery spread by 2 questions under the current scorer and 5 under the one that adjudicated the gates (2026-09-16).** |
 
 ### The primary open retrieval problem
 
@@ -96,8 +111,30 @@ run-to-run variance all now limit how confidently the measured live numbers can 
 | approach C, showing the model 40 candidates instead of 12 (`find --compact`) | the gold publication is inside the list shown on **11/17 at depth 12** and **14/17 at depth 40** — the old display capped the whole chain at 11 before the model read a word. Experiment H's mechanism, shipped in-session at zero extra model calls. NEW 2026-09-16 | recorded, not gated |
 | approach C, the harness itself as a loss source | **1–5 sessions per battery produced no answer text at all** because a 25-turn cap or 300 s clock fired, and every one was scored a miss. Raised to 60/900: **0 of 40** sessions lost across both Phase 9 batteries, with 11 of them running past the old limits. CORRECTED 2026-09-16 | see F65 |
 | approach C, scorer v2 (equivalence to the same cell) | the key lists acceptable alternates on **45 of 135** questions and the scorer read none of them. Re-scoring P5–P8 on the same recorded transcripts: strict **0/2/1/1** → equivalence **6/4/9/4** of 17. Registry validated at 322/332 gold addresses (0.970). CORRECTED 2026-09-16 | see F68 |
-| **approach C, fifth live battery — realistic limits, both models (LIVE-5)** | **cited_right_page_equiv 13/17 (Sonnet) and 14/17 (Opus)**, the best live citation reading the project has taken; strict 1/17 and **3/17**, beating the old record of 2/17. But **value_correct is 5/17 for both** — it finds the page far better than it reads the number, and on decade-long questions it opened 4 of 4 right pages and got 0 of 4 totals right. **Gate STOP on both**, each on one condition: citing a file never opened (Sonnet 1, Opus 7). NEW 2026-09-16 | PASS ≥ 5 equiv **and** 0 unopened |
+| **approach C, fifth live battery — realistic limits, both models (LIVE-5)** | **cited_right_page_equiv 13/17 (Sonnet) and 14/17 (Opus)**, the best live citation reading the project has taken; strict 1/17 and **3/17**, beating the old record of 2/17. **value_correct is 5 of 5** for both on the questions the key carries a number for (`n_keyed = 5`); the other 12 ask for a series across a decade or across documents and were never scorable by value — the published 5/17 divided by the wrong denominator. **Gate STOP on both**, each on citing a file never opened: **Sonnet 1, Opus 4**, zero fabricated figures. CORRECTED 2026-09-16; and see the variance row below before reading anything into 13 versus 14 | PASS ≥ 5 equiv **and** 0 unopened |
+| **approach C, the same battery run four times with nothing changed (variance)** | `cited_right_page_equiv` **13, 13, 11, 11** under scorer v3 and **13, 14, 10, 9** under v2 — **range 2 and 5** on an instrument whose published differences are 1. Only **10 of 17** questions held the same verdict in all four runs. Opus variance is still unmeasured: an account quota cut 3 sessions of its second battery, and 3 of the 4 questions that changed between its two runs are exactly those 3. NEW 2026-09-17 | no gate; a binding decision rule |
+| approach C, does the scorer measure what it claims? (Gate T) | three faults found in the **scoring program**, all by re-reading recorded sessions with no new model call: answers were read from a post-guard fragment on **14 of 40** sessions; pages opened inside a bash loop were not counted as opened; a file *mentioned* was counted as a file *cited*. `cited_unopened` Opus **7 → 4**, Sonnet **1 → 1**. The headline equivalence numbers reproduced **exactly** under both scorers. **Gate T STOP** on 4 of 8 rows; v3 frozen at a tag and unchanged since. NEW 2026-09-17 | see `experiments/p10_scorer_v3` |
+| approach C, is the package the thing we measured? (Gates R1–R3) | it was not: the installer had been building the shelf with the **experimental v2 builder that failed Gate S**, running from the dev repo and writing artefacts there. Now defaults to v1. Two independent clean-room builds agree on every shelf table and are **bit-identical on the embedding vectors**; all 31 retrieval probes identical. **R1 STOP** on one row — a surrogate row id assigned in filesystem order — **R2 PASS** (installs against a second folder), **R3 PASS** (891 traced reads, none touching the dev repo). NEW 2026-09-17 | see `experiments/p10_portable_r1` |
 | approach C, one-command installer on a fresh folder | cold install of a 500-file folder in **141 s** (bar 20 min); self-test **18/18** from inside it; one live question cited two pages it had opened, guard `n_cited_unopened=0`. **Gate P PASS**. NEW 2026-09-16 | see F64–F69 |
+
+> **Extended 2026-09-17 — the trust-and-reproducibility night, and the most important
+> result on this page.** Nothing about retrieval was changed. The *instrument* was measured
+> instead, and it did not survive the measurement: **running the same battery four times,
+> with the same stack, the same twenty questions and nothing tuned, gives 13, 13, 11, 11
+> under the corrected scorer and 13, 14, 10, 9 under the scorer that adjudicated every gate
+> verdict.** The Sonnet-versus-Opus gap this project has been quoting is **1**. It is inside
+> the noise. That reading is retired — not reversed, retired: the experiment could not tell.
+> Only 10 of 17 questions even held the same verdict across the four runs, so a steady total
+> was hiding questions that flip.
+>
+> Three faults were also found in the **scoring program** and corrected without a single new
+> model call, and the portable package turned out not to be the thing that had been measured
+> at all. Both are written up, with every superseded sentence and its replacement, in
+> [`REPORT/08_what_next/CORRECTION_2026-09-16.md`](REPORT/08_what_next/CORRECTION_2026-09-16.md).
+> **No gate verdict changed.** Start at
+> [`REPORT/08_what_next/MORNING_2026-09-17.md`](REPORT/08_what_next/MORNING_2026-09-17.md)
+> (one screen) or
+> [`REPORT/08_what_next/HANDOFF_2026-09-17.md`](REPORT/08_what_next/HANDOFF_2026-09-17.md).
 
 > **Extended 2026-09-16 — production hardening night.** The tool got between 3 and 17 times
 > faster with every rank proved unchanged; two *measurement* defects were found and fixed (the
@@ -105,8 +142,10 @@ run-to-run variance all now limit how confidently the measured live numbers can 
 > than its own answer key); and the model is now shown 40 candidate publications instead of 12.
 > Under those conditions the fifth live battery reads **13 and 14 of 17** on cited-right-page
 > equivalence — the best the project has measured — while **both gates still STOP**, each on a
-> single citation of a file the session never opened, and the right *number* is still only
-> **5 of 17**. One planned change, shelf v2, was rejected by its own pre-registered gate and not
+> citation of a file the session never opened (Sonnet 1, Opus 4 after the scoring repair of
+> 2026-09-16). The right *number* is **5 of the 5 questions that have one**; the widely quoted
+> 5-of-17 was a denominator error. **And the 13-versus-14 gap turned out to be noise — see the
+> night of 2026-09-16 below.** One planned change, shelf v2, was rejected by its own pre-registered gate and not
 > tuned. See
 > [`REPORT/08_what_next/HANDOFF_2026-09-16_night.md`](REPORT/08_what_next/HANDOFF_2026-09-16_night.md),
 > [`REPORT/08_what_next/DEMO_2026-09-16.md`](REPORT/08_what_next/DEMO_2026-09-16.md) and
