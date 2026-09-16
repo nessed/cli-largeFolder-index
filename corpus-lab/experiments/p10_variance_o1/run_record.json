@@ -1,0 +1,123 @@
+{
+ "id": "p10_P10O1",
+ "schema": "run_record/1",
+ "started_at": "2026-09-16T00:19:35",
+ "finished_at": "2026-09-17T04:11:10",
+ "command": "c_live_battery.py --phase-tag P10O1 --group frozen20 --model claude-opus-5 --parallel 2 --max-turns 60 --timeout 900 --capture full",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "p10_P10O1",
+  "--out",
+  "corpus-lab/experiments/p10_variance_o1",
+  "--cmd",
+  "c_live_battery.py --phase-tag P10O1 --group frozen20 --model claude-opus-5 --parallel 2 --max-turns 60 --timeout 900 --capture full",
+  "--spec",
+  "corpus-lab/state/phase10_variance_spec.md",
+  "--rung",
+  "corpus_15000",
+  "--models",
+  "claude-opus-5",
+  "--workers",
+  "2"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "5f1c9e08c6cd6d097a49d98103b5a7b511e96afe",
+  "branch": "phase10-trust-and-repro",
+  "dirty": true,
+  "dirty_files": [
+   "M README.md",
+   " M REPORT/08_what_next/DEMO_2026-09-16.md",
+   " M REPORT/08_what_next/HANDOFF_2026-09-16_night.md",
+   " M REPORT/08_what_next/ORCHESTRATOR_BRIEF_2026-09-16.md",
+   " M corpus-lab/state/phase10_checkpoint.json",
+   " M corpus-lab/state/transcript_quarantine.json",
+   "?? REPORT/08_what_next/CORRECTION_2026-09-16.md",
+   "?? corpus-lab/bin/p10_score_all.py",
+   "?? corpus-lab/bin/p10_variance.py",
+   "?? corpus-lab/experiments/p10_variance/",
+   "?? corpus-lab/experiments/p10_variance_s2/",
+   "?? corpus-lab/experiments/p10_variance_s3/",
+   "?? corpus-lab/state/c_live_battery_v2__P10S1_live.json",
+   "?? corpus-lab/state/c_live_battery_v2__P10S2_live.json",
+   "?? corpus-lab/state/c_live_battery_v2__P10S3_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S1_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S1_live__keyv2.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S2_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S2_live__keyv2.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S3_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S3_live__keyv2.json",
+   "?? corpus-lab/state/c_variance_2026-09-16.json",
+   "?? corpus-lab/state/checksums/s7_phase10_live_pre.json",
+   "?? corpus-lab/state/phase9_probes__P10O1.json",
+   "?? corpus-lab/state/phase9_probes__P10S1.json",
+   "?? corpus-lab/state/phase9_probes__P10S2.json",
+   "?? corpus-lab/state/phase9_probes__P10S3.json"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": "2",
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [
+   "claude-opus-5"
+  ],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": {
+  "name": "corpus_15000",
+  "path": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\harness\\corpus_15000",
+  "exists": true,
+  "n_files": 15013
+ },
+ "spec": {
+  "path": "corpus-lab/state/phase10_variance_spec.md",
+  "sha256": "b543b393e7462c135ca20be5a15a031fbdd5c15032b0c49ac6cb229879f30c23",
+  "commit": "d5849bb208e21e2d458e682386a0cc06f9b1c0f5",
+  "commit_author_date": "2026-09-15T21:33:16+05:00"
+ },
+ "inputs": {},
+ "declared_outputs": [],
+ "outputs_existed_at_start": {},
+ "outputs": {},
+ "notes": [
+  "2026-09-17T04:07:25  ANOMALY: 3 of 20 sessions (tr_07, tr_10, tr_16) ended with returncode 1 and the assistant text 'You have hit your session limit - resets 3:20am (Asia/Karachi)'. This is an ACCOUNT rate limit on the operator's plan: not a harness fault, not a timeout, not a model refusal. tr_07 had already made 22 tool calls and spent 1.28 USD when it was cut; tr_10 7 calls and 0.46 USD; tr_16 0 calls and 0 USD. All three are trajectory questions, which this group runs last, so the limit was reached near the end of the battery. Consequence: P10O1 is a PARTIAL battery -- its Opus figures rest on 17 completed sessions, not 20, and every Opus count must be read against that denominator. No other battery (P9S, P9O, P10S1, P10S2, P10S3) contains a single such session.",
+  "2026-09-17T04:10:58  SCORER BLIND SPOT (v4 material, NOT fixed tonight -- v3 is frozen at tag scorer-v3-frozen-2026-09-16 and section 7 forbids changing it for any reason). All three rate-limited sessions (tr_07, tr_10, tr_16) are inside the 17 answerable questions, and v3 scored all three cited_right_page_equiv = False. sessions_lost reads None and every no_answer_* counter reads 0, because v3 only recognises a lost session as max-turns, timeout, or empty output -- it has no category for 'the account ran out of quota mid-session', where a returncode of 1 arrives with non-empty assistant text. So P10O1's headline of 12/17 is really 12 of the 14 answerable questions that were allowed to finish, and 3 questions that were never asked properly are being counted as failures. Both numbers are recorded in the variance table; neither is adjusted by hand, and v3 was not touched.",
+  "2026-09-17T04:10:59  SCORED: v2 equiv 11, v3 equiv 12, v3 strict 3, cited_unopened 5 (v2 said 13), mentioned_unopened 5, n_answer_fragments 8, n_opens_loop_only 23, absence_ok3_frozen3 3, value_correct 5/5, vector_full 3/9 against key v2. Four scorers, one recording, zero model calls (rule 18)."
+ ],
+ "conclusion": "P10O1 ran 20 Opus sessions at 20.5743 USD driver cost in 1978s wall. 17 of 20 completed; 3 (tr_07, tr_10, tr_16, all trajectory questions, which run last) were cut by an account session limit and are counted as misses by a scorer that cannot see the difference. Scored by four scorers from the one recording: v3 equivalence 12 of 17 answerable, or 12 of the 14 that were allowed to finish. Battery is recorded as PARTIAL and every Opus figure derived from it carries that caveat.",
+ "adopted": null,
+ "supersedes": null
+}

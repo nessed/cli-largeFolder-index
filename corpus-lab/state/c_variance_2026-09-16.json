@@ -1,0 +1,615 @@
+{
+ "generated_utc": "2026-09-16T23:12:25Z",
+ "spec": "corpus-lab/state/phase10_variance_spec.md",
+ "what_this_is": "The same stack, the same 20 questions, the same flags, run several times. Nothing was changed between runs and nothing was tuned.",
+ "scorer_version": "v3 (frozen) beside v2",
+ "sonnet": {
+  "model_group": "claude-sonnet-5",
+  "phases_requested": [
+   "P9S_live",
+   "P10S1_live",
+   "P10S2_live",
+   "P10S3_live"
+  ],
+  "phases_present": [
+   "P9S_live",
+   "P10S1_live",
+   "P10S2_live",
+   "P10S3_live"
+  ],
+  "n": 4,
+  "metrics": {
+   "cited_right_page_equiv_v2": {
+    "per_battery": {
+     "P9S_live": 13,
+     "P10S1_live": 14,
+     "P10S2_live": 10,
+     "P10S3_live": 9
+    },
+    "n": 4,
+    "denominator": 17,
+    "mean": 11.5,
+    "min": 9,
+    "max": 14,
+    "range": 5,
+    "sd": 2.3805,
+    "sd_note": null
+   },
+   "cited_right_page_equiv_v3": {
+    "per_battery": {
+     "P9S_live": 13,
+     "P10S1_live": 13,
+     "P10S2_live": 11,
+     "P10S3_live": 11
+    },
+    "n": 4,
+    "denominator": 17,
+    "mean": 12.0,
+    "min": 11,
+    "max": 13,
+    "range": 2,
+    "sd": 1.1547,
+    "sd_note": null
+   },
+   "cited_right_page_strict_v3": {
+    "per_battery": {
+     "P9S_live": 2,
+     "P10S1_live": 1,
+     "P10S2_live": 2,
+     "P10S3_live": 1
+    },
+    "n": 4,
+    "denominator": 17,
+    "mean": 1.5,
+    "min": 1,
+    "max": 2,
+    "range": 1,
+    "sd": 0.5774,
+    "sd_note": null
+   },
+   "cited_unopened_total_v3": {
+    "per_battery": {
+     "P9S_live": 1,
+     "P10S1_live": 0,
+     "P10S2_live": 6,
+     "P10S3_live": 3
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 2.5,
+    "min": 0,
+    "max": 6,
+    "range": 6,
+    "sd": 2.6458,
+    "sd_note": null
+   },
+   "mentioned_unopened_total_v3": {
+    "per_battery": {
+     "P9S_live": 2,
+     "P10S1_live": 3,
+     "P10S2_live": 10,
+     "P10S3_live": 14
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 7.25,
+    "min": 2,
+    "max": 14,
+    "range": 12,
+    "sd": 5.7373,
+    "sd_note": null
+   },
+   "value_correct_v3": {
+    "per_battery": {
+     "P9S_live": 5,
+     "P10S1_live": 4,
+     "P10S2_live": 3,
+     "P10S3_live": 4
+    },
+    "n": 4,
+    "denominator": 5,
+    "mean": 4.0,
+    "min": 3,
+    "max": 5,
+    "range": 2,
+    "sd": 0.8165,
+    "sd_note": null
+   },
+   "vector_full_keyv2": {
+    "per_battery": {
+     "P9S_live": 6,
+     "P10S1_live": 5,
+     "P10S2_live": 6,
+     "P10S3_live": 6
+    },
+    "n": 4,
+    "denominator": 9,
+    "mean": 5.75,
+    "min": 5,
+    "max": 6,
+    "range": 1,
+    "sd": 0.5,
+    "sd_note": null
+   },
+   "absence_ok3_frozen3_v3": {
+    "per_battery": {
+     "P9S_live": 3,
+     "P10S1_live": 1,
+     "P10S2_live": 3,
+     "P10S3_live": 3
+    },
+    "n": 4,
+    "denominator": 3,
+    "mean": 2.5,
+    "min": 1,
+    "max": 3,
+    "range": 2,
+    "sd": 1.0,
+    "sd_note": null
+   },
+   "n_answer_fragments_v3": {
+    "per_battery": {
+     "P9S_live": 9,
+     "P10S1_live": 5,
+     "P10S2_live": 10,
+     "P10S3_live": 9
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 8.25,
+    "min": 5,
+    "max": 10,
+    "range": 5,
+    "sd": 2.2174,
+    "sd_note": null
+   },
+   "n_opens_loop_only_total_v3": {
+    "per_battery": {
+     "P9S_live": 6,
+     "P10S1_live": 0,
+     "P10S2_live": 0,
+     "P10S3_live": 0
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 1.5,
+    "min": 0,
+    "max": 6,
+    "range": 6,
+    "sd": 3.0,
+    "sd_note": null
+   },
+   "sessions_lost_v3": {
+    "per_battery": {
+     "P9S_live": 0,
+     "P10S1_live": 0,
+     "P10S2_live": 0,
+     "P10S3_live": 0
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 0.0,
+    "min": 0,
+    "max": 0,
+    "range": 0,
+    "sd": 0.0,
+    "sd_note": null
+   },
+   "median_wall_s_v3": {
+    "per_battery": {
+     "P9S_live": 98.92,
+     "P10S1_live": 101.92,
+     "P10S2_live": 81.24,
+     "P10S3_live": 81.8
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 90.97,
+    "min": 81.24,
+    "max": 101.92,
+    "range": 20.68,
+    "sd": 10.9828,
+    "sd_note": null
+   },
+   "p90_wall_s_v3": {
+    "per_battery": {
+     "P9S_live": 310.89,
+     "P10S1_live": 314.38,
+     "P10S2_live": 289.89,
+     "P10S3_live": 303.55
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 304.6775,
+    "min": 289.89,
+    "max": 314.38,
+    "range": 24.49,
+    "sd": 10.8424,
+    "sd_note": null
+   },
+   "total_cost_usd_v3": {
+    "per_battery": {
+     "P9S_live": 12.7439,
+     "P10S1_live": 12.8044,
+     "P10S2_live": 11.7846,
+     "P10S3_live": 12.5255
+    },
+    "n": 4,
+    "denominator": null,
+    "mean": 12.4646,
+    "min": 11.7846,
+    "max": 12.8044,
+    "range": 1.0198,
+    "sd": 0.4689,
+    "sd_note": null
+   }
+  },
+  "per_question_agreement_v3_equiv": {
+   "n_repeats": 4,
+   "phases": [
+    "P9S_live",
+    "P10S1_live",
+    "P10S2_live",
+    "P10S3_live"
+   ],
+   "n_questions_compared": 17,
+   "n_same_verdict_every_time": 10,
+   "always_hit": [
+    "mb_04",
+    "nm_09",
+    "pl_01",
+    "pl_21",
+    "rc_07",
+    "tr_07",
+    "tr_10",
+    "tr_16"
+   ],
+   "never_hit": [
+    "sd_03",
+    "sd_05"
+   ],
+   "changed_between_runs": [
+    "cd_04",
+    "mb_05",
+    "mb_07",
+    "pl_14",
+    "rc_05",
+    "rl_05",
+    "tr_04"
+   ]
+  },
+  "session_accounting": {
+   "P9S_live": {
+    "n_sessions": 20,
+    "n_completed": 20,
+    "n_cut_by_account_rate_limit": 0,
+    "rate_limited_qids": [],
+    "n_failed_other": 0,
+    "failed_other_qids": [],
+    "partial": false
+   },
+   "P10S1_live": {
+    "n_sessions": 20,
+    "n_completed": 20,
+    "n_cut_by_account_rate_limit": 0,
+    "rate_limited_qids": [],
+    "n_failed_other": 0,
+    "failed_other_qids": [],
+    "partial": false
+   },
+   "P10S2_live": {
+    "n_sessions": 20,
+    "n_completed": 20,
+    "n_cut_by_account_rate_limit": 0,
+    "rate_limited_qids": [],
+    "n_failed_other": 0,
+    "failed_other_qids": [],
+    "partial": false
+   },
+   "P10S3_live": {
+    "n_sessions": 20,
+    "n_completed": 20,
+    "n_cut_by_account_rate_limit": 0,
+    "rate_limited_qids": [],
+    "n_failed_other": 0,
+    "failed_other_qids": [],
+    "partial": false
+   }
+  },
+  "partial_batteries": [],
+  "provenance": {
+   "scorer_version": "v3",
+   "scorer_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  }
+ },
+ "opus": {
+  "model_group": "claude-opus-5",
+  "phases_requested": [
+   "P9O_live",
+   "P10O1_live",
+   "P10O2_live"
+  ],
+  "phases_present": [
+   "P9O_live",
+   "P10O1_live"
+  ],
+  "n": 2,
+  "metrics": {
+   "cited_right_page_equiv_v2": {
+    "per_battery": {
+     "P9O_live": 14,
+     "P10O1_live": 11
+    },
+    "n": 2,
+    "denominator": 17,
+    "mean": 12.5,
+    "min": 11,
+    "max": 14,
+    "range": 3,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "cited_right_page_equiv_v3": {
+    "per_battery": {
+     "P9O_live": 14,
+     "P10O1_live": 12
+    },
+    "n": 2,
+    "denominator": 17,
+    "mean": 13.0,
+    "min": 12,
+    "max": 14,
+    "range": 2,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "cited_right_page_strict_v3": {
+    "per_battery": {
+     "P9O_live": 3,
+     "P10O1_live": 3
+    },
+    "n": 2,
+    "denominator": 17,
+    "mean": 3.0,
+    "min": 3,
+    "max": 3,
+    "range": 0,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "cited_unopened_total_v3": {
+    "per_battery": {
+     "P9O_live": 4,
+     "P10O1_live": 5
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 4.5,
+    "min": 4,
+    "max": 5,
+    "range": 1,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "mentioned_unopened_total_v3": {
+    "per_battery": {
+     "P9O_live": 2,
+     "P10O1_live": 5
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 3.5,
+    "min": 2,
+    "max": 5,
+    "range": 3,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "value_correct_v3": {
+    "per_battery": {
+     "P9O_live": 5,
+     "P10O1_live": 5
+    },
+    "n": 2,
+    "denominator": 5,
+    "mean": 5.0,
+    "min": 5,
+    "max": 5,
+    "range": 0,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "vector_full_keyv2": {
+    "per_battery": {
+     "P9O_live": 6,
+     "P10O1_live": 3
+    },
+    "n": 2,
+    "denominator": 9,
+    "mean": 4.5,
+    "min": 3,
+    "max": 6,
+    "range": 3,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "absence_ok3_frozen3_v3": {
+    "per_battery": {
+     "P9O_live": 2,
+     "P10O1_live": 3
+    },
+    "n": 2,
+    "denominator": 3,
+    "mean": 2.5,
+    "min": 2,
+    "max": 3,
+    "range": 1,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "n_answer_fragments_v3": {
+    "per_battery": {
+     "P9O_live": 5,
+     "P10O1_live": 8
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 6.5,
+    "min": 5,
+    "max": 8,
+    "range": 3,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "n_opens_loop_only_total_v3": {
+    "per_battery": {
+     "P9O_live": 28,
+     "P10O1_live": 23
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 25.5,
+    "min": 23,
+    "max": 28,
+    "range": 5,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "sessions_lost_v3": {
+    "per_battery": {
+     "P9O_live": 0,
+     "P10O1_live": 0
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 0.0,
+    "min": 0,
+    "max": 0,
+    "range": 0,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "median_wall_s_v3": {
+    "per_battery": {
+     "P9O_live": 118.42,
+     "P10O1_live": 96.14
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 107.28,
+    "min": 96.14,
+    "max": 118.42,
+    "range": 22.28,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "p90_wall_s_v3": {
+    "per_battery": {
+     "P9O_live": 308.2,
+     "P10O1_live": 371.95
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 340.075,
+    "min": 308.2,
+    "max": 371.95,
+    "range": 63.75,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   },
+   "total_cost_usd_v3": {
+    "per_battery": {
+     "P9O_live": 25.0891,
+     "P10O1_live": 22.3087
+    },
+    "n": 2,
+    "denominator": null,
+    "mean": 23.6989,
+    "min": 22.3087,
+    "max": 25.0891,
+    "range": 2.7804,
+    "sd": null,
+    "sd_note": "n<3: a standard deviation would be theatre"
+   }
+  },
+  "per_question_agreement_v3_equiv": {
+   "n_repeats": 2,
+   "phases": [
+    "P9O_live",
+    "P10O1_live"
+   ],
+   "n_questions_compared": 17,
+   "n_same_verdict_every_time": 13,
+   "always_hit": [
+    "cd_04",
+    "mb_04",
+    "mb_05",
+    "mb_07",
+    "nm_09",
+    "pl_01",
+    "pl_14",
+    "pl_21",
+    "rc_05",
+    "rl_05",
+    "tr_04"
+   ],
+   "never_hit": [
+    "sd_03",
+    "sd_05"
+   ],
+   "changed_between_runs": [
+    "rc_07",
+    "tr_07",
+    "tr_10",
+    "tr_16"
+   ]
+  },
+  "session_accounting": {
+   "P9O_live": {
+    "n_sessions": 20,
+    "n_completed": 20,
+    "n_cut_by_account_rate_limit": 0,
+    "rate_limited_qids": [],
+    "n_failed_other": 0,
+    "failed_other_qids": [],
+    "partial": false
+   },
+   "P10O1_live": {
+    "n_sessions": 20,
+    "n_completed": 17,
+    "n_cut_by_account_rate_limit": 3,
+    "rate_limited_qids": [
+     "tr_07",
+     "tr_10",
+     "tr_16"
+    ],
+    "n_failed_other": 0,
+    "failed_other_qids": [],
+    "partial": true,
+    "read_this_as": "This battery is PARTIAL. 3 of 20 sessions never produced an answer because the operating account hit its own session limit. Every scorer counts those as misses, so this battery's scores are a FLOOR, not an estimate."
+   }
+  },
+  "partial_batteries": [
+   "P10O1_live"
+  ],
+  "partial_warning": "The range below includes P10O1_live, which did not complete. Its low value is depressed by sessions that were cut off, not by sessions that answered badly, so the range is WIDER than the stack's true variance. It may not be quoted as a noise band.",
+  "provenance": {
+   "scorer_version": "v3",
+   "scorer_sha256": "09f4105d81114deeb8aaebe78b9f8a94511b490ce4e7532ee123bd463b3f6d78",
+   "key_file": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\_private\\harness_keys\\answer_key.json",
+   "key_sha256": "8282da86682990112f66d86ea7235491efccfe6b52963b99377ec62aef7273bb",
+   "group_definition_sha256": "6bbe137e076030c32af92e540a8f2c3f0102dab23f13897158ad19ac034fe4b7"
+  }
+ },
+ "decision_rule": {
+  "sonnet_equivalence_range_v3": 2,
+  "opus_equivalence_range_v3": 2,
+  "rule": "A difference between two single Sonnet batteries on cited_right_page_equiv smaller than 2 may NOT be used to prefer a configuration.",
+  "opus_caveat": "The Opus range from n=2 is a LOWER BOUND on Opus noise, not a band.",
+  "cross_model": "both fall inside each other's observed range",
+  "cross_model_rule": "Sonnet-versus-Opus differences are not interpreted beyond this sentence."
+ }
+}

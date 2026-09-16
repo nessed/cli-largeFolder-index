@@ -1,0 +1,131 @@
+{
+ "id": "p10_variance_table",
+ "schema": "run_record/1",
+ "started_at": "2026-09-17T04:12:16",
+ "finished_at": "2026-09-17T04:12:54",
+ "command": "p10_variance.py --out corpus-lab/state/c_variance_2026-09-16.json",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "p10_variance_table",
+  "--out",
+  "corpus-lab/experiments/p10_variance_table",
+  "--cmd",
+  "p10_variance.py --out corpus-lab/state/c_variance_2026-09-16.json",
+  "--spec",
+  "corpus-lab/state/phase10_variance_spec.md",
+  "--reads",
+  "corpus-lab/state/c_live_battery_v3__P9S_live.json",
+  "corpus-lab/state/c_live_battery_v3__P9O_live.json",
+  "corpus-lab/state/c_live_battery_v3__P10O1_live.json",
+  "--writes",
+  "corpus-lab/state/c_variance_2026-09-16.json"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "5f1c9e08c6cd6d097a49d98103b5a7b511e96afe",
+  "branch": "phase10-trust-and-repro",
+  "dirty": true,
+  "dirty_files": [
+   "M README.md",
+   " M REPORT/08_what_next/DEMO_2026-09-16.md",
+   " M REPORT/08_what_next/HANDOFF_2026-09-16_night.md",
+   " M REPORT/08_what_next/ORCHESTRATOR_BRIEF_2026-09-16.md",
+   " M corpus-lab/state/phase10_checkpoint.json",
+   " M corpus-lab/state/transcript_quarantine.json",
+   "?? REPORT/08_what_next/CORRECTION_2026-09-16.md",
+   "?? corpus-lab/bin/p10_score_all.py",
+   "?? corpus-lab/bin/p10_variance.py",
+   "?? corpus-lab/experiments/p10_variance/",
+   "?? corpus-lab/experiments/p10_variance_o1/",
+   "?? corpus-lab/experiments/p10_variance_s2/",
+   "?? corpus-lab/experiments/p10_variance_s3/",
+   "?? corpus-lab/state/c_live_battery_v2__P10O1_live.json",
+   "?? corpus-lab/state/c_live_battery_v2__P10S1_live.json",
+   "?? corpus-lab/state/c_live_battery_v2__P10S2_live.json",
+   "?? corpus-lab/state/c_live_battery_v2__P10S3_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10O1_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10O1_live__keyv2.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S1_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S1_live__keyv2.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S2_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S2_live__keyv2.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S3_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S3_live__keyv2.json",
+   "?? corpus-lab/state/checksums/s7_phase10_live_pre.json",
+   "?? corpus-lab/state/phase9_probes__P10O1.json",
+   "?? corpus-lab/state/phase9_probes__P10S1.json",
+   "?? corpus-lab/state/phase9_probes__P10S2.json",
+   "?? corpus-lab/state/phase9_probes__P10S3.json"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": null,
+ "spec": {
+  "path": "corpus-lab/state/phase10_variance_spec.md",
+  "sha256": "b543b393e7462c135ca20be5a15a031fbdd5c15032b0c49ac6cb229879f30c23",
+  "commit": "d5849bb208e21e2d458e682386a0cc06f9b1c0f5",
+  "commit_author_date": "2026-09-15T21:33:16+05:00"
+ },
+ "inputs": {
+  "corpus-lab/state/c_live_battery_v3__P9S_live.json": "291dae84ec8c050a4633ad42ffb4ea7ba00cdd58575ba3197d4483c4aa5b957b",
+  "corpus-lab/state/c_live_battery_v3__P9O_live.json": "a30ff5ad2a2b48982708d7112358d019f4cdbd613a1fee0e16ffe08e8b9f15d3",
+  "corpus-lab/state/c_live_battery_v3__P10O1_live.json": "3e851e60dc715ba30d5876188ae411a13a633c7b07589dce91d192821dbe86c8"
+ },
+ "declared_outputs": [
+  "corpus-lab/state/c_variance_2026-09-16.json"
+ ],
+ "outputs_existed_at_start": {
+  "corpus-lab/state/c_variance_2026-09-16.json": false
+ },
+ "outputs": {
+  "corpus-lab/state/c_variance_2026-09-16.json": "026de77995e2703684faf2e01a30ffeda09fe541874e6e47e2b2175b5b2f71ca"
+ },
+ "notes": [
+  "2026-09-17T04:12:45  HEADLINE: four identical Sonnet batteries scored 13, 13, 11, 11 under v3 -- range 2 -- and 13, 14, 10, 9 under v2 -- range 5. The published 'Sonnet 13, Opus 14' gap is 1. It is smaller than the noise of the instrument under either scorer, and under the pre-registered decision rule it may not be used to prefer anything. Per-question agreement is worse than the aggregate suggests: only 10 of 17 questions got the same verdict in all four Sonnet runs; 7 changed (cd_04, mb_05, mb_07, pl_14, rc_05, rl_05, tr_04). A stable total is hiding questions that flip.",
+  "2026-09-17T04:12:45  OPUS RANGE IS AN ARTEFACT. Opus reads 14 then 12, but 3 of the 4 questions that changed verdict between the two Opus runs (tr_07, tr_10, tr_16) are exactly the 3 sessions the account rate limit cut off. Only rc_07 changed for a reason to do with the model. The Opus range of 2 is therefore NOT a measurement of Opus noise; it is mostly a measurement of a quota. Opus variance remains essentially unmeasured, and the handoff must say so rather than quote 12-14 as a band.",
+  "2026-09-17T04:12:46  sessions_lost_v3 reads 0 for every battery including the partial one, sitting in the table directly beside session accounting that reads 17/20. That contrast is left in deliberately: it is the clearest available evidence of the v3 blind spot, and it is evidence a reader can check.",
+  "2026-09-17T04:12:46  DEVIATION: an untracked c_variance_2026-09-16.json from a dry run earlier this session (generated_utc 2026-09-15T18:09:52Z, built before P10O1 existed) was deleted before this record opened. It was never committed, never referenced by any document, and contained no battery this table does not contain. Recorded here rather than silently overwritten.",
+  "2026-09-17T04:15:12  CUT: P10O2, the optional second Opus battery, was NOT run. All four section 4.4 conditions did hold at the decision point (Sonnet three batteries 31.92 USD <= 36; P10O1 20.57 <= 25; clock allowed it; 95 USD total intact), so this is a deliberate cut and not a gate failure. Reason: the operating account hit its own session limit partway through P10O1 and cut three sessions. A second Opus battery run under the same constraint would most likely have been partial too, and a second contaminated row would have made the variance table -- the one artefact of this phase whose entire purpose is to be trustworthy -- worse, not better. Plan E's priority order puts trustworthy measurement first and explicitly cuts optional model calls first; the spec's own cut order lists P10O2 first. Saved approximately 20 USD; total live spend approximately 52.48 USD of the 95 USD cap."
+ ],
+ "conclusion": "The instrument's noise is larger than every difference this project has published. Sonnet cited_right_page_equiv over four identical runs: 13, 13, 11, 11 (v3, range 2) and 13, 14, 10, 9 (v2, range 5). Only 10 of 17 questions held the same verdict across all four. Opus's apparent range of 2 is mostly one account rate limit. Pre-registered rule applies: no configuration may be preferred on a difference smaller than the range, which rules out every model-to-model and stack-to-stack claim in the report so far.",
+ "adopted": null,
+ "supersedes": null
+}

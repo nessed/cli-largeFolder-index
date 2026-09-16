@@ -1,0 +1,104 @@
+{
+ "id": "p10_P10S2",
+ "schema": "run_record/1",
+ "started_at": "2026-09-15T23:09:09",
+ "finished_at": "2026-09-15T23:41:35",
+ "command": "c_live_battery.py --phase-tag P10S2 --group frozen20 --model claude-sonnet-5 --parallel 2 --max-turns 60 --timeout 900 --capture full",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "p10_P10S2",
+  "--out",
+  "corpus-lab/experiments/p10_variance_s2",
+  "--cmd",
+  "c_live_battery.py --phase-tag P10S2 --group frozen20 --model claude-sonnet-5 --parallel 2 --max-turns 60 --timeout 900 --capture full",
+  "--spec",
+  "corpus-lab/state/phase10_variance_spec.md",
+  "--rung",
+  "corpus_15000",
+  "--models",
+  "claude-sonnet-5",
+  "--workers",
+  "2"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "5f1c9e08c6cd6d097a49d98103b5a7b511e96afe",
+  "branch": "phase10-trust-and-repro",
+  "dirty": true,
+  "dirty_files": [
+   "M corpus-lab/state/phase10_checkpoint.json",
+   " M corpus-lab/state/transcript_quarantine.json",
+   "?? corpus-lab/bin/p10_score_all.py",
+   "?? corpus-lab/experiments/p10_variance/",
+   "?? corpus-lab/state/c_live_battery_v2__P10S1_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S1_live.json",
+   "?? corpus-lab/state/c_live_battery_v3__P10S1_live__keyv2.json",
+   "?? corpus-lab/state/checksums/s7_phase10_live_pre.json",
+   "?? corpus-lab/state/phase9_probes__P10S1.json",
+   "?? corpus-lab/state/phase9_probes__P10S2.json"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": "2",
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [
+   "claude-sonnet-5"
+  ],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": {
+  "name": "corpus_15000",
+  "path": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\harness\\corpus_15000",
+  "exists": true,
+  "n_files": 15013
+ },
+ "spec": {
+  "path": "corpus-lab/state/phase10_variance_spec.md",
+  "sha256": "b543b393e7462c135ca20be5a15a031fbdd5c15032b0c49ac6cb229879f30c23",
+  "commit": "d5849bb208e21e2d458e682386a0cc06f9b1c0f5",
+  "commit_author_date": "2026-09-15T21:33:16+05:00"
+ },
+ "inputs": {},
+ "declared_outputs": [],
+ "outputs_existed_at_start": {},
+ "outputs": {},
+ "notes": [
+  "2026-09-15T23:41:35  20/20, 0 timeouts, wall 1834s, driver cost_usd 10.0502. Sonnet running total 21.12 of the 30 bar that gates the third battery."
+ ],
+ "conclusion": "P10S2 complete: 20/20, 0 timeouts, $10.05, 31 min.",
+ "adopted": "n/a",
+ "supersedes": null
+}
