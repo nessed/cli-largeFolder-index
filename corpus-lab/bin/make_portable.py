@@ -200,8 +200,12 @@ Two installs of the same folder produce the same `canonical_export.json` hash.
 Raw database files will differ between installs -- they carry timestamps and
 filesystem walk order -- and `BUILD_REPORT.md` explains which fields those are.
 
+`--expect-pages 0` says "do not check the page count". Leave it in: without
+it the self-test compares your folder against a fixed reference corpus and
+reports a failure that is not one.
+
 ```
-.venv\\Scripts\\python.exe bin\\c_selftest.py --db .\\artefacts\\pages.db --shelf .\\artefacts\\shelf\\shelf.db
+.venv\\Scripts\\python.exe bin\\c_selftest.py --db .\\artefacts\\pages.db --shelf .\\artefacts\\shelf\\shelf.db --expect-pages 0
 ```
 
 ## Remove it
