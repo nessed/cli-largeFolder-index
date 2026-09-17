@@ -82,10 +82,22 @@ class TestInitializeMd(unittest.TestCase):
             if "setup_folder.py" in line or "cd " in line:
                 self.assertNotIn("research", line, line)
 
+    def test_08b_a_finished_install_is_not_read_as_a_failed_one(self):
+        """setup_folder refuses a folder that already has CLAUDE.md, exit 3. An
+        agent that reads REFUSED as failure will helpfully uninstall the index."""
+        self.assertIn("already has a CLAUDE.md", self.md)
+        self.assertIn("already has a CLAUDE.md", self.setup_src)
+        self.assertIn("it is a finished one", self.md)
+
     def test_09_dropin_points_at_the_runbook_and_nothing_else(self):
         self.assertIn("initialize", self.dropin)
         self.assertIn("engine/INITIALIZE.md", self.dropin)
         self.assertIn("engine/INSTALL.md", self.dropin)
+
+    def test_09b_dropin_says_what_already_set_up_looks_like(self):
+        """Re-running the setup on a live folder is the obvious way to lose a day."""
+        self.assertIn("engine/artefacts", self.dropin)
+        self.assertIn("do not run the", self.dropin)
 
     def test_10_install_md_advertises_the_short_way(self):
         self.assertIn("CLAUDE_ROOT.md", self.install)

@@ -375,3 +375,98 @@ There is no key and this is not a score. What it shows is that the citation disc
 every page cited was a page opened, the Stop guard never had to intervene, and the answer
 volunteered its own limits (it said the series stops at 2021-22 and named the families it
 had not checked) rather than inventing the missing years.
+
+---
+
+# Phase 11.F — the "initialize" route
+
+Ali's instruction after reading the Phase 11 report: the recipient should not have
+to follow INSTALL.md at all. They open Claude Code in the folder, say
+`initialize`, and the folder's own documents are enough for the agent to install
+everything. That made F-01 a blocker rather than a deferred item, and it added a
+document — `INITIALIZE.md`, the same procedure addressed to the agent — plus
+`CLAUDE_ROOT.md`, copied to the distribution root as `CLAUDE.md` so a session
+opened there reads it unprompted.
+
+**Numbering note.** The commit "Phase 11.F: two findings from rehearsing the
+initialize flow" labels the red-text and timing findings F-18 and F-19. Those
+IDs were already taken above. They are **F-20** and **F-21** here; the commit
+message is wrong and is left as written rather than rewritten.
+
+### F-01 — `pdftotext` and `claude.exe` were this machine's paths — FIXED
+
+`setup_folder.py` and `index_build.py` carried `C:\Program Files\Git\mingw64\bin\
+pdftotext.exe`; `labpaths.py` carried `C:\nvm4w\...\claude.exe`. Neither was ever
+looked up on PATH, and `INSTALL.md` promises "Claude Code on the PATH". Gate R3's
+grep covered `C:\Users` and `Desktop` only, so both walked through it. On any
+second machine `doctor` printed FAIL beside a directory the reader does not have
+and no document mentions.
+
+Resolution order now: env var (`PDFTOTEXT_EXE`, `CLAUDE_CMD`), then this machine's
+historical location so no recorded run changes, then PATH, then the ordinary
+install locations, then a bare name that fails with "not found" rather than with
+a stranger's directory. `doctor` names the fix instead of a path.
+
+Verified: on this machine both still resolve to exactly what they always did;
+with the env vars set to invented paths, `doctor` reports those paths and exits 1.
+Seven tests.
+
+**Class:** blocker. Fixed, commit `d9931b3`.
+
+### F-20 — the red `NativeCommandError` block appears at the pip step
+
+Filed in Phase 11.C against the index pass. The rehearsal saw it first at step 2,
+wrapped around pip's own "a new release of pip is available" notice — the second
+command anyone runs, before anything interesting has happened. A person watching
+their first install sees a red error block and stops.
+
+The warning has been promoted out of step 4 into a standing section before
+step 1, naming all three sources: progress messages, the pip notice, and
+*building page-range cache, one-time*.
+
+**Class:** friction in the engine, blocker in the document. Documented.
+
+### F-21 — the time estimate was optimistic
+
+500 documents at 12 workers: 133 s wall — index 24 s, shelf 67 s, caption index
+0.2 s, caption vectors 40 s. That is 4.4 minutes per thousand. The runbook said
+three. An estimate someone watches a progress bar against must not be optimistic;
+it now says three to six.
+
+**Class:** friction. Fixed in the document.
+
+### F-22 — `REFUSED ... already has a CLAUDE.md` reads as a failure
+
+Re-running `install` on an installed folder exits 3 with
+`REFUSED <folder> already has a CLAUDE.md. Run uninstall first`. The refusal is
+right — but `INSTALL.md` also says "an interrupted install is resumed by
+re-running the identical command", and writing `CLAUDE.md` is the *last* thing
+install does. An agent that reads exit 3 as failure, and takes the message's own
+advice, will run `uninstall` and throw away a completed index.
+
+`INITIALIZE.md` now says: exit 3 with that message is a finished install, not a
+failed one; go to step 5, and do not uninstall to clean up first.
+
+**Class:** blocker for the agent route. Documented; the engine is unchanged.
+
+### What the rehearsal proved
+
+A fresh temp folder, the package copied in, `CLAUDE.md` at the root, 500 documents
+beside it. Following `INITIALIZE.md` literally:
+
+| step | result |
+|---|---|
+| 1 python | 3.11.5 |
+| 2 venv + pip | 35 packages, clean |
+| 3 doctor | 9 checks, 0 failed |
+| 4 install | indexed=489 image_only=9 failed=1 unsupported=1, 39,647 pages, 146 families, 472 documents, 133 s |
+| 5 self-test | `_overall` pass |
+| the model's first command | `c_shelf.py find --fusion rrf --caption-channel lex --compact 8` run from the documents folder with no `--db` and no `--shelf`: eight ranked publications, exit 0 |
+
+That last row is the one F-02 used to kill. The registry entry names
+`engine\artefacts\pages.db`, which is the file that exists.
+
+**Still untested:** a machine that is not this one, a genuinely cold model cache,
+the 2,000-document path, the interactive permission prompts, and whether a fresh
+agent actually follows `INITIALIZE.md` rather than improvising. That last one is
+what Ali's run tests.
