@@ -65,7 +65,8 @@ class TestInitializeMd(unittest.TestCase):
     def test_06_the_stderr_red_text_is_called_out(self):
         """F-16: a routine progress line renders as a red NativeCommandError."""
         self.assertIn("NativeCommandError", self.md)
-        self.assertIn("not a crash", self.md)
+        self.assertIn("It looks exactly like a crash and it is not", self.md)
+        self.assertIn("never by the colour", self.md)
 
     def test_07_it_forbids_editing_the_engine(self):
         self.assertIn("Do not edit anything under", self.md)
