@@ -17,6 +17,19 @@ make it work, that is a usability bug.*
 
 This phase builds the stage. Ali runs the play.
 
+**Phase F, added after the first report.** Ali's answer to that report was that the
+stranger should not have to follow `INSTALL.md` at all: they open Claude Code in
+the folder, say `initialize`, and the folder's own documents are enough for the
+agent to install everything. That changed the deliverable. The package now also
+ships `INITIALIZE.md` -- the same procedure addressed to the agent -- and
+`CLAUDE_ROOT.md`, copied to the distribution root as `CLAUDE.md` so a session
+opened there reads it without being told. It also turned F-01 from a deferred
+item into a blocker: a runbook that tells an agent to trust `doctor` is worth
+nothing while `doctor` fails on every machine but this one.
+
+The rule for the test becomes: *if you need knowledge that is not in the folder's
+own documents to make it work, that is a usability bug.*
+
 ## Method
 
 Four phases, each with its own run record.
@@ -50,6 +63,14 @@ directory.
 **D — blockers only.** Two fixes, each with a failing-then-passing test, each its own
 commit. Friction was never fixed; it is the material for the next plan.
 
+**F — the initialize route.** F-01 fixed in the engine with tests. `INITIALIZE.md`
+and `CLAUDE_ROOT.md` written into `make_portable.py`, so they are generated,
+hashed into `PACKAGE_MANIFEST.json`, and pinned by tests that check every flag and
+subcommand they print against `setup_folder.py`'s argparse. Then the same dress
+rehearsal again in a new temp directory with `corpus_500`, following
+`INITIALIZE.md` instead of `INSTALL.md`, and the three findings it produced folded
+back into the document. Ali's folder restaged.
+
 ## Inputs
 
 - HEAD at start `a9ab77a` (branch `phase11-fresh-folder`, from `phase10-trust-and-repro`)
@@ -57,17 +78,22 @@ commit. Friction was never fixed; it is the material for the next plan.
 - `harness/corpus_500` — 500 files, the rehearsal rung, never written to
 - `dist/retrieval-portable-02f53c8` — the previous package, read only for comparison
 - machine: Python 3.11.5, 16 logical processors, no lab environment variable set
+- phase F reopened from HEAD `e8d798a`; rehearsed against `harness/corpus_500` again
 
 ## Outputs
 
-- `C:\Users\Ali\Desktop\portable-test\` — `engine\` (package `retrieval-portable-43ed356`),
-  `research\` (2,000 files), `ACCEPTANCE_TEST.md`
-- `dist/retrieval-portable-43ed356/` — the package, built from a clean HEAD
+- `C:\Users\Ali\Desktop\portable-test\` — `CLAUDE.md`, `engine\` (package
+  `retrieval-portable-23ae9d3`), `research\` (2,000 files), `ACCEPTANCE_TEST.md`
+- `dist/retrieval-portable-23ae9d3/` — the package, built from a clean HEAD; it adds
+  `INITIALIZE.md` and `CLAUDE_ROOT.md` to what `43ed356` shipped
 - `FINDINGS.md` — 10 predictions adjudicated, 9 further findings, Ali's column left empty
 - `A_package/`, `B_stage/`, `C_rehearsal/` — run records and every rehearsal log, including
   the live transcript `r3_09_ask1.jsonl` and the answer `r3_09_answer.md`
 - `corpus-lab/tests/test_install_registers_artefacts_db.py` (5 cases)
 - `corpus-lab/tests/test_install_md_selftest_command.py` (4 cases)
+- `corpus-lab/tests/test_tool_paths_resolve.py` (7 cases)
+- `corpus-lab/tests/test_initialize_md.py` (15 cases)
+- `F_initialize/` — the phase F run record
 
 ## Gate
 
@@ -104,15 +130,34 @@ entry), one untestable here and passed to Ali (F-03, the permission prompts). Ni
 findings, F-11 to F-19, were added; the three most likely to bite are F-03, F-16 (a routine
 progress message renders as a red PowerShell error and looks exactly like a crash) and F-09.
 
+**Phase F: a third blocker, F-01.** `pdftotext.exe` and `claude.exe` were absolute
+paths belonging to this machine, never looked up on PATH, though `INSTALL.md` promises
+"Claude Code on the PATH". Gate R3's grep covers `C:\Users` and `Desktop` only, so a
+`C:\Program Files` path and a `C:\nvm4w` path walked straight through it. Both are now
+resolved — env var, then this machine's historical location so that no recorded run
+changes, then PATH, then the ordinary install locations, then a bare name that fails with
+"not found" instead of with a stranger's directory — and `doctor` names the fix rather
+than a path. Commit `d9931b3`, seven tests.
+
+The phase F rehearsal went through clean on 500 documents: `doctor` 9/9, install 133 s
+(indexed 489, 39,647 pages, 146 families), self-test overall pass, and `c_shelf.py find`
+run from the documents folder with no `--db` and no `--shelf` returning eight ranked
+publications. Three further findings, F-20 to F-22, all fixed in the document: the red
+`NativeCommandError` block appears first at the **pip** step rather than the index pass;
+the time estimate was three minutes per thousand documents against 4.4 measured; and
+`REFUSED ... already has a CLAUDE.md` with exit 3 means a **finished** install, not a
+failed one — an agent that reads it as failure and follows its advice will `uninstall` a
+good index.
+
 The one live answer: 149 s, rc 0, four `Sources` lines, every one of them a page the
 transcript shows as `OPENED`, guard never triggered, and the answer volunteered where its
 series stopped instead of inventing the missing years.
 
 ## Adopted?
 
-Yes. The two fixes are on `phase11-fresh-folder` with tests; the suite goes 106 → 115, all
-passing. Ali's folder is staged with the fixed package and is waiting for him. Nothing
-pushed.
+Yes. Three fixes now, all on `phase11-fresh-folder` with tests; the suite goes 106 → 136,
+all passing. Ali's folder is staged with package `23ae9d3` and is waiting for him, and the
+route it is staged for is `initialize`, not `INSTALL.md`. Nothing pushed.
 
 ## Run record
 
@@ -120,15 +165,20 @@ pushed.
 - `B_stage/run_record.json` — id `P11B_stage`
 - `C_rehearsal/run_record.json` — id `P11C_rehearsal`
 - `E_trail/run_record.json` — id `P11E_trail`
+- `F_initialize/run_record.json` — id `P11F_initialize`
 
 ## What this does not show
 
 - **Not retrieval quality.** One live answer, no answer key, no score. It shows citation
   discipline held on one question, nothing about whether the answer is right.
-- **Not sir's machine.** The package still hardcodes this machine's `pdftotext.exe` and
-  `claude.exe` paths (F-01); `doctor` passes on them here precisely because this is the
-  machine they came from. Ali's instruction on 2026-09-17 was to cover that with a
-  `SETUP.md` rather than fix it in the engine, so it stays open.
+- **Not sir's machine.** F-01 is fixed, so the package no longer hardcodes this
+  machine's tools — but the fix has only been exercised *here*, where the historical
+  locations still win, plus a unit test and an env-var probe. The first real evidence
+  is the first install on a machine with no Git for Windows.
+- **Not a fresh agent.** The phase F rehearsal followed `INITIALIZE.md` step by step,
+  but it was followed by the agent that wrote it. Whether a session that has never seen
+  this repo follows it rather than improvising is exactly what Ali's run tests, and it
+  is the thing this phase cannot answer about itself.
 - **Not the interactive experience.** Rule 7 forbade an interactive `claude` session, so
   the permission prompts of F-03 — predicted to be the loudest friction — are unmeasured.
   Only Ali's run will show them.
