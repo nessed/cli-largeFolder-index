@@ -1,0 +1,78 @@
+{
+ "id": "P11F_initialize",
+ "schema": "run_record/1",
+ "started_at": "2026-09-17T11:14:06",
+ "finished_at": null,
+ "command": "fix F-01 tool-path resolution; add INITIALIZE.md agent runbook; rebuild package; restage Desktop\\portable-test; rehearse the initialize flow in a temp copy",
+ "recorder_argv": [
+  "corpus-lab/bin/run_record.py",
+  "start",
+  "--id",
+  "P11F_initialize",
+  "--out",
+  "corpus-lab/experiments/p11_fresh_folder/F_initialize",
+  "--cmd",
+  "fix F-01 tool-path resolution; add INITIALIZE.md agent runbook; rebuild package; restage Desktop\\portable-test; rehearse the initialize flow in a temp copy"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "e8d798a899dd7169387dd671a094ffe53d2266f9",
+  "branch": "phase11-fresh-folder",
+  "dirty": true,
+  "dirty_files": [
+   "M corpus-lab/bin/index_build.py",
+   " M corpus-lab/bin/labpaths.py",
+   " M corpus-lab/bin/make_portable.py",
+   " M corpus-lab/bin/setup_folder.py",
+   "?? corpus-lab/tests/test_initialize_md.py",
+   "?? corpus-lab/tests/test_tool_paths_resolve.py"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\.venv\\Scripts\\python.exe",
+  "packages": {
+   "fastembed": "0.8.0",
+   "onnxruntime": "1.30.0",
+   "numpy": "2.4.6",
+   "pdfplumber": "0.11.10"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": null,
+ "spec": null,
+ "inputs": {},
+ "declared_outputs": [],
+ "outputs_existed_at_start": {},
+ "outputs": {},
+ "notes": [],
+ "conclusion": null,
+ "adopted": null,
+ "supersedes": null
+}

@@ -53,7 +53,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import labpaths as L  # noqa: E402
 
 PORTABLE = L.STACKS / "portable"
-PDFTOTEXT = Path(r"C:\Program Files\Git\mingw64\bin\pdftotext.exe")
+PDFTOTEXT = Path(L.PDFTOTEXT)  # F-01: env, then PATH, then the usual places
 RUNTIME_PACKAGES = ("numpy", "fastembed", "onnxruntime", "pdfplumber")
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 # The 15,000 rung's artefacts are the frozen ones every recorded number rests on.
@@ -121,8 +121,14 @@ def doctor(a):
             chk("package_%s" % pkg, True, "importable")
         except Exception as e:
             chk("package_%s" % pkg, False, str(e)[:80])
-    chk("pdftotext", PDFTOTEXT.exists(), str(PDFTOTEXT))
-    chk("claude_exe", Path(L.CLAUDE).exists(), str(L.CLAUDE))
+    chk("pdftotext", PDFTOTEXT.is_absolute() and PDFTOTEXT.exists(),
+        str(PDFTOTEXT) if PDFTOTEXT.is_absolute() else
+        "not found on PATH -- install Git for Windows (it ships pdftotext), "
+        "or set PDFTOTEXT_EXE to a poppler pdftotext.exe")
+    _cl = Path(L.CLAUDE)
+    chk("claude_exe", _cl.is_absolute() and _cl.exists(),
+        str(_cl) if _cl.is_absolute() else
+        "not found on PATH -- install Claude Code, or set CLAUDE_CMD to its claude.exe")
 
     mp, found = find_model_cache()
     chk("embedding_model_%s" % MODEL_NAME.split("/")[-1], True,

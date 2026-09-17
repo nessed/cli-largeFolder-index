@@ -23,7 +23,17 @@ import argparse, hashlib, json, os, re, sqlite3, subprocess, sys, time, zipfile
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
-PDFTOTEXT = r"C:\Program Files\Git\mingw64\bin\pdftotext.exe"
+# F-01: resolved (env PDFTOTEXT_EXE, then Git for Windows, then PATH). The
+# try/except keeps this module runnable on its own, which the docstring above
+# promises, even when labpaths.py is not beside it.
+try:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    import labpaths as _L
+    PDFTOTEXT = _L.PDFTOTEXT
+except Exception:  # pragma: no cover - standalone fallback
+    import shutil as _shutil
+    PDFTOTEXT = (os.environ.get("PDFTOTEXT_EXE")
+                 or _shutil.which("pdftotext") or "pdftotext.exe")
 
 # Directory names that are reinstallable dependency material, never research signal.
 EXCLUDE_DIRS = {

@@ -17,12 +17,14 @@ Env overrides, all optional:
   CANARY_MANIFEST     phase 2.3: scoring-only, NEVER defaulted. Absent = not scoring.
   HARNESS_KEYS        answer_key.json + slots       (default: <private>/harness_keys)
   CLAUDE_CMD          claude.cmd; PATH `claude` is a shell wrapper CreateProcess can't run
+  PDFTOTEXT_EXE       pdftotext.exe (default: Git for Windows, then PATH)
 
 _first_existing() lets the same code run before and after the phase 1/2 moves:
 a candidate that exists wins, otherwise the post-move location is returned so
 that mkdir(parents=True) puts new output in the right place.
 """
 import os
+import shutil
 from pathlib import Path
 
 
@@ -101,10 +103,86 @@ QUESTION_SAMPLE = SCORES / "question_sample.json"
 # Fix: call claude.exe directly, never through cmd.exe. Verified across 8 prompt
 # shapes (newlines, double/single quotes, backticks, ^ & %): all 8 STREAM_JSON
 # via the .exe, 2 of 8 PROSE via the .cmd.
-_CLAUDE_EXE = Path(r"C:\nvm4w\nodejs\node_modules\@anthropic-ai\claude-code\bin\claude.exe")
-CLAUDE = os.environ.get(
-    "CLAUDE_CMD",
-    str(_CLAUDE_EXE) if _CLAUDE_EXE.exists() else r"C:\nvm4w\nodejs\claude.cmd")
+# Phase 11 (F-01): the two absolute paths below used to be this machine's and
+# nothing else. INSTALL.md promises "Claude Code on the PATH" and a Git for
+# Windows pdftotext, and neither was ever looked up, so on any second machine
+# doctor printed FAIL next to a directory the reader does not have. Both are now
+# resolved in order: env var, then this machine's historical location (so no
+# recorded run changes), then PATH, then the ordinary install locations. The
+# last resort is a bare name, which fails with "not found" rather than with a
+# stranger's directory.
+_NVM_CLAUDE_EXE = Path(r"C:\nvm4w\nodejs\node_modules\@anthropic-ai\claude-code\bin\claude.exe")
+
+
+def _sibling_claude_exe(p):
+    """npm puts claude.cmd in the global bin and the real .exe under
+    node_modules/@anthropic-ai/claude-code/bin beside it. CreateProcess cannot
+    run the .cmd wrapper (see the note above), so prefer the .exe when present."""
+    exe = p.parent / "node_modules" / "@anthropic-ai" / "claude-code" / "bin" / "claude.exe"
+    return exe if exe.exists() else None
+
+
+def _exists(p):
+    try:
+        return p is not None and str(p) and p.exists()
+    except OSError:
+        return False
+
+
+def find_claude():
+    """Absolute path to a runnable Claude Code executable, else the bare name."""
+    v = os.environ.get("CLAUDE_CMD")
+    if v:
+        return v
+    if _exists(_NVM_CLAUDE_EXE):
+        return str(_NVM_CLAUDE_EXE)
+    for name in ("claude.exe", "claude.cmd", "claude"):
+        w = shutil.which(name)
+        if not w:
+            continue
+        w = Path(w)
+        if w.suffix.lower() == ".exe":
+            return str(w)
+        return str(_sibling_claude_exe(w) or w)
+    tail = ("node_modules", "@anthropic-ai", "claude-code", "bin", "claude.exe")
+    for base in (Path.home() / ".local" / "bin",
+                 Path(os.environ.get("APPDATA", ".")) / "npm",
+                 Path(os.environ.get("ProgramFiles", ".")) / "nodejs"):
+        cand = base / "claude.exe"
+        if _exists(cand):
+            return str(cand)
+        cand = base.joinpath(*tail)
+        if _exists(cand):
+            return str(cand)
+    return "claude.exe"
+
+
+CLAUDE = find_claude()
+
+_GIT_PDFTOTEXT = Path(r"C:\Program Files\Git\mingw64\bin\pdftotext.exe")
+
+
+def find_pdftotext():
+    """Absolute path to pdftotext, else the bare name."""
+    v = os.environ.get("PDFTOTEXT_EXE")
+    if v:
+        return v
+    if _exists(_GIT_PDFTOTEXT):
+        return str(_GIT_PDFTOTEXT)
+    w = shutil.which("pdftotext")
+    if w:
+        return w
+    for cand in (Path(os.environ.get("ProgramFiles", ".")) / "Git" / "mingw64" / "bin" / "pdftotext.exe",
+                 Path(os.environ.get("ProgramFiles(x86)", ".")) / "Git" / "mingw64" / "bin" / "pdftotext.exe",
+                 Path(os.environ.get("LOCALAPPDATA", ".")) / "Programs" / "Git" / "mingw64" / "bin" / "pdftotext.exe",
+                 Path(os.environ.get("USERPROFILE", ".")) / "scoop" / "shims" / "pdftotext.exe",
+                 Path(os.environ.get("ProgramData", ".")) / "chocolatey" / "bin" / "pdftotext.exe"):
+        if _exists(cand):
+            return str(cand)
+    return "pdftotext.exe"
+
+
+PDFTOTEXT = find_pdftotext()
 
 
 def canary_manifest(required=True):
@@ -142,5 +220,6 @@ if __name__ == "__main__":
     import json
     d = describe()
     d["CLAUDE"] = CLAUDE
+    d["PDFTOTEXT"] = PDFTOTEXT
     d["CANARY_MANIFEST(env)"] = os.environ.get("CANARY_MANIFEST", "<unset>")
     print(json.dumps(d, indent=1))
