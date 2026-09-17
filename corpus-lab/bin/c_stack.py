@@ -220,7 +220,8 @@ def _sha(path):
 # --------------------------------------------------------------------- #
 # commands
 # --------------------------------------------------------------------- #
-def do_setup(corpus, py_exe=None, shelf_cli=None, register=True, shelf_dir=None):
+def do_setup(corpus, py_exe=None, shelf_cli=None, register=True, shelf_dir=None,
+             db_path=None):
     root = Path(corpus).resolve()
     if not root.is_dir():
         print("NO_SUCH_CORPUS %s" % root, file=sys.stderr)
@@ -275,12 +276,19 @@ def do_setup(corpus, py_exe=None, shelf_cli=None, register=True, shelf_dir=None)
         # Phase 9.2.3: --shelf-dir, default unchanged. The registry entry for a
         # rung is only ever rewritten HERE, never by hand, so what the model
         # resolves is always what the installer was told to install.
+        # Phase 11.D, finding F-02: --db, same shape as --shelf-dir above and
+        # the same default. Before this the db argument was the hardcoded
+        # development rung `s2_fts5/harness_15000.db`, which does not exist in a
+        # portable install -- so the first command CLAUDE.md prints died with
+        # `unable to open database file`. Gate R2 missed it because
+        # p10_cleanroom.py passes --db and --shelf explicitly and never resolves
+        # through the registry; a real user, and the model, pass neither.
         import c_shelf as CSH
         sd = Path(shelf_dir) if shelf_dir else (L.STACKS / "s7_shelf")
-        CSH.do_register(str(root),
-                        str(L.STACKS / "s2_fts5" / "harness_15000.db"),
-                        str(sd / "shelf.db"))
+        dbp = Path(db_path) if db_path else (L.STACKS / "s2_fts5" / "harness_15000.db")
+        CSH.do_register(str(root), str(dbp), str(sd / "shelf.db"))
         state["shelf_dir"] = str(sd)
+        state["db"] = str(dbp)
         sp.write_text(json.dumps(state, indent=1), encoding="utf-8")
     print("INSTALLED %s" % root)
     return 0
@@ -445,13 +453,16 @@ def main():
         if name == "setup":
             p.add_argument("--shelf-dir", dest="shelf_dir", default=None,
                            help="shelf directory to register (default: s7_shelf)")
+            p.add_argument("--db", dest="db_path", default=None,
+                           help="pages database to register (default: the "
+                                "s2_fts5 development rung)")
     sub.add_parser("selftest")
     a = ap.parse_args()
     if not a.cmd:
         ap.print_usage()
         return 2
     if a.cmd == "setup":
-        return do_setup(a.corpus, shelf_dir=a.shelf_dir)
+        return do_setup(a.corpus, shelf_dir=a.shelf_dir, db_path=a.db_path)
     if a.cmd == "status":
         return do_status(a.corpus)
     if a.cmd == "teardown":

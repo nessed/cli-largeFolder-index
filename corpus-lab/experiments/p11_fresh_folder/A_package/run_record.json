@@ -2,7 +2,7 @@
  "id": "P11A_package",
  "schema": "run_record/1",
  "started_at": "2026-09-17T04:49:40",
- "finished_at": null,
+ "finished_at": "2026-09-17T04:52:44",
  "command": "pytest corpus-lab/tests; python corpus-lab/bin/make_portable.py --out dist",
  "recorder_argv": [
   "corpus-lab\\bin\\run_record.py",
@@ -76,11 +76,18 @@
  "outputs_existed_at_start": {
   "dist\\retrieval-portable-c334c5e": false
  },
- "outputs": {},
+ "outputs": {
+  "dist\\retrieval-portable-c334c5e": null
+ },
  "notes": [
-  "2026-09-17T04:50:38  Test suite at HEAD c334c5e (repo venv): 105 passed, 1 failed. Failure is pre-existing and unrelated to Plan F: corpus-lab/tests/evidence_v1/test_inventory.py::TestInventory::test_08_partially_readable_pdf expects 'partially_readable', gets 'parser_failed'. Baseline count for Phase D arithmetic: 106 collected / 105 passing."
+  "2026-09-17T04:50:38  Test suite at HEAD c334c5e (repo venv): 105 passed, 1 failed. Failure is pre-existing and unrelated to Plan F: corpus-lab/tests/evidence_v1/test_inventory.py::TestInventory::test_08_partially_readable_pdf expects 'partially_readable', gets 'parser_failed'. Baseline count for Phase D arithmetic: 106 collected / 105 passing.",
+  "2026-09-17T04:52:43  Package dist\\retrieval-portable-a9ab77a built from HEAD a9ab77a. Manifest: package_commit=a9ab77ada990c24993134a27012bcc09aceed6dc (equals HEAD), package_dirty=false, default_builder=v1, refused=[]. 18 files in bin\\ (15 allowlisted + closure: corpus_search.py, stack.py, trajectory_filler.py). Package total 21 files, 273,145 bytes.",
+  "2026-09-17T04:52:44  First build attempt (commit c334c5e) reported package_dirty=true because make_portable.py:261 counts untracked files in git status --short. Untracked plans_fable/F_FRESH_FOLDER_ACCEPTANCE/ and the new experiment dir were committed first, then the package rebuilt. No code changed.",
+  "2026-09-17T04:52:44  Gate R3 rule holds: grep of the whole package for 'C:\\Users' = 0 hits, 'Desktop' = 0 hits. F-01 CONFIRMED and wider than predicted: hardcoded pdftotext path appears in TWO files, setup_folder.py:56 and index_build.py:26 (the plan named only setup_folder.py). Hardcoded claude.exe path: labpaths.py:104 and :107. 'retrieval-lab\\' 1 hit, a docstring in c_shelf.py:8. '_private' 13 hits, all docstrings/permission patterns, none a filesystem path into the dev repo.",
+  "2026-09-17T04:52:44  bin/ vs the 02f53c8 package: file names identical (18 vs 18); 3 files differ by sha256 (c_stack.py, c_caption_embed.py, c_caption_index.py) but Compare-Object over their lines shows zero line differences and git diff 02f53c8 HEAD --stat for them is empty. The delta is line endings only (old CRLF, new LF after git's normalization). Content equals HEAD, as the plan expected. Logged as F-11.",
+  "2026-09-17T04:52:44  WARNING declared output(s) absent at finish: dist\\retrieval-portable-c334c5e"
  ],
- "conclusion": null,
- "adopted": null,
+ "conclusion": "Package retrieval-portable-a9ab77a built from a clean HEAD; manifest checks all pass; Gate R3's absolute-path rule holds; F-01 confirmed by grep and is wider than predicted (two files, not one). Test baseline 105 passed / 1 pre-existing failure.",
+ "adopted": "yes",
  "supersedes": null
 }

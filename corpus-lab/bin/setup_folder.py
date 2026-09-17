@@ -254,7 +254,8 @@ def install(a):
     # 5. install the two files and register the root
     print("[5/5] installing CLAUDE.md and .claude/settings.json", flush=True)
     rc, s = _run([_py(), str(L.BIN / "c_stack.py"), "setup",
-                  "--corpus", str(folder), "--shelf-dir", str(art["shelf_dir"])])
+                  "--corpus", str(folder), "--shelf-dir", str(art["shelf_dir"]),
+                  "--db", str(art["db"])])
     timings["stack_s"] = round(s, 1)
     if rc != 0:
         print("STACK_SETUP_FAILED rc=%d" % rc, file=sys.stderr)

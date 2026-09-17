@@ -1,0 +1,83 @@
+{
+ "id": "P11C_rehearsal",
+ "schema": "run_record/1",
+ "started_at": "2026-09-17T04:55:56",
+ "finished_at": null,
+ "command": "dress rehearsal following engine\\INSTALL.md literally in C:\\Users\\Ali\\AppData\\Local\\Temp\\portable-rehearsal-20260917-0455",
+ "recorder_argv": [
+  "corpus-lab\\bin\\run_record.py",
+  "start",
+  "--id",
+  "P11C_rehearsal",
+  "--out",
+  "corpus-lab\\experiments\\p11_fresh_folder\\C_rehearsal",
+  "--cmd",
+  "dress rehearsal following engine\\INSTALL.md literally in C:\\Users\\Ali\\AppData\\Local\\Temp\\portable-rehearsal-20260917-0455",
+  "--reads",
+  "dist\\retrieval-portable-a9ab77a",
+  "--models",
+  "claude-sonnet-5"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "a9ab77ada990c24993134a27012bcc09aceed6dc",
+  "branch": "phase11-fresh-folder",
+  "dirty": true,
+  "dirty_files": [
+   "M corpus-lab/experiments/p11_fresh_folder/A_package/run_record.json",
+   "?? corpus-lab/experiments/p11_fresh_folder/B_stage/",
+   "?? corpus-lab/experiments/p11_fresh_folder/FINDINGS.md"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+  "packages": {
+   "fastembed": "importlib.metadata.PackageNotFoundError: No package metadata was found for fastembed",
+   "onnxruntime": "importlib.metadata.PackageNotFoundError: No package metadata was found for onnxruntime",
+   "numpy": "importlib.metadata.PackageNotFoundError: No package metadata was found for numpy",
+   "pdfplumber": "importlib.metadata.PackageNotFoundError: No package metadata was found for pdfplumber"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [
+   "claude-sonnet-5"
+  ],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": null,
+ "spec": null,
+ "inputs": {
+  "dist\\retrieval-portable-a9ab77a": "<dir>"
+ },
+ "declared_outputs": [],
+ "outputs_existed_at_start": {},
+ "outputs": {},
+ "notes": [],
+ "conclusion": null,
+ "adopted": null,
+ "supersedes": null
+}
