@@ -227,6 +227,12 @@ which the first run of a session inherits from whatever ran last.
 The true baseline is **106 collected, 106 passing**; after both fixes the suite is **115
 collected, 115 passing** — the old count plus exactly the nine new tests.
 
+**Confirmed again at the end of the phase.** The final verification run reported
+`1 failed, 114 passed`; an immediate rerun of the same suite on the same code gave
+`115 passed`. The flake is real and recurs on the first suite run inside a fresh shell.
+It is worth someone's attention on its own, and it means any single green run of this
+suite should be read with that in mind.
+
 **Class:** not a bug for this plan. The flake is in the test's temp-directory hygiene, not
 in the engine.
 
