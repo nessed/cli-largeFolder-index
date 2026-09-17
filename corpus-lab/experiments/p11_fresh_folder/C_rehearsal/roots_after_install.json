@@ -1,0 +1,27 @@
+{
+ "c:/users/ali/desktop/retrieval-lab/harness/corpus_15000": {
+  "root": "C:/Users/Ali/Desktop/retrieval-lab/harness/corpus_15000",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "shelf": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf\\shelf.db"
+ },
+ "c:/users/ali/appdata/local/temp/claude/c--users-ali-desktop-retrieval-lab/4f400091-ed35-406a-9144-cc4cc9f764b8/scratchpad/hooktest": {
+  "root": "C:/Users/Ali/AppData/Local/Temp/claude/C--users-ali-desktop-retrieval-lab/4f400091-ed35-406a-9144-cc4cc9f764b8/scratchpad/hooktest",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "shelf": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf\\shelf.db"
+ },
+ "c:/users/ali/appdata/local/temp/claude/c--users-ali-desktop-retrieval-lab/4f400091-ed35-406a-9144-cc4cc9f764b8/scratchpad/hooktest2": {
+  "root": "C:/Users/Ali/AppData/Local/Temp/claude/C--users-ali-desktop-retrieval-lab/4f400091-ed35-406a-9144-cc4cc9f764b8/scratchpad/hooktest2",
+  "db": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s2_fts5\\harness_15000.db",
+  "shelf": "C:\\Users\\Ali\\Desktop\\retrieval-lab\\corpus-lab\\02_stacks\\s7_shelf\\shelf.db"
+ },
+ "c:/users/ali/appdata/local/temp/p10_clean_a/corpus_trace": {
+  "root": "C:/Users/Ali/AppData/Local/Temp/p10_clean_A/corpus_trace",
+  "db": "C:\\Users\\Ali\\AppData\\Local\\Temp\\p10_clean_A\\package\\02_stacks\\s2_fts5\\harness_15000.db",
+  "shelf": "C:\\Users\\Ali\\AppData\\Local\\Temp\\p10_clean_A\\artefacts_trace\\shelf\\shelf.db"
+ },
+ "c:/users/ali/appdata/local/temp/portable-rehearsal3-20260917-051443/research": {
+  "root": "C:/Users/Ali/AppData/Local/Temp/portable-rehearsal3-20260917-051443/research",
+  "db": "C:\\Users\\Ali\\AppData\\Local\\Temp\\portable-rehearsal3-20260917-051443\\engine\\artefacts\\pages.db",
+  "shelf": "C:\\Users\\Ali\\AppData\\Local\\Temp\\portable-rehearsal3-20260917-051443\\engine\\artefacts\\shelf\\shelf.db"
+ }
+}

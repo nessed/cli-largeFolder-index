@@ -2,7 +2,7 @@
  "id": "P11C_rehearsal",
  "schema": "run_record/1",
  "started_at": "2026-09-17T04:55:56",
- "finished_at": null,
+ "finished_at": "2026-09-17T05:26:11",
  "command": "dress rehearsal following engine\\INSTALL.md literally in C:\\Users\\Ali\\AppData\\Local\\Temp\\portable-rehearsal-20260917-0455",
  "recorder_argv": [
   "corpus-lab\\bin\\run_record.py",
@@ -76,8 +76,13 @@
  "declared_outputs": [],
  "outputs_existed_at_start": {},
  "outputs": {},
- "notes": [],
- "conclusion": null,
- "adopted": null,
+ "notes": [
+  "2026-09-17T05:26:10  Three rehearsals, each from a new temp dir, each deleted after. R1 (package a9ab77a) died at the first CLAUDE.md command with sqlite3.OperationalError: unable to open database file -- blocker F-02. R2 (c0442de, after the F-02 fix) ran all seven shelf commands with no flags, then died at INSTALL.md's 'Check the build' with selftest exit 1 -- blocker F-17. R3 (43ed356, after both fixes) completed every INSTALL.md step with exit 0.",
+  "2026-09-17T05:26:10  R3 timings: venv 20s, pip 73s (72 wheels from cache, 0 downloaded), doctor 9 checks 0 failed, install 139s, selftest _overall pass=true exit 0. COVERAGE indexed=489 image_only_no_text=9 failed=1 unsupported=1 pages=39647; SHELF families=146 documents=472. Identical to R1 and R2 to within 0.5s per stage.",
+  "2026-09-17T05:26:10  One live answer, claude-sonnet-5, 149s, rc=0. n_sources=2 unique pairs across 4 Sources lines, n_opened=4, sources_unopened=none, sources_all_opened=true (verified by hand for all four lines), guard_blocks=0. has_sources_block=false is a frozen-parser artefact, see F-18.",
+  "2026-09-17T05:26:11  Residue: all three temp roots deleted; roots.json back to its 4 pre-existing entries byte-identical; the ~/.claude/projects directory uninstall left behind was removed by hand (finding F-19). research tree after uninstall byte-identical to harness/corpus_500, 500 files, 0 sha256 mismatches in a 50-file sweep."
+ ],
+ "conclusion": "Rehearsal found two blockers, both the same shape -- the clean-room harness passes a flag INSTALL.md does not print. Both fixed with tests and re-rehearsed from a new temp dir; R3 completed every INSTALL.md step with exit 0 and produced one live answer whose every citation was a page it had opened. 19 findings recorded.",
+ "adopted": "yes",
  "supersedes": null
 }

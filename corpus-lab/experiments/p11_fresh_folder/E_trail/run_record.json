@@ -1,0 +1,91 @@
+{
+ "id": "P11E_trail",
+ "schema": "run_record/1",
+ "started_at": "2026-09-17T05:27:06",
+ "finished_at": "2026-09-17T05:30:08",
+ "command": "experiment README, FINDINGS, progress.jsonl, docs_check, handoff, commit",
+ "recorder_argv": [
+  "corpus-lab\\bin\\run_record.py",
+  "start",
+  "--id",
+  "P11E_trail",
+  "--out",
+  "corpus-lab\\experiments\\p11_fresh_folder\\E_trail",
+  "--cmd",
+  "experiment README, FINDINGS, progress.jsonl, docs_check, handoff, commit",
+  "--writes",
+  "REPORT\\08_what_next\\HANDOFF_2026-09-18.md"
+ ],
+ "cwd": "C:\\Users\\Ali\\Desktop\\retrieval-lab",
+ "git": {
+  "head": "43ed356c2d731241bdc9b22643d3387443484894",
+  "branch": "phase11-fresh-folder",
+  "dirty": true,
+  "dirty_files": [
+   "M corpus-lab/experiments/p11_fresh_folder/C_rehearsal/run_record.json",
+   " M corpus-lab/experiments/p11_fresh_folder/FINDINGS.md",
+   "?? corpus-lab/experiments/p11_fresh_folder/C_rehearsal/r3_09_answer.md",
+   "?? corpus-lab/experiments/p11_fresh_folder/C_rehearsal/r3_09_ask1.jsonl",
+   "?? corpus-lab/experiments/p11_fresh_folder/C_rehearsal/r3_09_ask_check.json",
+   "?? corpus-lab/experiments/p11_fresh_folder/C_rehearsal/roots_after_install.json",
+   "?? corpus-lab/experiments/p11_fresh_folder/C_rehearsal/roots_after_uninstall.json",
+   "?? corpus-lab/experiments/p11_fresh_folder/README.md"
+  ]
+ },
+ "env_overrides": {
+  "CORPUS_LAB_ROOT": null,
+  "RETRIEVAL_LAB_ROOT": null,
+  "LAB_PRIVATE": null,
+  "HARNESS_ROOT": null,
+  "RASHIP_ROOT": null,
+  "RUNS_ROOT": null,
+  "SCORES_ROOT": null,
+  "HARNESS_KEYS": null,
+  "CANARY_MANIFEST": null,
+  "CLAUDE_CMD": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "runtime": {
+  "python": "3.11.5",
+  "python_exe": "C:\\Users\\Ali\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+  "packages": {
+   "fastembed": "importlib.metadata.PackageNotFoundError: No package metadata was found for fastembed",
+   "onnxruntime": "importlib.metadata.PackageNotFoundError: No package metadata was found for onnxruntime",
+   "numpy": "importlib.metadata.PackageNotFoundError: No package metadata was found for numpy",
+   "pdfplumber": "importlib.metadata.PackageNotFoundError: No package metadata was found for pdfplumber"
+  },
+  "claude_exe": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+  "claude_version": "2.1.257 (Claude Code)",
+  "workers": null,
+  "OMP_NUM_THREADS": null,
+  "PYTHONHASHSEED": null
+ },
+ "models": {
+  "requested_ids": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "embedding_model_files_sha256": {
+   "models--qdrant--bge-small-en-v1.5-onnx-q/model_optimized.onnx": "51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431",
+   "models--Xenova--ms-marco-MiniLM-L-6-v2/model.onnx": "c623d0bcb99f4622beb413eaef00cfbe5db20df9f1dd982da4b4f26022881870"
+  }
+ },
+ "rung": null,
+ "spec": null,
+ "inputs": {},
+ "declared_outputs": [
+  "REPORT\\08_what_next\\HANDOFF_2026-09-18.md"
+ ],
+ "outputs_existed_at_start": {
+  "REPORT\\08_what_next\\HANDOFF_2026-09-18.md": false
+ },
+ "outputs": {
+  "REPORT\\08_what_next\\HANDOFF_2026-09-18.md": "e4a74373fef17e803325f2ea1d9226776ab278ce2ca237e6e7413153a8750c89"
+ },
+ "notes": [
+  "2026-09-17T05:30:07  README (nine headings), FINDINGS.md (10 predictions adjudicated + F-11..F-19), six P11 lines in progress.jsonl, HANDOFF_2026-09-18.md. Suite 106 -> 115 all passing. Ali's engine re-staged with retrieval-portable-43ed356.",
+  "2026-09-17T05:30:08  docs_check default run reports 3 failures: this record before it is finished, plus corpus-lab/state/phase9_baseline_console.txt and phase9_live_spec.md. The latter two are inherited, not caused: mtime 2026-09-17T04:31:15, eighteen minutes before P11A_package opened at 04:49:40, byte-identical to HEAD (git diff empty), and never written by this phase. check_no_silent_overwrite flags any non-JSON file whose mtime is at or after the marker, regardless of content, so it cannot tell. Recorded rather than papered over; the marker and snapshot were left alone."
+ ],
+ "conclusion": "Trail complete: experiment README with the nine headings, FINDINGS.md with every prediction adjudicated and nine new findings, four run records, six progress lines, handoff. Everything Plan F touched passes docs_check; the two Gate D failures that remain predate this phase by eighteen minutes and are byte-identical to HEAD.",
+ "adopted": "yes",
+ "supersedes": null
+}

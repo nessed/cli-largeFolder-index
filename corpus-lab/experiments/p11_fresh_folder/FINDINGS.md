@@ -1,19 +1,43 @@
 # Plan F / Phase 11 — findings
 
-Fresh-folder acceptance stage. Package `retrieval-portable-a9ab77a`, built from HEAD
-`a9ab77ada990c24993134a27012bcc09aceed6dc` on branch `phase11-fresh-folder`.
+Fresh-folder acceptance stage. The package staged for Ali is
+`retrieval-portable-43ed356`, built from HEAD `43ed356` on branch
+`phase11-fresh-folder`, after two blocker fixes found by the dress rehearsal.
 
-The predictions below were copied verbatim from
+The ten predictions below were copied verbatim from
 `plans_fable/F_FRESH_FOLDER_ACCEPTANCE/EXECUTE_2026-09-17.md` section 3 **before** the
-first rehearsal command was run. The *observed in rehearsal* and *class* columns were
-filled afterwards. The *observed by Ali* column is left empty for him.
+first rehearsal command ran. The *observed in rehearsal* and *class* columns were filled
+afterwards. The *observed by Ali* column is left empty for him.
 
-**Classes.** *blocker* — an `INSTALL.md` step followed exactly as printed that exits
-non-zero or leaves the next step impossible, or a `CLAUDE.md` command run from inside the
-installed folder with no extra flags that prints `NO_REGISTERED_ROOT`, `unable to open
-database file`, a traceback, or nothing where output is documented. *friction* —
-everything else a stranger had to know, guess, wait for or tolerate that `INSTALL.md` did
-not say. *not a bug* — it worked and the document was enough.
+**Classes.** *blocker* — a step in `INSTALL.md`, followed exactly as printed, that exits
+non-zero or leaves the next step impossible; or a command in the installed folder's
+`CLAUDE.md`, run from inside that folder with no extra flags, that prints
+`NO_REGISTERED_ROOT`, `unable to open database file`, a traceback, or nothing where output
+is documented. *friction* — everything else a stranger had to know, guess, wait for or
+tolerate that `INSTALL.md` did not say. *not a bug* — it worked and the document was enough.
+
+**Three rehearsals were run**, each from a new temp directory, each deleted afterwards:
+
+| | package | purpose | outcome |
+|---|---|---|---|
+| R1 | `a9ab77a` | first pass | died at the first `CLAUDE.md` command (F-02) |
+| R2 | `c0442de` | after the F-02 fix | shelf commands all work; died at "Check the build" (F-17) |
+| R3 | `43ed356` | after the F-17 fix | every `INSTALL.md` step exits 0; live answer produced |
+
+---
+
+## Summary
+
+**Two blockers, both fixed.** Both were the same shape, and it is worth naming that shape
+because it is likely to recur: *the clean-room harness passed a flag that the document does
+not print*. `p10_cleanroom.py` supplies `--db`/`--shelf` on every shelf call and
+`--expect-pages 0` on the self-test. Gate R1, R2 and R3 therefore measured the engine and
+never once ran the commands a reader of `INSTALL.md` would run. Seven nights of green gates
+sat on top of a package whose first user-facing command raised a traceback.
+
+**Predictions:** 6 confirmed (F-01, F-02, F-04, F-06 partially, F-07, F-08, F-09),
+1 denied (F-05), 2 could not be tested here and pass to Ali (F-03, and the interactive half
+of F-09), 1 satisfied (F-10). Nine further findings, F-11 to F-19, were added.
 
 ---
 
@@ -30,9 +54,15 @@ R3's absolute-path grep only looks for `C:\Users` and `Desktop`, so it passed.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **CONFIRMED, and wider than predicted.** The grep of the built package finds the pdftotext path in **two** files, not one: `setup_folder.py:56` and `index_build.py:26`. The claude path is at `labpaths.py:104` and `:107`. As predicted, `doctor` reports `[PASS] pdftotext C:\Program Files\Git\mingw64\bin\pdftotext.exe` and `[PASS] claude_exe C:\nvm4w\nodejs\...\claude.exe` — both pass here precisely because this is the machine they were hardcoded from, so the rehearsal cannot show the failure. Gate R3's rule still holds honestly: `C:\Users` and `Desktop` are zero hits. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **friction here, blocker on sir's machine.** Not fixed, by Ali's instruction. |
+
+**Ali's decision, 2026-09-17.** Asked mid-run to treat this as out of scope: *"forget the
+little parts like reproducing claude.exe install and pdf to text install that can honestly
+just be setup.md the bot has to follow when u open Claude code in a new folder"*. So the
+intended remedy is a `SETUP.md` that an agent follows on a new machine, not PATH lookup in
+the engine. Recorded here as the first item that document has to cover.
 
 ### F-02 — registered pages-database path
 
@@ -44,33 +74,27 @@ file` or `NO_REGISTERED_ROOT`, this is a **blocker**.
 
 | column | value |
 |---|---|
-| observed in rehearsal | **CONFIRMED, and it is a blocker.** After a clean `install --folder $R
-esearch --artefacts .rtefacts --seed-env`, the registry entry written for the folder is `"db": "<R>\engine_stacks\s2_fts5\harness_15000.db"` — a path that **does not exist** (`Test-Path` false; `02_stacks` is on the package's excluded-dirs list). `"shelf"` is correct, `<artefacts>\shelf\shelf.db`, because `--shelf-dir` is already plumbed through. The very first command `CLAUDE.md` tells the model to run, executed from inside `$R
-esearch` with no `--db`/`--shelf`, dies: `sqlite3.OperationalError: unable to open database file`, raised at `c_shelf.py:115` in `Ctx.__init__` via `get_ctx` at `c_shelf.py:199`, exit code 1, full traceback on stderr. `find`, `have`, `inside`, `open`, `note`, `notes` all route through the same `get_ctx`, so none of them can work. See `C_rehearsal/08a_find.log`. |
+| observed in rehearsal | **CONFIRMED, and it is a blocker.** After a clean install, the registry entry read `"db": "<R>\engine\02_stacks\s2_fts5\harness_15000.db"` — a path that does not exist (`02_stacks` is on the package's excluded-dirs list). `"shelf"` was correct, because `--shelf-dir` is already plumbed through. The very first command `CLAUDE.md` tells the model to run, executed from inside the research folder with no `--db`/`--shelf`, died: `sqlite3.OperationalError: unable to open database file`, raised at `c_shelf.py:115` in `Ctx.__init__` via `get_ctx` at `c_shelf.py:199`, exit 1, traceback on stderr. `find`, `have`, `inside`, `open`, `note` and `notes` all route through the same `get_ctx`, so none of them could work. Log: `C_rehearsal/08a_find.log`. |
 | observed by Ali | |
-| class | **blocker** — fixed in Phase D, see below. |
+| class | **blocker — fixed**, commit `c0442de`. |
 
-**Why Gate R2 passed anyway.** The planning session could not reconcile the broken
-registration with R2's successful two-page answer. The answer is that the clean-room
-harness never used the registry: `corpus-labin\p10_cleanroom.py:243` builds every shelf
-invocation as `[python, c_shelf.py, "--db", <artefacts>\pages.db, "--shelf", ...]`, passing
-both paths explicitly on the command line. `--db` overrides the registry lookup entirely.
-So R2 measured the engine, and never the one line of plumbing that a real user depends on.
-This is the exact failure mode the plan was written to catch: *"every one of those installs
-was driven by a harness script that knows the engine inside out"*.
+**Why Gate R2 passed anyway.** The clean-room harness never used the registry:
+`corpus-lab\bin\p10_cleanroom.py:243` builds every shelf invocation as
+`[python, c_shelf.py, "--db", <artefacts>\pages.db, "--shelf", ...]`, passing both paths
+explicitly. `--db` short-circuits the registry lookup. R2 measured the engine and never the
+one line of plumbing a real user depends on.
 
-**Responsible line.** `c_stack.py:280-282`, in `do_setup`:
+**The fix.** `c_stack.do_setup` gains `db_path=None`, `c_stack.py setup` gains `--db`, and
+`setup_folder.py` passes `art["db"]` — the value it already computes at line 154 and
+already hands to every other stage. The default is unchanged, so nothing outside a portable
+install behaves differently. Tests:
+`corpus-lab/tests/test_install_registers_artefacts_db.py`, five cases, all five failing
+before and passing after; `test_04` drives `c_shelf._resolve` from inside the folder with no
+flags, which is exactly what the model does.
 
-```python
-CSH.do_register(str(root),
-                str(L.STACKS / "s2_fts5" / "harness_15000.db"),   # <- hardcoded
-                str(sd / "shelf.db"))                             # <- parameterised
-```
-
-`shelf_dir` is a `do_setup` parameter fed by `setup_folder.py:257`'s `--shelf-dir`. The db
-argument beside it is a frozen development-rung constant. `setup_folder.py:154` already
-computes the right value as `art["db"] = <artefacts>/pages.db` and passes it to every other
-stage; it simply never reaches `c_stack setup`.
+**Verified in R2/R3.** All seven commands now run from inside the research folder with no
+flags: `find` (40 families), `have` (`EDITION_PRESENT 2021-22 ... (165p)`), `inside`,
+`open` (printed the page text), `note` (`NOTED`), `notes`, `coverage`. Logs `r2_08*`.
 
 ### F-03 — a permission prompt on every engine command
 
@@ -81,9 +105,9 @@ bypassPermissions`, but `INSTALL.md` leads with the interactive route.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **Not testable here** — rule 7 forbids an interactive session, and the one live call went through `ask`, which passes `--permission-mode bypassPermissions` (`setup_folder.py:338`) and so sees no prompts at all. The static half is confirmed by reading the installed `.claude\settings.json`: it contains `permissions.deny` and a `hooks.Stop` entry, and **no allow list**. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **friction — passes to Ali.** Predicted to be the loudest thing he meets. |
 
 ### F-04 — moving the engine folder breaks every command
 
@@ -94,32 +118,31 @@ engine folder after install breaks every command silently. `INSTALL.md` does not
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **CONFIRMED.** The installed `CLAUDE.md` embeds the absolute interpreter and script paths in all fourteen commands it prints. After renaming the rehearsal root, the command `CLAUDE.md` prints fails with `The term '...\engine\.venv\Scripts\python.exe' is not recognized as the name of a cmdlet, function, script file, or operable program.` The failure is loud rather than silent, which is better than predicted — but it names a missing interpreter, not a moved folder, so the reader is not told what to do. Log: `C_rehearsal/r3_10_moved.log`. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **friction (documentation).** `INSTALL.md` should say: do not move or rename the engine folder after installing; if you do, uninstall and install again. |
 
 ### F-05 — an empty `_private\` appears next to the package
 
 **Prediction.** `install` creates an empty `_private\` next to the package because
 `labpaths.PRIVATE` defaults to `<package parent>\_private` and something calls `mkdir`.
-Untidy, and it invites the wrong assumption.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **DENIED.** After a full install the rehearsal root held exactly `engine\` and `research\`. The only `_private` anywhere under it was `engine\.venv\Lib\site-packages\numpy\testing\_private`, which is numpy's. The engine directory gained `.venv\`, `artefacts\`, `99_scratch\` and `state\` — all expected, none of them `_private`. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **not a bug.** The 2026-09-17 handoff's note about this no longer reproduces. |
 
 ### F-06 — undocumented default `--workers 12`
 
-**Prediction.** The default `--workers 12` is not mentioned in `INSTALL.md`; the R2
-install used `--workers 8`. On a laptop 12 pdftotext processes may thrash.
+**Prediction.** The default `--workers 12` is not mentioned in `INSTALL.md`; the R2 install
+used `--workers 8`. On a laptop 12 pdftotext processes may thrash.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **Half confirmed.** `INSTALL.md` indeed never mentions `--workers`. No thrashing: this machine reports 16 logical processors, and the 500-file install took **139-140 s** across three runs, against the ≈2 min in `INSTALL_FOR_SIR.md`'s table. Stage timings were stable to within 0.5 s across all three (`index_s` 25.8-26.4, `shelf_s` 67.7-68.0, `caption_embed_s` 42.3-42.7). |
 | observed by Ali | |
-| class | _pending_ |
+| class | **not a bug** on a 16-core machine. Unknown on sir's; the 2,000-file folder Ali is about to install is the real test of the published ≈6 min. |
 
 ### F-07 — the embedding-model download is never exercised here
 
@@ -128,9 +151,9 @@ neither the rehearsal nor Ali's run exercises sir's first-run download.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **CONFIRMED.** `doctor` prints, verbatim: `[PASS] embedding_model_bge-small-en-v1.5   cached at C:\Users\Ali\AppData\Local\temp\fastembed_cache\models--qdrant--bge-small-en-v1.5-onnx-q`. `pip install` also downloaded nothing at all — 72 wheels came from cache, 0 downloaded, in 73-89 s. A stranger's first run does both: ~130 MB of model and a full wheel download. Neither this rehearsal nor Ali's run will measure that. See also F-15 on the attempted probe. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **test-coverage gap, not a bug.** Also worth noting the cache lives under a directory named `temp`; a disk cleaner could delete it and force a silent re-download. |
 
 ### F-08 — "Python 3.11" with no way to check it
 
@@ -140,22 +163,27 @@ verifies the interpreter is inside `.venv`.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **CONFIRMED.** `python -m venv .venv` picked `C:\Users\Ali\AppData\Local\Programs\Python\Python311\python.exe` and the venv reports `3.11.5`, so it worked here by luck of PATH order. `doctor`'s first line is `[PASS] python_is_the_venv <path>` — it asserts the interpreter is the venv's and never looks at the version. Nothing in the install path would catch a 3.12 or a Microsoft Store stub. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **friction (documentation).** One line — `python --version` should print 3.11.x — would close it. |
 
 ### F-09 — "Ask it something" stops where the hard part starts
 
 **Prediction.** `INSTALL.md` tells the user to `cd <your folder>` and run
 `claude --model claude-opus-5`, but says nothing about what happens next, what a good
 answer looks like, what a `Sources` block is, or that a `COVERAGE` line exists.
-`INSTALL_FOR_SIR.md` has all of that and is not in the package.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **CONFIRMED by reading both documents.** `INSTALL.md`'s "Ask it something" is six lines: two commands and nothing else. It never explains what a `Sources` block is, that a `COVERAGE` line will appear, that the first `inside` call pauses to build a page-range cache, what "not here" looks like, or that answers take one to three minutes. A stranger reaching this section has a working index and no idea what success looks like. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **friction (documentation), the largest one.** |
+
+**Which paragraphs of `INSTALL_FOR_SIR.md` a stranger would have needed** — read only after
+the rehearsal's stranger-steps were finished, per rule: the wall-time table (to know a
+2,000-file install is ≈6 minutes and not hung), the description of the `COVERAGE` line, the
+worked example of a `Sources` block, and the paragraph on what an honest "not here" reads
+like. Those four are what the package is missing.
 
 ### F-10 — one machine-global registry shared by every install
 
@@ -165,9 +193,9 @@ stale entry from a deleted folder lingers forever.
 
 | column | value |
 |---|---|
-| observed in rehearsal | _pending_ |
+| observed in rehearsal | **SATISFIED.** The registry held 4 entries before the rehearsal (`corpus_15000`, two scratchpad `hooktest` folders, and a stale `p10_clean_a\corpus_trace` from Plan E). Install added a 5th; `uninstall` removed exactly that one and left the other four byte-identical. Snapshots: `roots_before.json`, `roots_after_install.json`, `roots_after_uninstall.json`. The stale-entry half of the prediction is visible in the data: `p10_clean_a\corpus_trace` names a temp folder deleted weeks ago and still sits in the registry, pointing at a db that no longer exists. |
 | observed by Ali | |
-| class | _pending_ |
+| class | **not a bug** for the acceptance test — no other entry changed. The lingering stale entry is untidiness, not a defect anyone will hit. |
 
 ---
 
@@ -175,43 +203,169 @@ stale entry from a deleted folder lingers forever.
 
 ### F-11 — the packaged `bin/` differs from the 02f53c8 package by line endings only
 
-**Observed in Phase A.** The plan predicted
-`diff -r dist\retrieval-portable-02f53c8\bin dist\retrieval-portable-<HEAD7>\bin` would be
-empty. By sha256 it is not: `c_stack.py`, `c_caption_embed.py` and `c_caption_index.py`
-differ. Line-by-line comparison of all three shows **zero** differing lines, and
-`git diff 02f53c8 HEAD --stat` for them is empty. The delta is CRLF in the older package
-against LF in the new one, from git's end-of-line normalization. Package content equals
-HEAD, which is what the plan's claim was actually asserting.
+The plan predicted an empty `diff -r` between the two packages' `bin/`. By sha256 it is not
+empty: `c_stack.py`, `c_caption_embed.py` and `c_caption_index.py` differ. Line-by-line
+comparison of all three shows **zero** differing lines and `git diff 02f53c8 HEAD --stat`
+for them is empty. The delta is CRLF in the older package against LF in the new one, from
+git's end-of-line normalization. Package content equals HEAD, which is what the plan's
+claim was actually asserting.
 
 **Class:** not a bug. Recorded so the next reader is not alarmed by a non-empty diff.
 
 ### F-12 — one flaky test in the suite
 
-**Observed in Phase A, then corrected.** The first run of
-`.venv\Scripts\python.exe -m pytest corpus-lab	ests -q` in this session gave **105 passed,
-1 failed**:
+The first run of `.venv\Scripts\python.exe -m pytest corpus-lab\tests -q` in this session
+gave **105 passed, 1 failed**:
 `corpus-lab/tests/evidence_v1/test_inventory.py::TestInventory::test_08_partially_readable_pdf`
 — a PDF with one unreadable page classified `parser_failed` where the test expects
-`partially_readable`. It was recorded as a standing pre-existing failure.
+`partially_readable`. It was first recorded as a standing pre-existing failure. That was
+wrong: it has not reproduced in any of the six subsequent runs on the same unchanged code.
+It is **flaky**, most likely sensitive to leftover state in
+`corpus-lab/99_scratch/pytest_tmp`, which `conftest.py` pins as the suite's temp root and
+which the first run of a session inherits from whatever ran last.
 
-That was wrong. The failure has not reproduced in four subsequent runs (three of the file
-alone, one of the whole suite), all on the same unchanged code. It is **flaky**, most
-likely sensitive to leftover state in `corpus-lab/99_scratch/pytest_tmp`, which `conftest.py`
-pins as the suite's temp root and which the first run of a session inherits from whatever
-ran last.
+The true baseline is **106 collected, 106 passing**; after both fixes the suite is **115
+collected, 115 passing** — the old count plus exactly the nine new tests.
 
-The practical consequence for this plan: the true baseline is **106 collected, 106
-passing**, and after the F-02 fix the suite is **111 collected, 111 passing** — the old
-count plus exactly the five new tests, as Phase D requires.
-
-**Class:** not a bug for this plan. A flaky test is worth someone's attention, but the
-flake is in the test's temp-directory hygiene, not in the engine.
+**Class:** not a bug for this plan. The flake is in the test's temp-directory hygiene, not
+in the engine.
 
 ### F-13 — `make_portable.py` calls an untracked file "dirty"
 
-**Observed in Phase A.** `make_portable.py:261` derives `package_dirty` from
-`git status --short`, which lists untracked files. Creating the experiment directory the
-plan itself mandates therefore stamps the package dirty. The package was built only after
-committing the plan file and the opened run record.
+`make_portable.py:261` derives `package_dirty` from `git status --short`, which lists
+untracked files. Creating the experiment directory this plan itself mandates therefore
+stamps the package dirty. The package was built only after committing the plan file and the
+opened run record.
 
 **Class:** friction, on the builder's side rather than the stranger's.
+
+### F-14 — the research corpus itself ships `CLAUDE.md` files and a `.claude\` directory
+
+The plan's section 5 asks me to verify there is "no `CLAUDE.md`, no `.claude\` anywhere
+inside" `research\`. There is: `harness\corpus_2000` contains **9** `CLAUDE.md` files and a
+`.claude\` directory holding 5 json files under `agent_workspace\`. They are generated
+corpus content — a synthetic messy academic's drive, complete with an agent's working notes
+— present at source, not install residue. Per the plan's own rule, the corpus wins and the
+contradiction is recorded here.
+
+It does not spoil the test. There is **no** `CLAUDE.md` and **no** `.claude\` at the
+research **root**, which is where `install` writes its two files, so `uninstall`'s "removes
+exactly those" claim stays testable — and was verified: after uninstall the research tree
+was byte-identical to `harness\corpus_500`, 500 files, zero sha256 mismatches in a 50-file
+sweep.
+
+One thing to watch: Claude Code reads `CLAUDE.md` files from subdirectories it works in, so
+a session that reads deep into `agent_workspace\` may pick up that file's conventions
+(fiscal-year formatting, "values are Rs billion unless…"). The content is benign and
+plausible; nothing in it is adversarial. Worth knowing before reading too much into one
+answer's phrasing.
+
+**Class:** not a bug. A contradiction between plan and corpus, resolved in the corpus's
+favour.
+
+### F-15 — `doctor`'s embedding-model check cannot fail
+
+Two things, found while probing F-07.
+
+First, `setup_folder.py:128` calls `chk("embedding_model_...", True, ...)` — the pass flag
+is the literal `True`. The check reports where the model is, or that the first run will
+download it, but it is counted as a PASS either way. "9 checks, 0 failed" therefore
+overstates what has been verified by one.
+
+Second, the F-07 probe could not be run as the plan described. Pointing
+`FASTEMBED_CACHE_PATH` at an empty directory still printed
+`[PASS] embedding_model_... cached at ...AppData\Local\temp\fastembed_cache\...`, because
+`find_model_cache` (`setup_folder.py:87-107`) treats the env var as the first of five
+candidate locations and falls through to the machine default when it misses. So the probe
+tells you nothing about a fresh machine, and `doctor` cannot be made to simulate one.
+
+**Class:** friction. Not fixed — it is not a blocker, and this plan fixes only blockers.
+
+### F-16 — a routine progress message renders as a red PowerShell error
+
+The first `inside` call on a new install prints `(building page-range cache, one-time,
+~1 min)` to **stderr**. PowerShell renders native-command stderr as a `NativeCommandError`
+record: red text, a `+ CategoryInfo : NotSpecified` block, and the offending command echoed
+with a squiggly underline. It looks exactly like a crash. The command then succeeds and
+prints its hits normally.
+
+Sir will see this. It is the single most alarming-looking thing in an otherwise quiet run,
+and it is not a failure at all.
+
+**Class:** friction. Worth fixing later by printing progress to stdout.
+
+### F-17 — `INSTALL.md`'s self-test command exits 1 on any real folder
+
+"Check the build" printed
+`bin\c_selftest.py --db .\artefacts\pages.db --shelf .\artefacts\shelf\shelf.db`.
+`--expect-pages` defaults to **1,206,260** — the page count of the frozen 15,000-file
+development rung. Run as printed against a user's own folder, the `coverage` check compares
+that constant against their page count, fails, and `_overall` goes false, so the command
+exits 1. In R2: `coverage pass=false, pages=39647`, with every other one of the fourteen
+checks passing. Nothing was wrong with the build; the document asked the wrong question.
+
+The same blind spot as F-02: `p10_cleanroom.py:205-212` already passes `--expect-pages 0`,
+with a comment reading *"the flag exists for exactly this case"*, so Gate R1 never ran the
+command a reader of `INSTALL.md` would run.
+
+**Class:** **blocker — fixed**, commit `43ed356`. Document only: `INSTALL_MD` in
+`make_portable.py` now prints `--expect-pages 0` plus one short paragraph saying what it
+means and why to leave it in. No engine code, no default, no check changed. Tests:
+`corpus-lab/tests/test_install_md_selftest_command.py`, four cases; `test_02` failed before
+and passes after, `test_01` pins the default so a future change to it cannot silently
+invalidate the reason for the flag. Verified in R3: `_overall pass=true`, exit 0.
+
+### F-18 — the frozen scorer does not recognise a bold `Sources` heading
+
+Checking R3's live answer the way `p10_check_ask.py` does gave
+`has_sources_block: false` — yet the answer plainly ends with a `**Sources**` heading and
+four citation lines. `c_score_live_v3`'s test is a regex for a bare `Sources` line or the
+string `Sources:`; the model wrote `**Sources**` in bold, which matches neither. Separately,
+`citations_and_mentions` returned `n_sources: 2` where the prose carries four lines —
+correct behaviour, since two pairs are repeated, but easy to misread as two lines lost.
+
+Checked by hand: **all four** `Sources` lines name pages the transcript shows as `OPENED`.
+
+Scorer v3 is frozen at `scorer-v3-frozen-2026-09-16` and rule 4 forbids touching it, so
+this is recorded and not fixed. It matters for anyone reading a `has_sources_block` field:
+false does not mean the answer lacked sources.
+
+**Class:** not a bug in the engine; a parsing limitation in the measurement code, and a live
+caution for reading any future scorer output.
+
+### F-19 — `uninstall` leaves the Claude Code session directory behind
+
+After `uninstall --folder <R>\research`, `CLAUDE.md` and `.claude\` were gone and the
+registry entry was removed, but
+`%USERPROFILE%\.claude\projects\C--Users-Ali-AppData-Local-Temp-portable-rehearsal3-...-research\`
+remained, holding the session transcript. `uninstall` prints "index artefacts kept (pass
+`--purge` to delete them)" and says nothing about this. The rehearsal deleted it by hand.
+
+It is small, but it is the one piece of residue that contains the content of what was
+asked, and a user who uninstalls to "remove it" will reasonably think it is gone.
+
+**Class:** friction. Not fixed — not a blocker.
+
+---
+
+## The one live answer (R3)
+
+One Sonnet call, 149 s, rc=0, transcript at `C_rehearsal/r3_09_ask1.jsonl`, answer at
+`C_rehearsal/r3_09_answer.md`. Question, written from the folder listing alone:
+*"How has federal development spending changed over the last ten years?"*
+
+| field | value |
+|---|---|
+| `n_sources` (unique path,page pairs the frozen parser found) | 2 |
+| `Sources` lines in the prose | 4 |
+| `n_opened` | 4 |
+| `sources_unopened` | none |
+| `sources_all_opened` | **true** — verified by hand for all four lines, see F-18 |
+| `guard_blocks` | 0 |
+| `has_sources_block` (frozen parser) | false — a parser artefact, see F-18 |
+| answer length | 2,940 chars |
+
+There is no key and this is not a score. What it shows is that the citation discipline held:
+every page cited was a page opened, the Stop guard never had to intervene, and the answer
+volunteered its own limits (it said the series stops at 2021-22 and named the families it
+had not checked) rather than inventing the missing years.
