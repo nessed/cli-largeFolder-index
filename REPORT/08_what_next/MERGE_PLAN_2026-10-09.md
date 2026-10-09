@@ -144,6 +144,30 @@ own run already had 124 image-only files.
 
 ---
 
+## One of ours to fix while we are in here — F-25
+
+A portable install creates a directory called **`_private`** in the recipient's folder.
+
+`portable-test\_private\results\03_runs\hooks\stop_guard__unlabelled.log` — one 2.4KB file,
+written by the stop hook on first run. `labpaths.RUNS` defaults to
+`PRIVATE / "results" / "03_runs"`, and `PRIVATE` defaults to `RETRIEVAL_LAB / "_private"`,
+which in a portable layout resolves to the package's parent. So the hook creates it.
+
+It is **not** a key leak — the answer keys are in this repo at `_private\harness_keys\`, and
+nothing of the sort is in the handover folder. But a folder named `_private` appearing
+unbidden in a professor's directory looks exactly like something he was not meant to see, and
+it is the only place the lab's internal naming reaches a handover install.
+
+Merging Ahmad's work makes it slightly worse, not better: `c_verify_guard.py` defaults
+`VERIFY_GUARD_LOG` to the same `L.RUNS / "hooks"`, so a second log lands beside the first.
+
+Fix: have `install` set `RUNS_ROOT` (the env var already exists, `labpaths.py:70`) to
+somewhere inside `engine\artefacts\`, so hook logs go where every other build artefact goes.
+Delete the stray directory from `portable-test` by hand; `portable-test - Copy` has never
+been installed and does not have one.
+
+---
+
 ## Template changes — the half that needs Claude
 
 **Strip** the 0-based hedge. His template says, in effect, *"if the index you were given was
